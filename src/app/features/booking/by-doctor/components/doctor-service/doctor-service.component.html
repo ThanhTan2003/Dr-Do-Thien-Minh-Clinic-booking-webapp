@@ -1,0 +1,64 @@
+<div class="doctor-service p-6">
+  <!-- Loading State -->
+  <div *ngIf="loading" class="loading text-center py-8">
+    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto"></div>
+    <p class="mt-4 text-gray-600">Đang tải thông tin...</p>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="error" class="error bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+    <strong class="font-bold">Lỗi!</strong>
+    <span class="block sm:inline">{{ error }}</span>
+  </div>
+
+  <!-- Content -->
+  <div *ngIf="!loading && !error && doctor" class="max-w-4xl mx-auto">
+    <!-- Doctor Info -->
+    <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+      <div class="flex items-center space-x-4">
+        <img [src]="doctor.imageUrl" [alt]="doctor.name" class="w-24 h-24 rounded-full object-cover">
+        <div>
+          <h2 class="text-2xl font-bold text-gray-800">{{ doctor.name }}</h2>
+          <p class="text-gray-600">{{ doctor.specialty }}</p>
+          <div class="flex items-center mt-2">
+            <div class="flex text-yellow-400">
+              <span *ngFor="let star of [1,2,3,4,5]" [class.text-yellow-400]="star <= doctor.rating" [class.text-gray-300]="star > doctor.rating">★</span>
+            </div>
+            <span class="ml-2 text-gray-600">({{ doctor.experience }} năm kinh nghiệm)</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Services List -->
+    <div class="space-y-4">
+      <h3 class="text-xl font-semibold text-gray-800 mb-4">Chọn dịch vụ</h3>
+      
+      <div *ngFor="let service of services" 
+           (click)="selectService(service)"
+           [class.border-blue-500]="selectedService?.id === service.id"
+           class="service-card bg-white rounded-lg shadow-md p-6 cursor-pointer border-2 border-transparent hover:border-blue-200 transition-all">
+        <div class="flex justify-between items-start">
+          <div>
+            <h4 class="text-lg font-semibold text-gray-800">{{ service.name }}</h4>
+            <p class="text-gray-600 mt-2">{{ service.description }}</p>
+          </div>
+          <div class="text-right">
+            <p class="text-lg font-bold text-blue-600">{{ formatPrice(service.price) }}</p>
+            <p class="text-sm text-gray-500">{{ formatDuration(service.duration) }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Continue Button -->
+    <div class="mt-8 text-center">
+      <button 
+        (click)="confirmService()"
+        [disabled]="!selectedService"
+        class="bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed">
+        Tiếp tục
+      </button>
+    </div>
+  </div>
+</div>

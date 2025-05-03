@@ -7,7 +7,7 @@ export const bookingRoutes: Routes = [
     children: [
       {
         path: 'by-doctor',
-        loadComponent: () => import('./by-doctor/by-doctor.component').then(m => m.ByDoctorComponent)
+        loadChildren: () => import('./by-doctor/by-doctor.routes').then(m => m.byDoctorRoutes)
       },
       {
         path: 'by-service',

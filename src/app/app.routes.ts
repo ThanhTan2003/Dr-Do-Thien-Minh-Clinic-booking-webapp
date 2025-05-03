@@ -3,11 +3,11 @@ import { Routes } from '@angular/router';
 export const routes: Routes = [
   {
     path: 'booking',
-    loadComponent: () => import('./features/booking/booking.component').then(m => m.BookingComponent),
+    loadChildren: () => import('./features/booking/booking.routes').then(m => m.bookingRoutes)
   },
   {
     path: 'admin',
-    loadComponent: () => import('./features/admin/admin.component').then(m => m.AdminComponent),
+    loadComponent: () => import('./features/admin/admin.component').then(m => m.AdminComponent)
   },
   {
     path: '',
