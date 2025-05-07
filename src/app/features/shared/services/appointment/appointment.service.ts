@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { from, Observable } from 'rxjs';
-import { Appointment } from '../../models/responses/appointment/appointment.model';
-import { AppointmentRequest } from '../../models/requests/appointment/appointment.request';
-import { PageResponse } from '../../models/responses/page-response.model';
-import { HttpService } from '../../../core/services/http.service';
+import { Appointment } from '../../../models/responses/appointment/appointment.model';
+import { AppointmentRequest } from '../../../models/requests/appointment/appointment.request';
+import { PageResponse } from '../../../models/responses/page-response.model';
+import { HttpService } from '../../../../core/services/http.service';
 
 @Injectable({
   providedIn: 'root'
@@ -18,6 +18,7 @@ export class AppointmentService {
   }
 
   getById(id: string): Observable<Appointment> {
+    console.log('getById', `${this.API_URL}/${id}`);
     return this.http.get<Appointment>(`${this.API_URL}/${id}`);
   }
 

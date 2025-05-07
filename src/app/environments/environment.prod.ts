@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiBaseUrl: 'https://api.yourdomain.com' // Địa chỉ server trong môi trường sản xuất
+  apiBaseUrl: 'http://localhost:8180' // Địa chỉ server trong môi trường sản xuất
 };

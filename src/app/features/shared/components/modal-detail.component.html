@@ -1,0 +1,12 @@
+<div class="fixed inset-0 flex items-center justify-center bg-black/75 z-50">
+    <div class="bg-white rounded-lg shadow-lg w-4/5 p-6">
+      <h2 class="text-2xl font-bold text-uppercase text-sky-800">{{ title }}</h2>
+      <p class="text-sm text-gray-700 mt-4 text-justify">{{ content }}</p>
+      <div class="flex justify-end mt-4">
+        <button (click)="close.emit()" class="px-4 py-2 bg-gradient-to-r from-cyan-600 to-sky-700 text-white font-semibold rounded-lg w-full">
+          Đóng
+        </button>
+      </div>
+    </div>
+</div>
+  

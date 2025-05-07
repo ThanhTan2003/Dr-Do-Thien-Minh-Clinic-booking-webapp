@@ -11,7 +11,7 @@ export const bookingRoutes: Routes = [
       },
       {
         path: 'by-service',
-        loadComponent: () => import('./by-service/by-service.component').then(m => m.ByServiceComponent)
+        loadChildren: () => import('./by-service/by-service.routes').then(m => m.byServiceRoutes)
       },
       {
         path: 'patient-profile',

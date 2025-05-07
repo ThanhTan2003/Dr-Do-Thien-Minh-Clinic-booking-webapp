@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { HttpService } from '../../../core/services/http.service';
-import { TimeFrame } from '../../models/responses/appointment/time-frame.model';
-import { TimeFrameRequest } from '../../models/requests/appointment/time-frame.request';
-import { PageResponse } from '../../models/responses/page-response.model';
+import { HttpService } from '../../../../core/services/http.service';
+import { TimeFrame } from '../../../models/responses/appointment/time-frame.model';
+import { TimeFrameRequest } from '../../../models/requests/appointment/time-frame.request';
+import { PageResponse } from '../../../models/responses/page-response.model';
 
 @Injectable({
   providedIn: 'root'

@@ -1,2 +1,87 @@
 /* You can add global styles to this file, and also import other style files */
 @import "tailwindcss";
+
+/* styles.scss */
+/* Import CSS mặc định của ngx-toastr */
+@import 'ngx-toastr/toastr';
+
+/* Tùy chỉnh toast để giống theme "colored" của react-toastify */
+.colored-toast {
+  /* Tăng chiều rộng của toast */
+  width: 400px !important; /* Tăng từ mặc định (~300px) lên 400px */
+  max-width: 90vw !important; /* Đảm bảo không vượt quá 90% chiều rộng màn hình trên thiết bị nhỏ */
+
+  /* Màu nền đậm cho các loại toast (giữ nguyên) */
+  &.toast-error {
+    background-color: #e75656 !important;
+    color: white !important;
+    border-radius: 4px !important;
+  }
+  &.toast-success {
+    background-color: #3ea468 !important;
+    color: white !important;
+    border-radius: 4px !important;
+  }
+  &.toast-info {
+    background-color: #2e77b3 !important;
+    color: white !important;
+    border-radius: 4px !important;
+  }
+  &.toast-warning {
+    background-color: #d07932 !important;
+    color: white !important;
+    border-radius: 4px !important;
+  }
+
+  /* Tùy chỉnh thanh tiến trình (giữ nguyên) */
+  .toast-progress {
+    background-color: rgba(255, 255, 255, 0.8) !important;
+    height: 4px !important;
+  }
+
+  /* Tùy chỉnh nút đóng (giữ nguyên) */
+  .toast-close-button {
+    color: white !important;
+    opacity: 0.8;
+    font-size: 16px !important;
+    &:hover {
+      opacity: 1;
+    }
+  }
+
+  /* Tùy chỉnh font, padding và xuống dòng */
+  .toast-message,
+  .toast-title {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif !important;
+    font-size: 16px !important;
+    line-height: 1.5 !important;
+    padding: 3px 3px !important; /* Tăng padding để nội dung thoáng hơn */
+    white-space: normal !important; /* Đảm bảo xuống dòng tự nhiên */
+    word-break: break-word !important; /* Ngắt từ hợp lý khi xuống dòng */
+  }
+
+  /* Tùy chỉnh hiệu ứng Bounce (giữ nguyên) */
+  &.ng-animating {
+    animation: bounce 0.5s ease-in-out !important;
+  }
+}
+
+/* Định nghĩa keyframes cho hiệu ứng Bounce (giữ nguyên) */
+@keyframes bounce {
+  0%, 20% {
+    transform: translateY(-100px);
+    opacity: 0;
+  }
+  40% {
+    transform: translateY(20px);
+    opacity: 1;
+  }
+  80% {
+    transform: translateY(-10px);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}

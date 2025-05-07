@@ -1,0 +1,12 @@
+<div class="p-4 pt-2">
+  <!-- Chờ load xong mới hiển thị kết quả -->
+  <ng-container *ngIf="!loading">
+    <!-- Nếu có dữ liệu appointment → show Success, else → show Failure -->
+    <ng-container *ngIf="appointment; else failureTpl">
+      <app-booking-success [appointment]="appointment"></app-booking-success>
+    </ng-container>
+    <ng-template #failureTpl>
+      <app-booking-failure></app-booking-failure>
+    </ng-template>
+  </ng-container>
+</div>

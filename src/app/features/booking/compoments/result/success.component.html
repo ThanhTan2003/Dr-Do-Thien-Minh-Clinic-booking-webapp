@@ -1,0 +1,109 @@
+<div class="pt-4">
+  <!-- Header -->
+  <div class="text-center mb-6">
+    <h1 class="text-2xl font-bold text-green-600">
+      <fa-icon [icon]="faCheckCircle"></fa-icon>
+      ĐẶT LỊCH THÀNH CÔNG
+    </h1>
+    <div class="bg-sky-50 p-4 border border-sky-300 rounded-md mb-4 mt-4">
+      <div class="text-gray-600 text-justify">
+        <b>Lịch hẹn của bạn đã được đặt thành công</b>.
+        Lịch hẹn sẽ có hiệu lực sau khi được xác nhận từ phía phòng khám.
+        Bạn có thể theo dõi lịch hẹn trong phần
+        <strong><em>lịch sử đặt khám</em></strong> trong hồ sơ của mình.
+      </div>
+    </div>
+  </div>
+
+  <!-- Chi tiết hồ sơ & lịch khám -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+    <!-- Hồ sơ đặt khám -->
+    <div class="bg-white rounded-lg shadow-md p-3 border border-sky-600">
+      <div class="text-xl font-bold text-sky-800 mb-2">HỒ SƠ ĐẶT KHÁM</div>
+      <hr class="border-sky-600 mb-2" />
+      <div class="grid grid-cols-1 gap-2">
+        <div class="grid [grid-template-columns:4fr_6fr] gap-2">
+          <p class="font-semibold">Mã hồ sơ:</p>
+          <p>{{ appointment?.patientResponse?.id || '...' }}</p>
+        </div>
+        <div class="grid [grid-template-columns:4fr_6fr] gap-2">
+          <p class="font-semibold">Họ tên:</p>
+          <p>{{ appointment?.patientResponse?.fullName || '...' }}</p>
+        </div>
+        <div class="grid [grid-template-columns:4fr_6fr] gap-2">
+          <p class="font-semibold">Giới tính:</p>
+          <p>{{ appointment?.patientResponse?.gender || '...' }}</p>
+        </div>
+        <div class="grid [grid-template-columns:4fr_6fr] gap-2">
+          <p class="font-semibold">Ngày sinh:</p>
+          <p>{{ appointment?.patientResponse?.dateOfBirth | date:'dd/MM/yyyy':'en-GB' }}</p>
+        </div>
+        <div class="grid [grid-template-columns:4fr_6fr] gap-2">
+          <p class="font-semibold">Số điện thoại:</p>
+          <p>{{ appointment?.patientResponse?.phoneNumber || '...' }}</p>
+        </div>
+        <div class="grid [grid-template-columns:4fr_6fr] gap-2">
+          <p class="font-semibold">Số căn cước:</p>
+          <p>{{ appointment?.patientResponse?.identityCard || '...' }}</p>
+        </div>
+        <div class="grid [grid-template-columns:4fr_6fr] gap-2">
+          <p class="font-semibold">Số thẻ BHYT:</p>
+          <p>{{ appointment?.patientResponse?.insuranceId || '...' }}</p>
+        </div>
+        <div class="grid [grid-template-columns:4fr_6fr] gap-2">
+          <p class="font-semibold">Địa chỉ:</p>
+          <p>{{ appointment?.patientResponse?.address || '...' }}</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Thông tin đặt khám -->
+    <div class="bg-white rounded-lg shadow-md p-3 border border-sky-600">
+      <div class="text-xl font-bold text-sky-800 mb-2">THÔNG TIN ĐẶT KHÁM</div>
+      <hr class="border-sky-600 mb-2" />
+      <div class="grid grid-cols-1 gap-2">
+        <div class="grid [grid-template-columns:4fr_6fr] gap-2">
+          <p class="font-semibold">Dịch vụ:</p>
+          <p>{{ appointment?.doctorServiceResponse?.serviceResponse?.serviceName || '...' }}</p>
+        </div>
+        <div class="grid [grid-template-columns:4fr_6fr] gap-2">
+          <p class="font-semibold">Bác sĩ:</p>
+          <p>{{ appointment?.doctorServiceResponse?.doctorResponse?.name || '...' }}</p>
+        </div>
+        <div class="grid [grid-template-columns:4fr_6fr] gap-2">
+          <p class="font-semibold">Ngày khám:</p>
+          <p>{{ appointment?.appointmentDateName || '...' }}</p>
+        </div>
+        <div class="grid [grid-template-columns:4fr_6fr] gap-2">
+          <p class="font-semibold">Giờ khám:</p>
+          <p>{{ appointment?.doctorScheduleResponse?.timeFrameResponse?.fullName || '...' }}</p>
+        </div>
+        <div class="grid [grid-template-columns:4fr_6fr] gap-2">
+          <p class="font-semibold">Phòng khám:</p>
+          <p>{{ appointment?.doctorScheduleResponse?.roomName || '...' }}</p>
+        </div>
+        <div class="grid [grid-template-columns:4fr_6fr] gap-2">
+          <p class="font-semibold">Phí khám bệnh:</p>
+          <p>{{ appointment?.doctorServiceResponse?.serviceResponse?.price || '...' }}</p>
+        </div>
+        <div class="grid [grid-template-columns:4fr_6fr] gap-2 items-center">
+          <p class="font-semibold">Trạng thái:</p>
+          <span class="inline-block bg-yellow-100 text-yellow-800 font-bold text-sm px-3 py-1 rounded">
+            {{ appointment?.status || 'Chờ xác nhận' }}
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Nút truy cập lịch sử -->
+    <div class="text-center pt-1 pb-2 sm:col-span-2">
+      <button
+        (click)="goToHistory()"
+        class="w-full h-12 bg-sky-700 text-white font-bold rounded-lg hover:bg-sky-600 transition duration-300"
+      >
+        Truy cập lịch sử đặt khám&nbsp;
+        <fa-icon [icon]="faFileMedical"></fa-icon>
+      </button>
+    </div>
+  </div>
+</div>

@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { HttpService } from '../../../core/services/http.service';
-import { ServiceCategory } from '../../models/responses/medical/service-category.model';
-import { ServiceCategoryRequest } from '../../models/requests/medical/service-category.request';
-import { PageResponse } from '../../models/responses/page-response.model';
+import { HttpService } from '../../../../core/services/http.service';
+import { ServiceCategory } from '../../../models/responses/medical/service-category.model';
+import { ServiceCategoryRequest } from '../../../models/requests/medical/service-category.request';
+import { PageResponse } from '../../../models/responses/page-response.model';
 
 @Injectable({
   providedIn: 'root'

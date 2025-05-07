@@ -1,101 +1,147 @@
-import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { ActivatedRoute, Router } from '@angular/router';
-import { DoctorService as DoctorDataService } from '../../services/doctor.service';
-import { Doctor } from '../../models/doctor.model';
-import { HttpClientModule } from '@angular/common/http';
+import { Component, OnInit, ChangeDetectorRef, OnDestroy } from '@angular/core';
+import { CommonModule, NgIf, NgFor } from '@angular/common';
+import { Router, RouterOutlet, ActivatedRoute } from '@angular/router';
+import { DoctorServiceService } from '../../../../shared/services/doctor/doctor-service.service';
+import { DoctorService } from '../../../../models/responses/doctor/doctor-service.model';
+import { ModalDetailComponent } from '../../../../shared/components/modal-detail.component';
 import { FormsModule } from '@angular/forms';
-
-interface MedicalService {
-  id: string;
-  name: string;
-  description: string;
-  price: number;
-  duration: number;
-}
+import { Subject, debounceTime, distinctUntilChanged, takeUntil } from 'rxjs';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { faMagnifyingGlass, faCaretDown, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-doctor-service',
   templateUrl: './doctor-service.component.html',
   standalone: true,
-  imports: [CommonModule, HttpClientModule, FormsModule]
+  imports: [CommonModule, NgIf, NgFor, FormsModule, ModalDetailComponent, FontAwesomeModule, RouterOutlet],
 })
-export class DoctorServiceComponent implements OnInit {
-  doctor: Doctor | null = null;
-  services: MedicalService[] = [];
+export class DoctorServiceComponent implements OnInit, OnDestroy {
+  services: DoctorService[] = [];
+  totalPages = 1;
+  currentPage = 1;
+  pageSize = 5;
+  keyword = '';
   loading = false;
-  error: string | null = null;
-  selectedService: MedicalService | null = null;
+  doctorId: string | null = null;
+  doctorServiceId: string | null = null;
+
+  isModalOpen = false;
+  modalContent = { title: '', content: '' };
+
+  faMagnifyingGlass = faMagnifyingGlass;
+  faCaretDown = faCaretDown;
+  faArrowLeft = faArrowLeft;
+
+  private searchSubject = new Subject<string>();
+  private destroy$ = new Subject<void>();
 
   constructor(
-    private doctorService: DoctorDataService,
+    private doctorServiceService: DoctorServiceService,
+    private router: Router,
     private route: ActivatedRoute,
-    private router: Router
+    private cdr: ChangeDetectorRef,
+    private location: Location
   ) {}
 
   ngOnInit(): void {
-    const doctorId = this.route.snapshot.paramMap.get('doctorId');
-    if (doctorId) {
-      this.loadDoctorAndServices(doctorId);
+    console.log('DoctorServiceComponent initialized');
+    this.route.paramMap.pipe(takeUntil(this.destroy$)).subscribe((params) => {
+      this.doctorId = params.get('doctorId');
+      this.doctorServiceId = params.get('doctorServiceId');
+      this.currentPage = 1;
+      this.services = [];
+      this.fetchServices();
+      this.cdr.detectChanges();
+    });
+    this.setupSearchDebounce();
+  }
+
+  ngOnDestroy(): void {
+    console.log('DoctorServiceComponent destroyed');
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
+  private setupSearchDebounce(): void {
+    this.searchSubject
+      .pipe(
+        debounceTime(500),
+        distinctUntilChanged(),
+        takeUntil(this.destroy$)
+      )
+      .subscribe(() => {
+        this.currentPage = 1;
+        this.fetchServices();
+      });
+  }
+
+  fetchServices(): void {
+    if (!this.doctorId) {
+      console.error('Doctor ID is missing');
+      return;
+    }
+
+    this.loading = true;
+    this.doctorServiceService
+      .searchByDoctor(this.keyword, this.doctorId, this.currentPage, this.pageSize)
+      .subscribe({
+        next: (res) => {
+          this.totalPages = res.totalPages || 1;
+          this.services = this.currentPage === 1 ? res.data : [...this.services, ...res.data];
+          this.cdr.detectChanges();
+        },
+        error: (err) => {
+          console.error('Error fetching services:', err);
+          this.loading = false;
+          this.cdr.detectChanges();
+        },
+        complete: () => {
+          this.loading = false;
+          this.cdr.detectChanges();
+        },
+      });
+  }
+
+  onSearchChange(): void {
+    this.searchSubject.next(this.keyword);
+  }
+
+  openModal(service: DoctorService): void {
+    this.modalContent = {
+      title: service.serviceResponse.serviceName.toUpperCase(),
+      content: service.serviceResponse.description || 'Không có mô tả.',
+    };
+    this.isModalOpen = true;
+    this.cdr.detectChanges();
+  }
+
+  closeModal(): void {
+    this.isModalOpen = false;
+    this.cdr.detectChanges();
+  }
+
+  goToNextPage(): void {
+    if (this.currentPage < this.totalPages) {
+      this.currentPage++;
+      this.fetchServices();
     }
   }
 
-  loadDoctorAndServices(doctorId: string): void {
-    this.loading = true;
-    this.doctorService.getDoctorById(doctorId).subscribe({
-      next: (doctor: Doctor) => {
-        this.doctor = doctor;
-        // TODO: Load services from API
-        this.services = [
-          {
-            id: '1',
-            name: 'Khám tổng quát',
-            description: 'Khám sức khỏe tổng quát, kiểm tra các chỉ số cơ bản',
-            price: 500000,
-            duration: 30
-          },
-          {
-            id: '2',
-            name: 'Tư vấn chuyên sâu',
-            description: 'Tư vấn và điều trị chuyên sâu về các vấn đề sức khỏe',
-            price: 1000000,
-            duration: 60
-          },
-          {
-            id: '3',
-            name: 'Khám định kỳ',
-            description: 'Khám sức khỏe định kỳ hàng năm',
-            price: 800000,
-            duration: 45
-          }
-        ];
-        this.loading = false;
-      },
-      error: (err: Error) => {
-        this.error = 'Không thể tải thông tin bác sĩ. Vui lòng thử lại sau.';
-        this.loading = false;
+  goToSchedule(doctorServiceId: string): void {
+    this.doctorServiceId = doctorServiceId;
+    this.router.navigate([doctorServiceId], { relativeTo: this.route }).then(success => {
+      if (!success) {
+        console.error('Navigation failed for doctorServiceId:', doctorServiceId);
       }
     });
   }
 
-  selectService(service: MedicalService): void {
-    this.selectedService = service;
+  goBack(): void {
+    this.location.back();
   }
 
-  confirmService(): void {
-    if (this.selectedService) {
-      this.router.navigate([this.selectedService.id], { relativeTo: this.route });
-    }
-  }
-
-  formatPrice(price: number): string {
-    return new Intl.NumberFormat('vi-VN', {
-      style: 'currency',
-      currency: 'VND'
-    }).format(price);
-  }
-
-  formatDuration(duration: number): string {
-    return `${duration} phút`;
+  getServiceImage(service: DoctorService): string {
+    return service.serviceResponse.image || '/images/default-service.jpg';
   }
 }

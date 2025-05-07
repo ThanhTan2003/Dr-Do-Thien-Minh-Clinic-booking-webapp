@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { HttpService } from '../../../core/services/http.service';
-import { DoctorSchedule } from '../../models/responses/doctor/doctor-schedule.model';
-import { DoctorScheduleRequest } from '../../models/requests/doctor/doctor-schedule.request';
-import { PageResponse } from '../../models/responses/page-response.model';
+import { HttpService } from '../../../../core/services/http.service';
+import { DoctorSchedule } from '../../../models/responses/doctor/doctor-schedule.model';
+import { DoctorScheduleRequest } from '../../../models/requests/doctor/doctor-schedule.request';
+import { PageResponse } from '../../../models/responses/page-response.model';
 
 @Injectable({
   providedIn: 'root'

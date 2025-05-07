@@ -1,1 +1,72 @@
-<p>doctor</p>
+<router-outlet #childOutlet="outlet"></router-outlet>
+
+<div *ngIf="!childOutlet.isActivated">
+  <!-- Tiêu đề -->
+  <div class="text-center pb-2 p-4">
+    <h1 class="text-2xl font-bold relative" style="
+      background: linear-gradient(to right, #0078B7, #00A3E0);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    ">
+      CHỌN BÁC SĨ
+    </h1>
+    <div class="mt-2 w-32 mx-auto h-1 bg-gradient-to-r from-cyan-600 to-blue-800 rounded-full"></div>
+  </div>
+
+  <!-- Thanh tìm kiếm -->
+  <div class="text-center pt-2">
+    <input type="text" [(ngModel)]="keyword" (ngModelChange)="onSearchChange()" placeholder="Nhập từ khóa tìm kiếm"
+      class="p-2 border border-cyan-700 rounded-md w-4/6" />
+    <button (click)="onSearchChange()"
+      class="ml-2 p-2 bg-gradient-to-r from-cyan-600 to-sky-700 text-white font-semibold rounded-md w-1/5">
+      <fa-icon [icon]="faMagnifyingGlass"></fa-icon> Tìm
+    </button>
+  </div>
+
+  <!-- Danh sách bác sĩ -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4">
+    <div *ngFor="let doctor of doctors"
+      class="bg-white rounded-lg shadow-md p-3 flex flex-col justify-between border border-slate-300">
+      <div class="flex items-center gap-6">
+        <!-- Hình ảnh bác sĩ -->
+        <div class="w-1/3 h-auto flex-shrink-0 overflow-hidden rounded-l-lg">
+          <img [src]="getDoctorImage(doctor)" alt="Ảnh bác sĩ" class="w-full h-full object-cover"
+            (error)="getDoctorImage(doctor)" />
+        </div>
+        <!-- Thông tin bác sĩ -->
+        <div class="flex-1">
+          <h4 class="text-lg font-bold text-sky-800">{{ doctor.name.toUpperCase() }}</h4>
+          <p class="text-sm text-amber-800">
+            <strong>Giới tính:</strong> {{ doctor.gender || 'Chưa cập nhật' }}
+          </p>
+          <p class="text-sm text-gray-700 mt-1">
+            <strong>Chuyên môn:</strong> {{ doctor.nameOfServiceCategory || '...' }}
+          </p>
+          <!-- Nút hành động -->
+          <div class="flex gap-2 justify-end mt-3">
+            <button (click)="openModal(doctor)"
+              class="w-20 h-10 border-2 border-cyan-700 text-cyan-700 font-semibold rounded-lg bg-white hover:bg-cyan-50 transition duration-300">
+              Chi tiết
+            </button>
+            <button (click)="goToService(doctor.id)"
+              class="w-24 h-10 bg-gradient-to-r from-cyan-600 to-sky-700 text-white font-semibold rounded-lg shadow-lg hover:from-cyan-800 hover:to-blue-900 transition duration-300">
+              Chọn
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Nút phân trang -->
+  <div *ngIf="currentPage < totalPages" class="flex justify-center p-4 mb-4">
+    <button (click)="goToNextPage()"
+      class="w-full h-12 bg-gradient-to-r from-cyan-600 to-sky-700 text-white font-bold rounded-lg shadow-lg hover:from-cyan-800 hover:to-blue-900 transition duration-300">
+      Xem thêm <fa-icon [icon]="faCaretDown"></fa-icon>
+    </button>
+  </div>
+
+  <!-- Modal hiển thị chi tiết -->
+  <app-modal-detail *ngIf="isModalOpen" [title]="modalContent.title" [content]="modalContent.content"
+    (close)="closeModal()"></app-modal-detail>
+</div>
