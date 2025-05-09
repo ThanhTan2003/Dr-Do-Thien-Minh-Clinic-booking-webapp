@@ -1,0 +1,19 @@
+<table>
+  <thead>
+    <tr>
+      <th>Tên tài khoản</th>
+      <th>Hành động</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let account of accounts">
+      <td>{{ account.name }}</td>
+      <td>
+        <button (click)="edit(account)">Sửa</button>
+        <button (click)="delete(account)">Xóa</button>
+        <button (click)="viewDetail(account)">Xem chi tiết</button>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<button (click)="add()">Thêm mới</button> 

@@ -1,0 +1,19 @@
+<table>
+  <thead>
+    <tr>
+      <th>Tên bệnh nhân</th>
+      <th>Hành động</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let patient of patients">
+      <td>{{ patient.name }}</td>
+      <td>
+        <button (click)="edit(patient)">Sửa</button>
+        <button (click)="delete(patient)">Xóa</button>
+        <button (click)="viewDetail(patient)">Xem chi tiết</button>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<button (click)="add()">Thêm mới</button> 

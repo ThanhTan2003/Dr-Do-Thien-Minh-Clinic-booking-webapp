@@ -1,0 +1,130 @@
+<router-outlet #childOutlet="outlet"></router-outlet>
+
+<div *ngIf="!childOutlet.isActivated">
+  <!-- Tiêu đề -->
+  <div class="text-center pb-2 p-4">
+    <h1
+      class="text-2xl font-bold relative"
+      style="background: linear-gradient(to right, #0078B7, #00A3E0); -webkit-background-clip: text; -webkit-text-fill-color: transparent;"
+    >
+      CHỌN HỒ SƠ CẦN THAO TÁC
+    </h1>
+    <div class="mt-2 w-32 mx-auto h-1 bg-gradient-to-r from-cyan-600 to-blue-800 rounded-full"></div>
+  </div>
+
+  <!-- Ô nhập từ khóa và nút Tìm -->
+  <div class="text-center pt-2">
+    <input
+      type="text"
+      placeholder="Nhập từ khóa tìm kiếm"
+      [(ngModel)]="keyword"
+      (ngModelChange)="onSearchChange()"
+      class="p-2 border border-cyan-700 rounded-md w-4/6"
+    />
+    <button
+      (click)="fetchPatients()"
+      class="ml-2 p-2 bg-gradient-to-r from-cyan-600 to-sky-700 text-white font-semibold rounded-md w-1/5"
+    >
+      <fa-icon [icon]="faMagnifyingGlass"></fa-icon> Tìm
+    </button>
+  </div>
+
+  <div class="text-center pb-2 p-4">
+    <a routerLink="create">
+      <button
+        class="p-2 bg-sky-600 text-white font-bold rounded-md w-full h-12"
+      >
+        Tạo hồ sơ mới &nbsp;<fa-icon [icon]="faPlus"></fa-icon>
+      </button>
+    </a>
+  </div>
+
+  <!-- Danh sách bệnh nhân -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 pt-2">
+    <div
+      *ngFor="let patient of patients"
+      class="bg-white rounded-lg shadow-md p-4 flex flex-col justify-between relative border border-slate-300"
+      style="min-height: 180px;"
+    >
+      <div class="flex items-center gap-6 mb-4">
+        <img
+          [src]="patient.image"
+          alt="patient-icon"
+          class="w-20 h-20 object-contain"
+        />
+        <div class="flex-1">
+          <h4
+            class="text-1xl font-bold bg-clip-text text-transparent"
+            style="background-image: linear-gradient(to right, #0078B7, #004F8C);"
+          >
+            {{patient.fullName.toUpperCase()}}
+          </h4>
+          <p class="text-sm text-gray-700 mt-1 text-justify">
+            <b>Mã HS: </b>{{patient.id}}
+          </p>
+          <p class="text-sm text-gray-700 mt-1 text-justify">
+            <b>Giới tính: </b>{{patient.gender}}
+          </p>
+          <p class="text-sm text-gray-700 mt-1 text-justify">
+            <b>Ngày sinh: </b>{{formatDate(patient.dateOfBirth)}}
+          </p>
+          <p class="text-sm text-gray-700 mt-1 text-justify">
+            <b>Số căn cước: </b>{{patient.identityCard}}
+          </p>
+        </div>
+      </div>
+
+      <!-- Nút hành động -->
+      <div class="flex gap-2 justify-end">
+        <button
+          (click)="showErrorModal('delete')"
+          class="w-20 h-10 border-2 border-amber-700 text-amber-700 font-semibold rounded-lg bg-white hover:bg-cyan-50 transition duration-300"
+        >
+          Xóa
+        </button>
+        <button
+          (click)="showErrorModal('update')"
+          class="w-20 h-10 border-2 border-green-700 text-green-700 font-semibold rounded-lg bg-white hover:bg-cyan-50 transition duration-300"
+        >
+          Cập nhật
+        </button>
+        <button
+          (click)="openModal(patient)"
+          class="w-20 h-10 border-2 border-cyan-700 text-cyan-700 font-semibold rounded-lg bg-white hover:bg-cyan-50 transition duration-300"
+        >
+          Chi tiết
+        </button>
+        <a [routerLink]="[patient.id]">
+          <button class="w-20 h-10 bg-gradient-to-r from-cyan-600 to-sky-700 text-white font-semibold rounded-lg shadow-lg hover:from-cyan-800 hover:to-blue-900 transition duration-300">
+            Lịch hẹn
+          </button>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pagination -->
+  <div *ngIf="currentPage < totalPages" class="flex justify-center p-4 mb-4">
+    <button
+      (click)="goToNextPage()"
+      class="w-full h-12 bg-gradient-to-r from-cyan-600 to-sky-700 text-white font-bold rounded-lg shadow-lg hover:from-cyan-800 hover:to-blue-900 transition duration-300"
+    >
+      Xem thêm &nbsp; <fa-icon [icon]="faCaretDown"></fa-icon>
+    </button>
+  </div>
+</div>
+
+<!-- Modal chi tiết -->
+<app-detail-patient
+  *ngIf="isModalOpen"
+  [patient]="selectPatient"
+  (close)="closeModal()"
+></app-detail-patient>
+
+<!-- Modal lỗi -->
+<app-modal-error
+  *ngIf="isErrorModalOpen"
+  [title]="errorTitle"
+  [message]="errorMessage"
+  (close)="closeErrorModal()"
+></app-modal-error> 

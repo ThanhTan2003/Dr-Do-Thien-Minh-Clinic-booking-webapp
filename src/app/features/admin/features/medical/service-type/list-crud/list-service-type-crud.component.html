@@ -1,0 +1,19 @@
+<table>
+  <thead>
+    <tr>
+      <th>Tên loại dịch vụ</th>
+      <th>Hành động</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let type of serviceTypes">
+      <td>{{ type.name }}</td>
+      <td>
+        <button (click)="edit(type)">Sửa</button>
+        <button (click)="delete(type)">Xóa</button>
+        <button (click)="viewDetail(type)">Xem chi tiết</button>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<button (click)="add()">Thêm mới</button> 

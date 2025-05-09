@@ -1,0 +1,16 @@
+<table>
+  <thead>
+    <tr>
+      <th>Tên bác sĩ</th>
+      <th>Hành động</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let doctor of doctors">
+      <td>{{ doctor.name }}</td>
+      <td>
+        <button (click)="viewDetail(doctor)">Xem chi tiết</button>
+      </td>
+    </tr>
+  </tbody>
+</table>

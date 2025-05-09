@@ -1,0 +1,117 @@
+<router-outlet #childOutlet="outlet"></router-outlet>
+
+<div *ngIf="!childOutlet.isActivated">
+  <div class="text-center pb-2 p-4">
+    <button
+      (click)="goBack()"
+      class="w-full h-12 border-2 border-cyan-700 text-cyan-700 font-bold rounded-lg bg-white hover:bg-cyan-50 transition duration-300"
+    >
+      <fa-icon [icon]="faArrowLeft"></fa-icon> &nbsp; Quay lại
+    </button>
+  </div>
+
+  <div class="text-center pb-2 p-4">
+    <h1
+      class="text-2xl font-bold relative"
+      style="
+        background: linear-gradient(to right, #0078B7, #00A3E0);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      "
+    >
+      DANH SÁCH LỊCH HẸN
+    </h1>
+    <div class="mt-2 w-32 mx-auto h-1 bg-gradient-to-r from-cyan-600 to-blue-800 rounded-full"></div>
+  </div>
+
+  <div class="text-center pt-2">
+    <input
+      type="text"
+      placeholder="Mã lịch hẹn, bác sĩ, dịch vụ..."
+      [(ngModel)]="keyword"
+      (input)="handleSearchChange($event)"
+      class="p-2 border border-cyan-700 rounded-md w-4/6"
+    />
+    <button
+      (click)="fetchAppointments()"
+      class="ml-2 p-2 bg-gradient-to-r from-cyan-600 to-sky-700 text-white font-semibold rounded-md w-1/5"
+    >
+      <fa-icon [icon]="faMagnifyingGlass"></fa-icon> Tìm
+    </button>
+
+    <div class="p-4">
+      <select
+        [(ngModel)]="selectStatus"
+        (change)="onStatusChange($event)"
+        class="border border-cyan-700 rounded-md p-2 text-sm w-full"
+      >
+        <option value="">-- Tất cả trạng thái --</option>
+        <option *ngFor="let status of statuses" [value]="status">{{ status }}</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 pt-2">
+    <div
+      *ngFor="let appointment of appointments"
+      class="bg-white rounded-lg p-3 flex flex-col justify-between relative border border-sky-600 shadow-md"
+    >
+      <div class="text-1xl font-bold text-sky-800 mb-2">
+        {{ appointment?.doctorServiceResponse?.serviceResponse?.serviceName?.toUpperCase() || "..." }}
+      </div>
+      <hr class="border-sky-600 mb-2" />
+      <div class="grid grid-cols-[4fr,6fr] gap-2">
+        <p><strong>Mã lịch hẹn: </strong></p>
+        <p>{{ appointment?.id || "..." }}</p>
+
+        <p><strong>Bác sĩ: </strong></p>
+        <p>{{ appointment?.doctorServiceResponse?.doctorResponse?.name || "..." }}</p>
+
+        <p><strong>Ngày khám: </strong></p>
+        <p>{{ appointment?.appointmentDateName || "..." }}</p>
+
+        <p><strong>Giờ khám: </strong></p>
+        <p>{{ appointment?.doctorScheduleResponse?.timeFrameResponse?.fullName || "..." }}</p>
+
+        <p><strong>Trạng thái:</strong></p>
+        <div class="flex items-center">
+          <span [class]="'inline-block font-bold text-sm py-1 rounded ' + getStatusColorClass(appointment?.status ?? '')">
+            {{ appointment?.status || "..." }}
+          </span>
+        </div>
+      </div>
+
+      <div class="flex gap-2 justify-end pt-2">
+        <button
+          (click)="onCancelAppointment(appointment)"
+          class="w-32 h-10 border-2 border-amber-800 text-amber-700 font-semibold rounded-lg bg-white hover:bg-rose-50 transition duration-300"
+        >
+          Hủy lịch
+        </button>
+
+        <a
+          [routerLink]="[appointment.id]"
+          class="w-32 h-10 bg-gradient-to-r from-cyan-600 to-sky-700 text-white font-semibold rounded-lg shadow-lg hover:from-cyan-800 hover:to-blue-900 transition duration-300 inline-flex items-center justify-center"
+        >
+          Chi tiết
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="currentPage < totalPages" class="flex justify-center p-4 mb-4">
+    <button
+      (click)="loadMore()"
+      class="w-full h-12 bg-gradient-to-r from-cyan-600 to-sky-700 text-white font-bold rounded-lg shadow-lg hover:from-cyan-800 hover:to-blue-900 transition duration-300"
+    >
+      Xem thêm &nbsp; <fa-icon [icon]="faCaretDown"></fa-icon>
+    </button>
+  </div>
+</div>
+
+<app-modal-error
+  *ngIf="showErrorModal"
+  [title]="errorTitle"
+  [message]="errorMessage"
+  (close)="onCloseErrorModal()"
+></app-modal-error> 

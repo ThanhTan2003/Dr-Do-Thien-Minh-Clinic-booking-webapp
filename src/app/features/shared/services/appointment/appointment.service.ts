@@ -8,6 +8,7 @@ import { HttpService } from '../../../../core/services/http.service';
 @Injectable({
   providedIn: 'root'
 })
+
 export class AppointmentService {
   constructor(private http: HttpService) {}
 
