@@ -1,0 +1,27 @@
+<div class="mt-4">
+  <!-- Pagination Controls: Tổng số và trang hiện tại -->
+  <div class="flex justify-between items-center mb-4">
+    <div class="text-gray-600">
+      Tổng số: <b>{{totalElements}}</b>
+    </div>
+    <div class="text-gray-600">
+      Trang {{currentPage}} / {{totalPages}}
+    </div>
+  </div>
+
+  <!-- Pagination: Các nút phân trang -->
+  <div class="flex justify-center space-x-2">
+    <ng-container *ngFor="let pageNumber of getPageNumbers(); let i = index">
+      <button
+        *ngIf="isNumber(pageNumber)"
+        (click)="handlePageClick(pageNumber)"
+        [class]="'px-3 py-1 mx-1 rounded ' + (currentPage === pageNumber ? 'bg-sky-600 text-white' : 'bg-white text-sky-600 border border-sky-600 hover:bg-sky-100')"
+      >
+        {{pageNumber}}
+      </button>
+      <span *ngIf="!isNumber(pageNumber)" class="px-3 py-1">
+        ...
+      </span>
+    </ng-container>
+  </div>
+</div> 

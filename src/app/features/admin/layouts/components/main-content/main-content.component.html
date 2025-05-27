@@ -1,0 +1,10 @@
+<div class="w-auto h-screen overflow-y-auto ml-2">
+  <app-sub-header
+    *ngIf="selectedMenu?.children?.length"
+    [menuItems]="selectedMenu?.children || []"
+    [parentPath]="selectedMenu?.path || ''">
+  </app-sub-header>
+  <app-main-layout>
+    <router-outlet></router-outlet>
+  </app-main-layout>
+</div>

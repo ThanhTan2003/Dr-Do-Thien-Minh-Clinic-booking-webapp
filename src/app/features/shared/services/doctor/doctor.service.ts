@@ -76,4 +76,13 @@ export class DoctorService {
   delete(id: string): Observable<string> {
     return this.http.delete<string>(`${this.API_URL}/${id}`);
   }
+
+  /**
+   * Tìm kiếm bác sĩ theo từ khóa và trạng thái
+   */
+  searchDoctorsWithStatus(keyword: string, status: boolean, page = 1, size = 10): Observable<PageResponse<Doctor>> {
+    return this.http.get<PageResponse<Doctor>>(
+      `${this.API_URL}/search/keyword-status?keyword=${keyword}&status=${status}&page=${page}&size=${size}`
+    );
+  }
 }

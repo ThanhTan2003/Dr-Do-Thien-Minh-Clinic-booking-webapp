@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { CommonModule, NgIf, DatePipe } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { Router } from '@angular/router';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faCheckCircle, faFileMedical } from '@fortawesome/free-solid-svg-icons';
@@ -7,7 +7,7 @@ import { faCheckCircle, faFileMedical } from '@fortawesome/free-solid-svg-icons'
 @Component({
   selector: 'app-booking-success',
   standalone: true,
-  imports: [CommonModule, NgIf, DatePipe, FontAwesomeModule],
+  imports: [CommonModule, DatePipe, FontAwesomeModule],
   templateUrl: './success.component.html'
 })
 export class BookingSuccessComponent {

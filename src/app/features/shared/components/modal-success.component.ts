@@ -1,10 +1,9 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { NgIf } from '@angular/common';
 
 @Component({
   selector: 'app-modal-success',
   standalone: true,
-  imports: [NgIf],
+  imports: [],
   templateUrl: './modal-success.component.html'
 })
 export class ModalSuccessComponent {

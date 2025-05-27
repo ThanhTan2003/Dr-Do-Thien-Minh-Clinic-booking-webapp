@@ -8,13 +8,12 @@ import { FormsModule } from '@angular/forms';
 import { Subject, debounceTime, distinctUntilChanged, takeUntil } from 'rxjs';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faMagnifyingGlass, faCaretDown } from '@fortawesome/free-solid-svg-icons';
-import { DoctorServiceComponent } from '../doctor-service/doctor-service.component';
 
 @Component({
   selector: 'app-doctor',
   templateUrl: './doctor.component.html',
   standalone: true,
-  imports: [CommonModule, NgIf, NgFor, FormsModule, ModalDetailComponent, FontAwesomeModule, RouterOutlet, DoctorServiceComponent],
+  imports: [CommonModule, NgIf, NgFor, FormsModule, ModalDetailComponent, FontAwesomeModule, RouterOutlet],
 })
 export class DoctorComponent implements OnInit, OnDestroy {
   doctors: Doctor[] = [];

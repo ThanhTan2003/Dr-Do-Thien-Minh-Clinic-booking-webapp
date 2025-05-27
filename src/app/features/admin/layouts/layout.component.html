@@ -1,0 +1,15 @@
+<div class="flex bg-[#f4f5f7] min-h-screen">
+  <!-- Sidebar -->
+  <div class="w-64 flex-shrink-0">
+    <app-main-header
+      [currentUser]="currentUser"
+      [menuItems]="menuItems"
+      (menuSelect)="onMenuSelect($event)"
+      (logout)="onLogout()">
+    </app-main-header>
+  </div>
+  <!-- Main Content -->
+  <div class="flex-1">
+    <app-main-content></app-main-content>
+  </div>
+</div>

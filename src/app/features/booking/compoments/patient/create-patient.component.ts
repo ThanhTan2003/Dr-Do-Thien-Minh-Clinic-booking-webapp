@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router, RouterOutlet } from '@angular/router';
+import { Router} from '@angular/router';
 import { PatientService } from '../../../shared/services/appointment/patient.service';
 import { PatientRequest } from '../../../models/requests/appointment/patient.request';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
@@ -19,7 +19,6 @@ import { ModalSuccessComponent } from '../../../shared/components/modal-success.
     CommonModule,
     FormsModule,
     FontAwesomeModule,
-    RouterOutlet,
     ModalSuccessComponent,
   ],
 })
