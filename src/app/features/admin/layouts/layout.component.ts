@@ -40,9 +40,9 @@ export class LayoutComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    console.log("Lay thong tin nguoi dung 2");
+    //console.log("Lay thong tin nguoi dung 2");
     this.authService.getUserInfo().subscribe(user => {
-      console.log("Lay thong tin nguoi dung thanh cong");
+      //console.log("Lay thong tin nguoi dung thanh cong");
       if (user) {
         this.currentUser = user;
         this.loadMenuByRole(user.roleId);

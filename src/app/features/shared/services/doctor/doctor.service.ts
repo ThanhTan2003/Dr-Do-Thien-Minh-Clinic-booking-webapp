@@ -4,6 +4,7 @@ import { HttpService } from '../../../../core/services/http.service';
 import { Doctor } from '../../../models/responses/doctor/doctor.model';
 import { DoctorRequest } from '../../../models/requests/doctor/doctor.request';
 import { PageResponse } from '../../../models/responses/page-response.model';
+import { DoctorStatus } from '../../../models/responses/doctor/doctor-status.model';
 
 @Injectable({
   providedIn: 'root'
@@ -80,9 +81,23 @@ export class DoctorService {
   /**
    * Tìm kiếm bác sĩ theo từ khóa và trạng thái
    */
-  searchDoctorsWithStatus(keyword: string, status: boolean, page = 1, size = 10): Observable<PageResponse<Doctor>> {
+  searchDoctorsWithStatusAndCategory(
+    keyword: string, 
+    status: boolean, 
+    serviceCategoryId: string, 
+    page = 1, 
+    size = 10): Observable<PageResponse<Doctor>> {
     return this.http.get<PageResponse<Doctor>>(
-      `${this.API_URL}/search/keyword-status?keyword=${keyword}&status=${status}&page=${page}&size=${size}`
+      `${this.API_URL}/search/keyword-status-category?keyword=${keyword}&status=${status}&serviceCategoryId=${serviceCategoryId}&page=${page}&size=${size}`
+    );
+  }
+
+  /**
+   * Lấy danh sách trạng thái
+   */
+  getAllDoctorStatuses(): Observable<DoctorStatus[]> {
+    return this.http.get<DoctorStatus[]>(
+      `${this.API_URL}/statuses`
     );
   }
 }

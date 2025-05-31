@@ -1,0 +1,10 @@
+<div class="">
+    <select
+  id="pageSize"
+  class="border rounded border-blue-300 p-2"
+  [ngModel]="pageSize"
+  (ngModelChange)="onChange($event)"
+>
+  <option *ngFor="let size of options" [value]="size">{{size}}</option>
+</select>
+</div>

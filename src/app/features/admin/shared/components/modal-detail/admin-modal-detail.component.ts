@@ -2,12 +2,12 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { NgIf } from '@angular/common';
 
 @Component({
-  selector: 'app-modal-detail',
+  selector: 'app-admin-modal-detail',
   standalone: true,
   imports: [NgIf],
-  templateUrl: './modal-detail.component.html'
+  templateUrl: './admin-modal-detail.component.html'
 })
-export class ModalDetailComponent {
+export class AdminModalDetailComponent {
   @Input() title = '';
   @Input() content = '';
   @Output() close = new EventEmitter<void>();

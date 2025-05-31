@@ -2,7 +2,6 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { AuthenticationRequest } from '../../../models/requests/identity/authentication.request';
-// import { CustomerAuthenticationRequest } from '../../../models/requests/identity/customer-authentication.request';
 import { IntrospectRequest } from '../../../models/requests/identity/introspect.request';
 import { LogOutRequest } from '../../../models/requests/identity/logout.request';
 import { RefreshRequest } from '../../../models/requests/identity/refresh.request';

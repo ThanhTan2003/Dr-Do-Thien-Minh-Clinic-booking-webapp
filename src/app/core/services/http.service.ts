@@ -13,18 +13,13 @@ export class HttpService {
   constructor(
     private http: HttpClient,
     private localStorageService: LocalStorageService
-  ) { }
+  ) {
+    console.log('[HttpService] Đã khởi tạo (constructor)');
+   }
 
   private getHeaders(url: string): HttpHeaders {
-    // Không thêm Authorization cho các API public hoặc login
-    if (url.includes('/public') || url.includes('/log-in')) {
-      return new HttpHeaders({
-        'ngrok-skip-browser-warning': 'true'
-      });
-    }
-    const token = this.localStorageService.getAccessToken();
+    // Không thêm Authorization ở đây nữa!
     return new HttpHeaders({
-      ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
       'ngrok-skip-browser-warning': 'true'
     });
   }

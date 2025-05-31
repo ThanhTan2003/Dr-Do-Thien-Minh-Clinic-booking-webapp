@@ -1,14 +1,18 @@
 import { ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
 import { provideRouter } from '@angular/router';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, HTTP_INTERCEPTORS, withInterceptorsFromDi } from '@angular/common/http';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideToastr } from 'ngx-toastr';
 import { routes } from './app.routes';
+import { AuthInterceptor } from './interceptor/interceptor';
+
+console.log('[app.config.ts] Đang đăng ký AuthInterceptor');
 
 export const appConfig: ApplicationConfig = {
-  providers: [provideZoneChangeDetection({ eventCoalescing: true }), 
+  providers: [
+    provideZoneChangeDetection({ eventCoalescing: true }), 
     provideRouter(routes), 
-    provideHttpClient(),
+    provideHttpClient(withInterceptorsFromDi()),
     provideAnimations(),
     provideToastr({
       positionClass: 'toast-top-center', // top-center
@@ -20,5 +24,7 @@ export const appConfig: ApplicationConfig = {
       enableHtml: true, // Cho phép HTML
       toastClass: 'ngx-toastr colored-toast', // Tùy chỉnh giao diện
     }),
-   ]
+    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
+    
+  ]
 };

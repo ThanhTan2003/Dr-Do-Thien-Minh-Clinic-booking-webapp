@@ -1,0 +1,32 @@
+<div class="fixed inset-0 flex items-center justify-center bg-black/75 z-50">
+    <div class="bg-white rounded-lg shadow-xl w-[400px] p-6">
+        <!-- Icon thành công -->
+        <!-- <div class="flex justify-center mb-4">
+            <div class="w-16 h-16 bg-green-50 rounded-full flex items-center justify-center">
+                <svg class="w-10 h-10 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+            </div>
+        </div> -->
+
+        <!-- Tiêu đề -->
+        <div class="text-center mb-4">
+            <h1 class="text-xl font-bold text-gray-800 mb-2">{{ title }}</h1>
+            <div class="w-12 h-1 bg-gradient-to-r from-green-400 to-green-600 rounded-full mx-auto"></div>
+        </div>
+
+        <!-- Nội dung -->
+        <p class="text-gray-600 text-center text-base mb-6">{{ content }}</p>
+
+        <!-- Nút đóng -->
+        <div class="flex justify-center">
+            <button (click)="close.emit()" 
+                class="px-6 py-2 bg-gradient-to-r from-green-500 to-green-600 text-white font-semibold rounded-lg 
+                hover:from-green-600 hover:to-green-700 transition-all duration-200 shadow-md hover:shadow-lg">
+                Đóng
+            </button>
+        </div>
+    </div>
+</div>
+  

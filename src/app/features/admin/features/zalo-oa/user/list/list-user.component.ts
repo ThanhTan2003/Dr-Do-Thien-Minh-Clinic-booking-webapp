@@ -6,7 +6,7 @@ import { ZaloUserService } from '../../../../../shared/services/zalo_oa/user/zal
 import { ZaloUserResponse } from '../../../../../models/responses/zalo_oa/user/zalo-user-response.model';
 import { PageResponse } from '../../../../../models/responses/page-response.model';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { PaginationComponent } from '../../../../../shared/components/pagination/pagination.component';
+import { PaginationComponent } from '../../../../shared/components/pagination/pagination.component';
 import { TagService } from '../../../../../shared/services/zalo_oa/user/tag.service';
 import { TagResponse } from '../../../../../models/responses/zalo_oa/user/tag-response.model';
 import { 

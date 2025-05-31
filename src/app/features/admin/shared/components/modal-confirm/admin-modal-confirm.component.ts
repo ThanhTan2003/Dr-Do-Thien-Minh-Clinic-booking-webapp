@@ -2,12 +2,12 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { NgIf } from '@angular/common';
 
 @Component({
-  selector: 'app-modal-confirm',
+  selector: 'app-admin-modal-confirm',
   standalone: true,
   imports: [NgIf],
-  templateUrl: './modal-confirm.component.html'
+  templateUrl: './admin-modal-confirm.component.html'
 })
-export class ModalConfirmComponent {
+export class AdminModalConfirmComponent {
   @Input() title = '';
   @Input() content = '';
   @Output() confirm = new EventEmitter<void>();

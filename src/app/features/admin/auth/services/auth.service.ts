@@ -7,7 +7,6 @@ import { AuthenticationRequest } from '../../../models/requests/identity/authent
 import { AuthenticationResponse } from '../../../models/responses/identity/authentication.response';
 import { UserResponse } from '../../../models/responses/identity/user.response';
 import { LocalStorageService } from '../../../../core/services/local-storage.service';
-import { TokenRefreshService } from './token-refresh.service';
 
 @Injectable({
   providedIn: 'root'
@@ -18,18 +17,15 @@ export class AuthService {
     private userService: UserService,
     private router: Router,
     private localStorageService: LocalStorageService,
-    private tokenRefreshService: TokenRefreshService
   ) {}
 
   login(request: AuthenticationRequest): Observable<AuthenticationResponse> {
-    console.log("Dang nhap");
+    //console.log("Dang nhap");
     return this.authService.logIn(request).pipe(
       tap(response => {
         if (response.authenticated) {
           this.localStorageService.setAccessToken(response.accessToken);
           this.localStorageService.setRefreshToken(response.refreshToken);
-          // Bắt đầu timer refresh token sau khi đăng nhập thành công
-          this.tokenRefreshService.startRefreshTokenTimer();
         }
       })
     );
@@ -51,8 +47,6 @@ export class AuthService {
   private clearAuthData(): void {
     this.localStorageService.removeAccessToken();
     this.localStorageService.removeRefreshToken();
-    // Dừng timer refresh token khi đăng xuất
-    this.tokenRefreshService.stopRefreshTokenTimer();
   }
 
   isAuthenticated(): boolean {
@@ -67,9 +61,25 @@ export class AuthService {
   // }
 
   getUserInfo(): Observable<UserResponse> {
-    console.log("Lay thong tin nguoi dung 1");
+    //console.log("Lay thong tin nguoi dung 1");
     return this.userService.getInfo().pipe(
       tap(user => console.log("user: ", user.roleName))
+    );
+  }
+
+  refreshToken(): Observable<AuthenticationResponse> {
+    console.log("Refresh token...");
+    const refreshToken = this.localStorageService.getRefreshToken();
+    if (!refreshToken) {
+      throw new Error('No refresh token');
+    }
+    return this.authService.refresh({ token: refreshToken }).pipe(
+      tap(response => {
+        if (response.authenticated) {
+          this.localStorageService.setAccessToken(response.accessToken);
+          this.localStorageService.setRefreshToken(response.refreshToken);
+        }
+      })
     );
   }
 }

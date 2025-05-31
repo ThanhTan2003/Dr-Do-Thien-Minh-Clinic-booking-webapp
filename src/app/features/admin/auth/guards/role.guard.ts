@@ -15,13 +15,13 @@ export class RoleGuard implements CanActivate {
 
   async canActivate(route: ActivatedRouteSnapshot): Promise<boolean> {
     const allowedRoles = route.data['roles'] as string[];
-    console.log("allowedRoles: ", allowedRoles);
+    //console.log("allowedRoles: ", allowedRoles);
     if (!this.authService.isAuthenticated()) {
       this.router.navigate(['/admin/login']);
       return false;
     }
     try {
-      console.log("Kiem tra vai tro nguoi dung ở RoleGuard");
+      //console.log("Kiem tra vai tro nguoi dung ở RoleGuard");
       const user = await firstValueFrom(this.authService.getUserInfo());
       if (!user || !allowedRoles.includes(user.roleId)) {
         this.router.navigate(['/admin/home']);
@@ -29,7 +29,7 @@ export class RoleGuard implements CanActivate {
       }
       return true;
     } catch {
-      console.log("Khong tim thay user");
+      //console.log("Khong tim thay user");
       this.router.navigate(['/admin/login']);
       return false;
     }

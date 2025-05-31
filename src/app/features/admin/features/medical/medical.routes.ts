@@ -10,7 +10,7 @@ import { firstValueFrom } from 'rxjs';
 export const medicalRoutes: Routes = [
   {
     path: '',
-    redirectTo: 'nhom-dich-vu',
+    redirectTo: 'phong-kham',
     pathMatch: 'full'
   },
   {
@@ -89,4 +89,4 @@ export const medicalRoutes: Routes = [
     canActivate: [RoleGuard],
     data: { roles: ADMIN_STAFF_ROLES }
   }
-]; 
+];

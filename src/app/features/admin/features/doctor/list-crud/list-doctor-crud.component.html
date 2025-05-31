@@ -1,1 +1,105 @@
-<p>List Doctor Crud works!</p> 
+<router-outlet #childOutlet="outlet"></router-outlet>
+
+<div *ngIf="!childOutlet.isActivated">
+  <div class="container mx-auto">
+    <!-- Create Doctor Modal -->
+    <app-create-doctor
+      *ngIf="showCreateModal"
+      (doctorCreated)="onDoctorCreated()"
+    ></app-create-doctor>
+  
+    <!-- Filter Section -->
+    <div class="flex justify-between items-center mb-4">
+      <div class="flex items-center">
+        <button class="bg-sky-600 text-white py-2 px-4 rounded font-bold hover:bg-sky-700" (click)="addDoctor()">
+          Thêm bác sĩ mới &nbsp;<fa-icon [icon]="faPlus"></fa-icon>
+        </button>
+        <!-- <button class="bg-white text-sky-600 py-2 px-4 rounded border border-sky-600 font-bold hover:bg-sky-100 ml-2"
+          (click)="refreshList()">
+          Làm mới danh sách &nbsp;<fa-icon [icon]="faRotate"></fa-icon>
+        </button> -->
+        <app-page-size-selector
+          class="ml-4"
+          [pageSize]="pageSize"
+          [options]="pageSizeOptions"
+          (pageSizeChange)="onPageSizeChange($event)">
+        </app-page-size-selector>
+      </div>
+  
+      <div class="flex items-center space-x-2">
+        <select class="border p-2 rounded border-blue-300 text-sky-900 font-semibold pr-5 pl-5"
+          [(ngModel)]="selectedCategory" (change)="handleCategoryChange()">
+          <option value="">Tất cả chuyên môn</option>
+          <option *ngFor="let category of categories" [value]="category.id">{{category.categoryName}}</option>
+        </select>
+        <select class="border p-2 rounded border-blue-300 text-sky-900 font-semibold pr-5 pl-5"
+          [(ngModel)]="selectedStatus" (change)="handleStatusChange()">
+          <option value="">Tất cả trạng thái</option>
+          <option *ngFor="let status of statuses" [value]="status.status">{{status.description}}</option>
+        </select>
+        <input type="text" placeholder="Nhập từ khóa tìm kiếm" [(ngModel)]="keyword" (keyup.enter)="handleSearch()"
+          class="border p-2 rounded w-64 border-blue-300 text-gray-600" />
+        <button type="button" (click)="handleSearch()" class="bg-sky-600 text-white py-2 px-4 rounded hover:bg-sky-700">
+          <fa-icon [icon]="faMagnifyingGlass"></fa-icon>
+        </button>
+      </div>
+    </div>
+  
+    <!-- Data Table -->
+    <div class="overflow-x-auto">
+      <table class="w-full border-collapse border border-gray-200 shadow-lg rounded-md">
+        <thead>
+          <tr class="bg-sky-600 text-white">
+            <th class="border p-2 text-center">STT</th>
+            <th class="border p-2 text-left">Họ tên bác sĩ</th>
+            <th class="border p-2 text-left">Giới tính</th>
+            <th class="border p-2 text-left">Số điện thoại</th>
+            <th class="border p-2 text-left">Trạng thái</th>
+            <th class="border p-2 text-left">Chuyên môn</th>
+            <th class="border p-2 text-left"></th>
+          </tr>
+        </thead>
+        <tbody class="border border-gray-400">
+          <tr *ngIf="doctors.length === 0">
+            <td colspan="6" class="text-center p-4 border-gray-400">Không có dữ liệu</td>
+          </tr>
+          <tr *ngFor="let doctor of doctors; let i = index">
+            <td class="border border-gray-400 p-2 text-center">{{ (currentPage - 1) * pageSize + i + 1 }}</td>
+            <td class="border border-gray-400 p-2 text-left font-semibold text-sky-900">{{ doctor.name }}</td>
+            <td class="border border-gray-400 p-2 text-left">{{ doctor.gender }}</td>
+            <td class="border border-gray-400 p-2 text-left">{{ doctor.phone }}</td>
+            <td class="border border-gray-400 p-2 text-left font-semibold"
+            [ngClass]="{
+              'text-green-700': removeVietnameseTones(doctor.statusName) === 'Dang lam viec',
+              'text-red-700': removeVietnameseTones(doctor.statusName) === 'Ngung cong tac',
+              'text-orange-700': removeVietnameseTones(doctor.statusName) === 'Ngung lam viec'
+            }">
+              {{ doctor.statusName }}
+            </td>
+            <td class="border border-gray-400 p-2 text-left">
+              <div *ngIf="doctor.nameOfServiceCategory.length > 0" class="flex flex-wrap space-x-2 justify-start">
+                <span
+                  *ngFor="let tag of doctor.nameOfServiceCategory"
+                  class="bg-blue-50 text-sky-800 px-3 py-1 rounded-sm font-medium mb-1"
+                  style="margin-left: 5px; white-space: nowrap"
+                >
+                  {{tag}}
+                </span>
+              </div>
+            </td>
+            <td class="border border-gray-400 p-2 text-center justify-center">
+              <button
+                (click)="goToEditDoctor(doctor.id)"
+                class="bg-white text-sky-600 px-3 py-1 rounded border border-sky-600 hover:bg-sky-700 hover:text-white font-semibold"
+              >
+                Chi tiết &nbsp;<fa-icon [icon]="faPenToSquare"></fa-icon>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <app-pagination [totalElements]="totalElements" [currentPage]="currentPage" [totalPages]="totalPages"
+      (pageChange)="onPageChange($event)"></app-pagination>
+  </div>
+</div>

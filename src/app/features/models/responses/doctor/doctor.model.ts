@@ -8,6 +8,6 @@ export interface Doctor {
     status: boolean;
     statusName: string;
     image: string;
-    nameOfServiceCategory: string;
+    nameOfServiceCategory: string[];
   }
   

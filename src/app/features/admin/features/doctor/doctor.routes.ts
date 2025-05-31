@@ -34,7 +34,13 @@ export const doctorRoutes: Routes = [
         }
         return false;
       }
-    }
+    },
+    children: [
+      {
+        path: ':doctorId',
+        loadComponent: () => import('./edit/edit-doctor.component').then(m => m.EditDoctorComponent)
+      }
+    ]
   },
   {
     path: 'danh-sach/xem',
@@ -42,12 +48,12 @@ export const doctorRoutes: Routes = [
     canActivate: [RoleGuard],
     data: { roles: STAFF_ROLES }
   },
-  {
-    path: 'danh-sach/:doctorId',
-    loadComponent: () => import('./detail/detail-doctor.component').then(m => m.DetailDoctorComponent),
-    canActivate: [RoleGuard],
-    data: { roles: ADMIN_STAFF_ROLES }
-  },
+  // {
+  //   path: 'danh-sach/:doctorId',
+  //   loadComponent: () => import('./detail/detail-doctor.component').then(m => m.DetailDoctorComponent),
+  //   canActivate: [RoleGuard],
+  //   data: { roles: ADMIN_STAFF_ROLES }
+  // },
   {
     path: 'lich-kham',
     loadComponent: () => import('./list-view/list-doctor-view.component').then(m => m.ListDoctorViewComponent),

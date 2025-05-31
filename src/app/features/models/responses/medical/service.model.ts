@@ -8,5 +8,6 @@ export interface Service {
   serviceCategoryId: string;
   status: boolean;
   image: string;
+  numberOfDoctors: number;
   serviceCategoryResponse: ServiceCategory;
 }
