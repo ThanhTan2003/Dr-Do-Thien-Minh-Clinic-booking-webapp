@@ -4,12 +4,13 @@ import { HttpService } from '../../../../core/services/http.service';
 import { DoctorService } from '../../../models/responses/doctor/doctor-service.model';
 import { DoctorServiceRequest } from '../../../models/requests/doctor/doctor-service.request';
 import { PageResponse } from '../../../models/responses/page-response.model';
+import { DoctorServiceStatus } from '../../../models/responses/doctor/doctor-service-status.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class DoctorServiceService {
-  constructor(private http: HttpService) {}
+  constructor(private http: HttpService) { }
 
   private readonly API_URL = '/api/v1/appointment/doctor-service';
 
@@ -93,5 +94,31 @@ export class DoctorServiceService {
     return this.http.get<PageResponse<DoctorService>>(
       `${this.API_URL}/status/${status}?page=${page}&size=${size}`
     );
+  }
+
+  /**
+   * Lấy danh sách tất cả các trạng thái dịch vụ bác sĩ
+   */
+  getAllDoctorServiceStatuses(): Observable<DoctorServiceStatus[]> {
+    return this.http.get<DoctorServiceStatus[]>(`${this.API_URL}/statuses`);
+  }
+
+  /**
+   * Tìm kiếm dịch vụ theo bác sĩ + từ khoá + trạng thái + serviceCategoryId (phân trang)
+   */
+  searchByDoctorAndServiceCategory(
+    keyword = '',
+    doctorId: string,
+    status: boolean | undefined,
+    serviceCategoryId = '',
+    page = 1,
+    size = 10
+  ): Observable<PageResponse<DoctorService>> {
+    let url = `${this.API_URL}/search-by-doctor-and-category?keyword=${keyword}&doctorId=${doctorId}`;
+    if (status !== undefined) {
+      url += `&status=${status}`;
+    }
+    url += `&serviceCategoryId=${serviceCategoryId}&page=${page}&size=${size}`;
+    return this.http.get<PageResponse<DoctorService>>(url);
   }
 }

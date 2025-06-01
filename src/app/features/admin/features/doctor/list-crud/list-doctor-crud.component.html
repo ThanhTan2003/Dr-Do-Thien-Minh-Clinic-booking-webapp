@@ -14,10 +14,12 @@
         <button class="bg-sky-600 text-white py-2 px-4 rounded font-bold hover:bg-sky-700" (click)="addDoctor()">
           Thêm bác sĩ mới &nbsp;<fa-icon [icon]="faPlus"></fa-icon>
         </button>
-        <!-- <button class="bg-white text-sky-600 py-2 px-4 rounded border border-sky-600 font-bold hover:bg-sky-100 ml-2"
-          (click)="refreshList()">
-          Làm mới danh sách &nbsp;<fa-icon [icon]="faRotate"></fa-icon>
-        </button> -->
+        <button class="bg-white text-sky-600 py-2 px-4 rounded border border-sky-600 font-bold hover:bg-sky-100 ml-2"
+          (click)="refreshList()"
+          title="Làm mới danh sách"
+          >
+          <fa-icon [icon]="faRotate"></fa-icon>
+        </button>
         <app-page-size-selector
           class="ml-4"
           [pageSize]="pageSize"
@@ -51,6 +53,7 @@
         <thead>
           <tr class="bg-sky-600 text-white">
             <th class="border p-2 text-center">STT</th>
+            <th class="border p-2 text-left">Mã bác sĩ</th>
             <th class="border p-2 text-left">Họ tên bác sĩ</th>
             <th class="border p-2 text-left">Giới tính</th>
             <th class="border p-2 text-left">Số điện thoại</th>
@@ -60,11 +63,20 @@
           </tr>
         </thead>
         <tbody class="border border-gray-400">
-          <tr *ngIf="doctors.length === 0">
-            <td colspan="6" class="text-center p-4 border-gray-400">Không có dữ liệu</td>
+          <tr *ngIf="loading">
+            <td colspan="8" class="text-center p-4 border-gray-400">
+              <div class="flex justify-center items-center">
+                <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-sky-600"></div>
+                <span class="ml-2">Đang tải dữ liệu...</span>
+              </div>
+            </td>
+          </tr>
+          <tr *ngIf="!loading && doctors.length === 0">
+            <td colspan="8" class="text-center p-4 border-gray-400">Không có dữ liệu</td>
           </tr>
           <tr *ngFor="let doctor of doctors; let i = index">
             <td class="border border-gray-400 p-2 text-center">{{ (currentPage - 1) * pageSize + i + 1 }}</td>
+            <td class="border border-gray-400 p-2 text-left">{{ doctor.id }}</td>
             <td class="border border-gray-400 p-2 text-left font-semibold text-sky-900">{{ doctor.name }}</td>
             <td class="border border-gray-400 p-2 text-left">{{ doctor.gender }}</td>
             <td class="border border-gray-400 p-2 text-left">{{ doctor.phone }}</td>
@@ -99,7 +111,9 @@
         </tbody>
       </table>
     </div>
-    <app-pagination [totalElements]="totalElements" [currentPage]="currentPage" [totalPages]="totalPages"
+    <div class="mt-4">
+      <app-pagination [totalElements]="totalElements" [currentPage]="currentPage" [totalPages]="totalPages"
       (pageChange)="onPageChange($event)"></app-pagination>
+    </div>
   </div>
 </div>

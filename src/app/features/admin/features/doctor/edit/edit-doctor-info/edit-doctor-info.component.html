@@ -5,7 +5,7 @@
     </div>
 
     <!-- Nội dung -->
-    <div class="flex flex-row gap-6 pt-8 pb-4 items-start" *ngIf="doctor">
+    <div class="flex flex-row gap-6 pt-4 pb-4 items-start pr-2" *ngIf="doctor">
         <!-- Ảnh đại diện -->
         <div class="flex-shrink-0 flex justify-center w-1/5">
             <img [src]="getDoctorImage(doctor)" alt="Avatar"
@@ -18,8 +18,8 @@
                 <!-- Cột trái -->
                 <div>
                     <div class="flex mb-2 items-center">
-                        <span class="font-bold min-w-[120px]">Zalo User ID:</span>
-                        <input type="text" [(ngModel)]="doctor.zaloUid"
+                        <span class="font-bold min-w-[120px]">Mã Bác sĩ:</span>
+                        <input type="text" [(ngModel)]="doctor.id" disabled 
                             class="ml-2 p-1 border border-sky-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 w-full" />
                     </div>
                     <div class="flex mb-2 items-center">
@@ -41,6 +41,11 @@
                 <!-- Cột phải -->
                 <div>
                     <div class="flex mb-2 items-center">
+                        <span class="font-bold min-w-[120px]">Zalo User ID:</span>
+                        <input type="text" [(ngModel)]="doctor.zaloUid"
+                            class="ml-2 p-1 border border-sky-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 w-full" />
+                    </div>
+                    <div class="flex mb-2 items-center">
                         <span class="font-bold min-w-[120px]">Giới tính:</span>
                         <select [(ngModel)]="doctor.gender"
                             class="ml-2 p-1 border border-sky-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 w-full">
@@ -52,7 +57,7 @@
                         <input type="text" [(ngModel)]="doctor.phone"
                             class="ml-2 p-1 border border-sky-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 w-full" />
                     </div>
-                    <div class="flex mb-2 items-center">
+                    <!-- <div class="flex mb-2 items-center">
                         <span class="font-bold min-w-[120px]">Chuyên môn:</span>
                         <span class="ml-2 flex flex-wrap gap-2">
                             <span *ngFor="let category of doctor.nameOfServiceCategory"
@@ -60,7 +65,7 @@
                                 {{category}}
                             </span>
                         </span>
-                    </div>
+                    </div> -->
                 </div>
             </div>
             <div class="flex mb-2 items-start">
@@ -73,33 +78,39 @@
     </div>
 
     <!-- Nút Cập nhật và Xóa thông tin -->
-    <div class="flex-shrink-0 flex justify-end items-end mb-2">
-        <div class="flex gap-3">
-            <button (click)="onUpdate()" 
-                class="bg-sky-600 text-white font-semibold px-4 py-2 rounded-md hover:bg-sky-700 transition">
-                Cập nhật thông tin &nbsp;<fa-icon [icon]="faPen"></fa-icon>
-            </button>
-            <button (click)="onDelete()"
-                class="ml-2 bg-white text-orange-800 border border-orange-800 font-semibold px-4 py-2 rounded-md hover:bg-orange-100 transition">
-                Xóa thông tin &nbsp;<fa-icon [icon]="faX"></fa-icon>
-            </button>
+    <div class="flex mb-2  pr-2" *ngIf="doctor">
+        <!-- Bên trái: Nội dung aaa, căn trái -->
+        <div class="w-1/2 flex items-center justify-start pl-4">
+            <span class="font-bold">Chuyên môn:</span>
+            <span class="ml-2 flex flex-wrap gap-2">
+                <span *ngFor="let category of doctor.nameOfServiceCategory"
+                    class="bg-blue-50 text-sky-600 px-2 py-1 font-medium shadow-md hover:shadow-lg transition">
+                    {{category}}
+                </span>
+            </span>
+        </div>
+        <!-- Bên phải: Hai nút, căn phải -->
+        <div class="w-1/2 flex items-center justify-end">
+            <div class="flex gap-3">
+                <button (click)="onUpdate()" 
+                    class="bg-sky-600 text-white font-semibold px-4 py-2 rounded-md hover:bg-sky-700 transition">
+                    Cập nhật thông tin &nbsp;<fa-icon [icon]="faPen"></fa-icon>
+                </button>
+                <button (click)="onDelete()"
+                    class="bg-white text-orange-800 border border-orange-800 font-semibold px-4 py-2 rounded-md hover:bg-orange-100 transition">
+                    Xóa thông tin &nbsp;<fa-icon [icon]="faX"></fa-icon>
+                </button>
+            </div>
         </div>
     </div>
 </div>
 
-<!-- Modal xác nhận xóa -->
-<app-admin-modal-confirm
-    *ngIf="showConfirmModal"
-    [title]="modalTitle"
-    [content]="modalContent"
-    (confirm)="onConfirmDelete()"
-    (cancel)="onCancelDelete()">
+<!-- Confirmation Modal -->
+<app-admin-modal-confirm *ngIf="showConfirmModal" [title]="modalTitle" [content]="modalContent"
+    (confirm)="onConfirmUpdate()" (cancel)="onCancelUpdate()">
 </app-admin-modal-confirm>
 
-<!-- Modal thông báo thành công -->
-<app-admin-modal-success
-    *ngIf="showSuccessModal"
-    [title]="modalTitle"
-    [content]="successMessage"
-    (close)="onSuccessModalClose()">
-</app-admin-modal-success>
+<!-- Confirmation Modal Delete -->
+<app-admin-modal-confirm-delete *ngIf="showConfirmModalDelete" [title]="modalTitleDelete" [content]="modalContentDelete"
+    (confirm)="onConfirmDelete()" (cancel)="onCancelDelete()">
+</app-admin-modal-confirm-delete>

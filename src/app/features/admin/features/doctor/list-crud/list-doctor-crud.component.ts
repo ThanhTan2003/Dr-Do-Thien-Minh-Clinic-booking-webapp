@@ -90,6 +90,8 @@ export class ListDoctorCrudComponent implements OnInit {
   loadStatuses(): void {
     this.doctorService.getAllDoctorStatuses().subscribe({
       next: (statuses: DoctorStatus[]) => {
+        console.log("list-doctor-crud.component loadStatuses....................");
+        console.log(statuses);
         this.statuses = statuses;
       },
       error: (err: any) => {

@@ -1,92 +1,91 @@
-<div class="fixed inset-0 flex items-center justify-center bg-black/75 z-50">
-  <div class="bg-white rounded-lg shadow-lg w-3/5 p-6 max-h-[90vh] overflow-y-auto">
-    <!-- Tiêu đề -->
-    <div class="text-center pb-2">
-      <h1
-        class="text-2xl font-bold relative"
-        style="
-          background: linear-gradient(to right, #0078B7, #00A3E0);
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
-        "
-      >
-        THÊM BÁC SĨ MỚI
-      </h1>
-      <div class="mt-2 w-32 mx-auto h-1 bg-gradient-to-r from-cyan-600 to-blue-800 rounded-full mb-4"></div>
-    </div>
+<div class="fixed inset-0 flex items-center justify-center bg-black/80 z-50">
+    <div class="bg-white rounded-xl shadow-xl w-1/2">
+        <!-- Header -->
+        <div class="bg-sky-600 text-white p-2 rounded-t-xl flex justify-between items-center">
+            <h2 class="text-lg font-bold pl-2">
+                <fa-icon [icon]="faUserPlus"></fa-icon>&nbsp; THÊM BÁC SĨ MỚI
+            </h2>
+            <button
+                (click)="goBack()"
+                class="text-white bg-transparent hover:bg-red-500 rounded-full p-1 flex items-center justify-center"
+                style="width: 30px; height: 30px;">
+                ✕
+            </button>
+        </div>
 
-    <!-- Thông báo lưu ý -->
-    <div class="bg-yellow-50 p-4 border border-yellow-300 rounded-md mb-4">
-      <div class="text-sm text-gray-600 text-justify">
-        <b><fa-icon [icon]="faCircleInfo"></fa-icon> Lưu ý:</b> Vui lòng điền đầy đủ thông tin bác sĩ. Các thông tin này sẽ được hiển thị trên hệ thống đặt lịch khám bệnh.
-      </div>
-    </div>
+        <!-- Content -->
+        <div class="p-6">
+            <!-- Thông báo lưu ý -->
+            <div class="bg-yellow-50 p-4 border border-yellow-300 rounded-md mb-6">
+                <div class="text-sm text-gray-600 text-justify">
+                    <b><fa-icon [icon]="faCircleInfo"></fa-icon> Lưu ý:</b> Vui lòng điền đầy đủ thông tin bác sĩ. Các thông tin này sẽ được hiển thị trên hệ thống đặt lịch khám bệnh.
+                </div>
+            </div>
 
-    <!-- Form nhập thông tin -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-      <div>
-        <label class="block text-sm font-semibold text-sky-800">Họ tên <span class="text-red-800">(*)</span></label>
-        <input
-          type="text"
-          [(ngModel)]="formData.name"
-          name="name"
-          class="w-full p-1 border border-gray-300 rounded-md text-gray-700 mt-1"
-        />
-      </div>
-      <div>
-        <label class="block text-sm font-semibold text-sky-800">Giới tính <span class="text-red-800">(*)</span></label>
-        <select
-          [(ngModel)]="formData.gender"
-          name="gender"
-          class="border border-gray-300 p-1 rounded-lg w-full mt-1"
-        >
-          <option value="Nam">Nam</option>
-          <option value="Nữ">Nữ</option>
-        </select>
-      </div>
-      <div>
-        <label class="block text-sm font-semibold text-sky-800">Số điện thoại <span class="text-red-800">(*)</span></label>
-        <input
-          type="text"
-          [(ngModel)]="formData.phone"
-          name="phone"
-          class="w-full p-1 border border-gray-300 rounded-md text-gray-700 mt-1"
-        />
-      </div>
-      <div>
-        <label class="block text-sm font-semibold text-sky-800">Zalo UID</label>
-        <input
-          type="text"
-          [(ngModel)]="formData.zaloUid"
-          name="zaloUid"
-          class="w-full p-1 border border-gray-300 rounded-md text-gray-700 mt-1"
-        />
-      </div>
-      <div class="sm:col-span-2">
-        <label class="block text-sm font-semibold text-sky-800">Mô tả <span class="text-red-800">(*)</span></label>
-        <textarea
-          [(ngModel)]="formData.description"
-          name="description"
-          rows="3"
-          class="w-full p-1 border border-gray-300 rounded-md text-gray-700 mt-1"
-        ></textarea>
-      </div>
-    </div>
+            <!-- Form nhập thông tin -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-semibold text-sky-800">Họ tên <span class="text-red-800">(*)</span></label>
+                    <input
+                        type="text"
+                        [(ngModel)]="formData.name"
+                        name="name"
+                        class="w-full p-2 border border-sky-300 rounded-md text-gray-700 mt-1 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-sky-800">Giới tính <span class="text-red-800">(*)</span></label>
+                    <select
+                        [(ngModel)]="formData.gender"
+                        name="gender"
+                        class="w-full p-2 border border-sky-300 rounded-md text-gray-700 mt-1 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    >
+                        <option value="Nam">Nam</option>
+                        <option value="Nữ">Nữ</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-sky-800">Số điện thoại <span class="text-red-800">(*)</span></label>
+                    <input
+                        type="text"
+                        [(ngModel)]="formData.phone"
+                        name="phone"
+                        class="w-full p-2 border border-sky-300 rounded-md text-gray-700 mt-1 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-sky-800">Zalo UID</label>
+                    <input
+                        type="text"
+                        [(ngModel)]="formData.zaloUid"
+                        name="zaloUid"
+                        class="w-full p-2 border border-sky-300 rounded-md text-gray-700 mt-1 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                </div>
+                <div class="sm:col-span-2">
+                    <label class="block text-sm font-semibold text-sky-800">Mô tả <span class="text-red-800">(*)</span></label>
+                    <textarea
+                        [(ngModel)]="formData.description"
+                        name="description"
+                        rows="3"
+                        class="w-full p-2 border border-sky-300 rounded-md text-gray-700 mt-1 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    ></textarea>
+                </div>
+            </div>
+        </div>
 
-    <!-- Nút thêm và hủy -->
-    <div class="flex justify-end space-x-4 mt-6">
-      <button
-        (click)="goBack()"
-        class="px-4 py-2 border-2 border-cyan-700 text-cyan-700 font-bold rounded-lg bg-white hover:bg-cyan-50 transition duration-300"
-      >
-        Hủy &nbsp;<fa-icon [icon]="faXmark"></fa-icon>
-      </button>
-      <button
-        (click)="handleSubmit()"
-        class="px-4 py-2 bg-gradient-to-r from-cyan-600 to-sky-700 text-white font-semibold rounded-lg hover:from-cyan-700 hover:to-sky-800 transition duration-300"
-      >
-        Thêm &nbsp;<fa-icon [icon]="faUserPlus"></fa-icon>
-      </button>
+        <!-- Footer -->
+        <div class="flex justify-end gap-4 pb-6 pr-6">
+            <button
+                (click)="goBack()"
+                class="bg-white text-sky-600 border border-sky-600 font-semibold py-2 px-8 rounded-lg hover:bg-gray-100 transition duration-200">
+                Hủy &nbsp;<fa-icon [icon]="faXmark"></fa-icon>
+            </button>
+            <button
+                (click)="handleSubmit()"
+                class="bg-sky-600 text-white font-semibold py-2 px-8 rounded-lg hover:bg-blue-600 transition duration-200">
+                Thêm &nbsp;<fa-icon [icon]="faUserPlus"></fa-icon>
+            </button>
+        </div>
     </div>
-  </div>
 </div> 

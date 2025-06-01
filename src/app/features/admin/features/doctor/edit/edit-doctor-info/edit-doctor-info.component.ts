@@ -12,6 +12,7 @@ import { DoctorStatus } from '../../../../../models/responses/doctor/doctor-stat
 import { DoctorRequest } from '../../../../../models/requests/doctor/doctor.request';
 import { ToastrService } from 'ngx-toastr';
 import { AdminModalConfirmComponent } from '../../../../shared/components/modal-confirm/admin-modal-confirm.component';
+import { AdminModalConfirmDeleteComponent } from '../../../../shared/components/modal-confirm-delete/admin-modal-confirm-delete.component';
 import { AdminModalSuccessComponent } from '../../../../shared/components/modal-success/admin-modal-success.component';
 import { 
   faX, faPen, faUserNurse
@@ -27,6 +28,7 @@ import {
     FontAwesomeModule, 
     RouterOutlet,
     AdminModalConfirmComponent,
+    AdminModalConfirmDeleteComponent,
     AdminModalSuccessComponent
   ],
 })
@@ -35,11 +37,12 @@ export class EditDoctorInfoComponent implements OnInit, OnDestroy {
   doctor: Doctor | null = null;
   doctorStatuses: DoctorStatus[] = [];
   genders: string[] = ['Nam', 'Nữ'];
-  showConfirmModal = false;
-  showSuccessModal = false;
-  successMessage = '';
-  modalTitle = '';
-  modalContent = '';
+  showConfirmModal: boolean = false;
+  showConfirmModalDelete: boolean = false;
+  modalTitle: string = '';
+  modalContent: string = '';
+  modalTitleDelete: string = '';
+  modalContentDelete: string = '';
   private destroy$ = new Subject<void>();
 
   faX = faX;
@@ -100,8 +103,14 @@ export class EditDoctorInfoComponent implements OnInit, OnDestroy {
   }
 
   onUpdate(): void {
-    if (!this.doctor) return;
+    this.modalTitle = 'Xác nhận cập nhật';
+    this.modalContent = 'Bạn có chắc chắn muốn cập nhật thông tin bác sĩ?';
+    this.showConfirmModal = true;
+  }
 
+  onConfirmUpdate(): void {
+    if (!this.doctor) return;
+    
     const request: DoctorRequest = {
       zaloUid: this.doctor.zaloUid,
       name: this.doctor.name,
@@ -114,21 +123,25 @@ export class EditDoctorInfoComponent implements OnInit, OnDestroy {
 
     this.doctorService.update(this.doctor.id, request).subscribe({
       next: () => {
-        this.modalTitle = 'Thông báo';
-        this.successMessage = 'Cập nhật thông tin bác sĩ thành công';
-        this.showSuccessModal = true;
+        this.showConfirmModal = false;
+        this.toastr.success('Cập nhật thông tin bác sĩ thành công', 'Thông báo');
       },
-      error: (error) => {
-        this.toastr.error('Không thể cập nhật thông tin bác sĩ', 'Lỗi');
+      error: (error: any) => {
         console.error('Error updating doctor:', error);
+        this.showConfirmModal = false;
+        this.toastr.error('Không thể cập nhật thông tin bác sĩ', 'Lỗi');
       }
     });
   }
 
+  onCancelUpdate(): void {
+    this.showConfirmModal = false;
+  }
+
   onDelete(): void {
-    this.modalTitle = 'Xác nhận xóa';
-    this.modalContent = 'Bạn có chắc chắn muốn xóa thông tin bác sĩ này không?';
-    this.showConfirmModal = true;
+    this.modalTitleDelete = 'Xác nhận xóa';
+    this.modalContentDelete = 'Bạn có chắc chắn muốn xóa thông tin bác sĩ này không?';
+    this.showConfirmModalDelete = true;
   }
 
   onConfirmDelete(): void {
@@ -136,24 +149,20 @@ export class EditDoctorInfoComponent implements OnInit, OnDestroy {
 
     this.doctorService.delete(this.doctor.id).subscribe({
       next: () => {
-        this.modalTitle = 'Thông báo';
-        this.successMessage = 'Đã xóa thông tin bác sĩ thành công';
-        this.showSuccessModal = true;
+        this.showConfirmModalDelete = false;
+        this.toastr.success('Đã xóa thông tin bác sĩ thành công', 'Thông báo');
+        this.router.navigate(['/admin/doctor']);
       },
       error: (error) => {
+        this.showConfirmModalDelete = false;
         this.toastr.error('Không thể xóa thông tin bác sĩ', 'Lỗi');
         console.error('Error deleting doctor:', error);
       }
     });
-    this.showConfirmModal = false;
   }
 
   onCancelDelete(): void {
-    this.showConfirmModal = false;
-  }
-
-  onSuccessModalClose(): void {
-    this.showSuccessModal = false;
+    this.showConfirmModalDelete = false;
   }
 
   ngOnDestroy(): void {

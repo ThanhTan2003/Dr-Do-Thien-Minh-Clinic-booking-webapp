@@ -8,7 +8,7 @@ import { NgIf } from '@angular/common';
   templateUrl: './admin-modal-success.component.html'
 })
 export class AdminModalSuccessComponent {
-  @Input() title = '';
+  @Input() title = 'Thông Báo';
   @Input() content = '';
   @Output() close = new EventEmitter<void>();
 }

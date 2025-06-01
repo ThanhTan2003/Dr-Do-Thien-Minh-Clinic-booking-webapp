@@ -1,15 +1,15 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { NgIf } from '@angular/common';
 
 @Component({
   selector: 'app-admin-modal-error',
-  templateUrl: './admin-modal-error.component.html',
   standalone: true,
-  imports: [CommonModule]
+  imports: [NgIf],
+  templateUrl: './admin-modal-error.component.html'
 })
 export class AdminModalErrorComponent {
-  @Input() title: string = 'Lỗi';
-  @Input() message: string = '';
+  @Input() title = 'Lỗi';
+  @Input() content = '';
   @Output() close = new EventEmitter<void>();
 
   onClose(): void {

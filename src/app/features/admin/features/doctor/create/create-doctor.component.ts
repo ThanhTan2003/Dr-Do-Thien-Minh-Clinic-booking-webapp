@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 import { DoctorService } from '../../../../shared/services/doctor/doctor.service';
 import { DoctorRequest } from '../../../../models/requests/doctor/doctor.request';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { faCircleInfo, faPlus, faUserPlus, faXmark } from '@fortawesome/free-solid-svg-icons';
+import { faCircleInfo, faUserPlus, faXmark } from '@fortawesome/free-solid-svg-icons';
 import { ToastrService } from 'ngx-toastr';
 
 @Component({
@@ -32,7 +32,6 @@ export class CreateDoctorComponent implements OnInit {
   };
 
   faCircleInfo = faCircleInfo;
-  faPlus = faPlus;
   faUserPlus = faUserPlus;
   faXmark = faXmark;
 

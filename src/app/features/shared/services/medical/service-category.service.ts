@@ -49,4 +49,13 @@ export class ServiceCategoryService {
   deleteById(id: string): Observable<string> {
     return this.http.delete<string>(`${this.API_URL}/${id}`);
   }
+
+  /**
+   * Lấy danh mục dịch vụ theo ID bác sĩ
+   */
+  getByDoctorId(doctorId = '', page = 1, size = 10): Observable<PageResponse<ServiceCategory>> {
+    return this.http.get<PageResponse<ServiceCategory>>(
+      `${this.API_URL}/doctor/${doctorId}?page=${page}&size=${size}`
+    );
+  }
 }

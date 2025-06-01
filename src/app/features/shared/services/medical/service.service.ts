@@ -58,4 +58,21 @@ export class ServiceService {
   deleteById(id: string): Observable<string> {
     return this.http.delete<string>(`${this.API_URL}/${id}`);
   }
+  
+    /**
+   * Tìm kiếm dịch vụ theo bác sĩ + từ khoá + trạng thái + serviceCategoryId (phân trang)
+   */
+    searchByDoctor(
+      keyword = '',
+      doctorId: string,
+      status = false,
+      serviceCategoryId = '',
+      page = 1,
+      size = 10
+    ): Observable<PageResponse<Service>> {
+      return this.http.get<PageResponse<Service>>(
+        `${this.API_URL}/search-by-doctor?keyword=${keyword}&doctorId=${doctorId}&status=${status}&serviceCategoryId=${serviceCategoryId}&page=${page}&size=${size}`
+      );
+    }
+  
 }
