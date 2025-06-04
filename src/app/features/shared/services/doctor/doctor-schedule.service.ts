@@ -4,6 +4,7 @@ import { HttpService } from '../../../../core/services/http.service';
 import { DoctorSchedule } from '../../../models/responses/doctor/doctor-schedule.model';
 import { DoctorScheduleRequest } from '../../../models/requests/doctor/doctor-schedule.request';
 import { PageResponse } from '../../../models/responses/page-response.model';
+import { DoctorScheduleStatus } from '../../../models/responses/doctor/doctor-schedule-status.model';
 
 @Injectable({
   providedIn: 'root'
@@ -97,4 +98,27 @@ export class DoctorScheduleService {
   getListDayOfWeekByDoctorService(doctorServiceId: string): Observable<string[]> {
     return this.http.get<string[]>(`${this.API_URL}/get-day-of-week-by-doctor-service/${doctorServiceId}`);
   }
+
+    /**
+   * Tạo mới hoặc cập nhật lịch làm việc cho bác sĩ theo batch
+   */
+    createOrUpdateBatch(requests: DoctorScheduleRequest[]): Observable<DoctorSchedule[]> {
+      return this.http.post<DoctorSchedule[]>(`${this.API_URL}/batch`, requests);
+    }
+  
+    /**
+     * Lấy lịch làm việc đang hoạt động của bác sĩ theo ngày trong tuần
+     */
+    getActiveSchedules(doctorId: string, dayOfWeek: string): Observable<DoctorSchedule[]> {
+      return this.http.get<DoctorSchedule[]>(
+        `${this.API_URL}/active-schedules?doctorId=${doctorId}&dayOfWeek=${dayOfWeek}`
+      );
+    }
+  
+    /**
+     * Lấy danh sách trạng thái của lịch làm việc bác sĩ
+     */
+    getStatuses(): Observable<DoctorScheduleStatus[]> {
+      return this.http.get<DoctorScheduleStatus[]>(`${this.API_URL}/statuses`);
+    }
 }

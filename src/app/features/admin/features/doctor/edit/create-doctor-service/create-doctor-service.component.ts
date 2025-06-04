@@ -76,7 +76,7 @@ export class CreateDoctorServiceComponent implements OnInit {
   loadData(): void {
     this.loading = true;
     this.serviceService
-      .search(this.keyword, this.selectedCategoryId, this.currentPage, this.pageSize)
+      .searchServicesNotRegisteredByDoctor(this.keyword, this.doctorId, this.selectedCategoryId, this.currentPage, this.pageSize)
       .subscribe({
         next: (response: PageResponse<Service>) => {
           console.log('API Response:', response);

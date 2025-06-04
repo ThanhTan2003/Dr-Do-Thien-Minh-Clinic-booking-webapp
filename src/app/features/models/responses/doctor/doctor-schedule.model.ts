@@ -8,6 +8,7 @@ export interface DoctorSchedule {
   dayOfWeek: string;
   maxPatients: number;
   status: boolean;
+  statusName: string;
   roomName: string;
   doctorResponse: Doctor;
   timeFrameResponse: TimeFrame;

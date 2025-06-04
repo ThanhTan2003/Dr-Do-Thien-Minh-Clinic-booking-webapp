@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { EditDoctorInfoComponent } from './edit-doctor-info/edit-doctor-info.component';
 import { EditDoctorServiceComponent } from './edit-doctor-service/edit-doctor-service.component';
 import { EditDoctorScheduleComponent } from './edit-doctor-schedule/edit-doctor-schedule.component';
+import { DoctorAppointmentHistoryComponent } from './appointment-history/doctor-appointment-history.component';
 import { Location } from '@angular/common';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faMagnifyingGlass, faCaretDown, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
@@ -15,6 +16,7 @@ import { ScrollPositionService } from '../scroll-position.service';
     EditDoctorInfoComponent,
     EditDoctorServiceComponent,
     EditDoctorScheduleComponent,
+    DoctorAppointmentHistoryComponent,
     FontAwesomeModule
   ],
   templateUrl: './edit-doctor.component.html'

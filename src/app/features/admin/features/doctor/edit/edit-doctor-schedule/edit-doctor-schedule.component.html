@@ -1,1 +1,115 @@
-<p>Edit Doctor Schedule</p>
+<div class="border border-blue-600 rounded-lg shadow-md relative p-4 mt-10">
+    <h1 class="absolute -top-4 left-4 bg-white px-2 text-blue-900 font-bold text-xl">
+        <fa-icon [icon]="faCalendarDays"></fa-icon> &nbsp;LỊCH KHÁM BỆNH
+    </h1>
+
+    <!-- Tabs ngày trong tuần -->
+    <div class="pt-4">
+        <ul class="flex flex-wrap font-bold bg-gray-100 select-none">
+            <li *ngFor="let day of daysOfWeek" (click)="onSelectDay(day.key)" [ngClass]="{
+                    'bg-white text-sky-700 border border-sky-600': selectedDay === day.key,
+                    'text-gray-800 hover:bg-sky-700 hover:text-white': selectedDay !== day.key
+                }" class="py-2 px-6 text-center mr-2 cursor-pointer">
+                {{ day.label }}
+            </li>
+        </ul>
+    </div>
+
+    <!-- Lịch làm việc -->
+    <div class="pt-6">
+        <div class="flex gap-6">
+            <!-- Menu buổi -->
+            <div class="w-60 flex-shrink-0">
+                <div class="bg-white rounded-lg shadow-md p-4 border border-sky-400">
+                    <h3 class="text-lg font-semibold text-sky-800 mb-4 flex items-center">
+                        <fa-icon [icon]="faChartSimple" class="mr-2"></fa-icon>
+                        Buổi khám
+                    </h3>
+                    <div class="space-y-2">
+                        <button *ngFor="let session of sessions" 
+                            (click)="onSelectSession(session)"
+                            [ngClass]="{
+                                'bg-sky-600 text-white': selectedSession === session,
+                                'bg-white text-sky-600 hover:bg-sky-50': selectedSession !== session
+                            }"
+                            class="w-full text-left px-4 py-4 rounded-md border border-sky-200 transition-all duration-200 flex items-center">
+                            <span class="font-medium">{{ session }}</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bảng lịch làm việc -->
+            <div class="flex-1">
+                <div class="bg-white rounded-lg shadow-md overflow-hidden border border-sky-400">
+                    <div class="p-4 border-b border-gray-200">
+                        <h3 class="text-lg font-semibold text-sky-800 flex items-center">
+                            <fa-icon [icon]="faCalendarDays" class="mr-2"></fa-icon>
+                            Lịch khám bệnh - buổi {{ selectedSession }}
+                        </h3>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full border-collapse">
+                            <thead>
+                                <tr class="bg-sky-600 text-white">
+                                    <th class="p-3 text-center w-16 border border-gray-400">STT</th>
+                                    <th class="p-3 text-left border border-gray-400">Khung giờ</th>
+                                    <th class="p-3 text-left border border-gray-400">Tối đa đăng ký</th>
+                                    <th class="p-3 text-center border border-gray-400">Đã khám</th>
+                                    <th class="p-3 text-left border border-gray-400">Trạng thái</th>
+                                    <th class="p-3 text-center border border-gray-400">Thao tác</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let tf of getTimeFramesBySession(selectedSession); let i = index" 
+                                    class="border-b border-gray-200 hover:bg-gray-50">
+                                    <td class="p-3 text-center text-gray-600 border border-gray-400">{{ i + 1 }}</td>
+                                    <td class="p-3 text-sky-800 font-semibold border border-gray-400">{{ tf.name }}</td>
+                                    <td class="p-3 border border-gray-400 w-40">
+                                        <input type="number" min="0" 
+                                            [(ngModel)]="editableRows[tf.id].maxPatients"
+                                            class="w-full p-1 px-3 border border-sky-300 rounded-md focus:outline-none focus:ring-2 focus:ring-sky-500" />
+                                    </td>
+                                    <td class="p-3 text-center border border-gray-400">10</td>
+                                    <td class="p-3 border border-gray-400">
+                                        <select [(ngModel)]="editableRows[tf.id].status"
+                                            class="w-full p-1 border border-sky-300 rounded-md focus:outline-none focus:ring-2 focus:ring-sky-500 min-w-max"
+                                            [ngClass]="{
+                                                'text-green-700': editableRows[tf.id].status === true,
+                                                'text-red-700': editableRows[tf.id].status === false
+                                            }">
+                                            <option *ngFor="let st of statuses" [value]="st.status">
+                                                {{ st.description }}
+                                            </option>
+                                        </select>
+                                    </td>
+                                    <td class="border border-gray-400 p-2 text-center whitespace-nowrap">
+                                        <button (click)="onUpdateSchedule(tf)"
+                                            class="bg-white text-sky-600 px-3 py-1 rounded border border-sky-600 hover:bg-sky-100 font-semibold">
+                                            Cập nhật &nbsp;<fa-icon [icon]="faPen"></fa-icon>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- <div class="flex items-center justify-end mt-4">
+        <div class="flex gap-3">
+            <button class="bg-sky-600 text-white font-semibold px-4 py-2 rounded-md hover:bg-sky-700 transition">
+                Lưu thay đổi
+            </button>
+        </div>
+    </div> -->
+
+    <app-admin-modal-confirm *ngIf="showConfirmModal" 
+        [title]="confirmTitle" 
+        [content]="confirmContent"
+        (confirm)="onConfirmUpdate()" 
+        (cancel)="onCancelUpdate()">
+    </app-admin-modal-confirm>
+</div>

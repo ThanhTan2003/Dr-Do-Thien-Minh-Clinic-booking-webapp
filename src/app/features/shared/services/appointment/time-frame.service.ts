@@ -9,7 +9,7 @@ import { PageResponse } from '../../../models/responses/page-response.model';
   providedIn: 'root'
 })
 export class TimeFrameService {
-  constructor(private http: HttpService) {}
+  constructor(private http: HttpService) { }
 
   private readonly API_URL = '/api/v1/appointment/timeframes';
 
@@ -48,5 +48,19 @@ export class TimeFrameService {
    */
   deleteById(id: string): Observable<string> {
     return this.http.delete<string>(`${this.API_URL}/${id}`);
+  }
+
+  /**
+   * Lấy danh sách khung giờ khám đang hoạt động
+   */
+  getAllActiveTimeFrames(): Observable<TimeFrame[]> {
+    return this.http.get<TimeFrame[]>(`${this.API_URL}/active`);
+  }
+
+  /**
+   * Lấy tất cả các phiên (sessions)
+   */
+  getAllSessions(): Observable<string[]> {
+    return this.http.get<string[]>(`${this.API_URL}/sessions`);
   }
 }

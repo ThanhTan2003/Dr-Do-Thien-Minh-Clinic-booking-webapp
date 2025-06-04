@@ -75,4 +75,18 @@ export class ServiceService {
       );
     }
   
+    /**
+   * Tìm kiếm dịch vụ theo bác sĩ + từ khoá + trạng thái + serviceCategoryId (phân trang) chưa đăng ký
+   */
+    searchServicesNotRegisteredByDoctor(
+      keyword = '',
+      doctorId: string,
+      serviceCategoryId = '',
+      page = 1,
+      size = 10
+    ): Observable<PageResponse<Service>> {
+      return this.http.get<PageResponse<Service>>(
+        `${this.API_URL}/search-not-registered-by-doctor?keyword=${keyword}&doctorId=${doctorId}&status=${status}&serviceCategoryId=${serviceCategoryId}&page=${page}&size=${size}`
+      );
+    }
 }
