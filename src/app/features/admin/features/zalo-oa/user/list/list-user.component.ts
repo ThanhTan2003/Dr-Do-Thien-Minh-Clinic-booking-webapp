@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Router, RouterModule } from '@angular/router';
+import { Router, RouterModule, ActivatedRoute } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { ZaloUserService } from '../../../../../shared/services/zalo_oa/user/zalo-user.service';
@@ -7,6 +7,7 @@ import { ZaloUserResponse } from '../../../../../models/responses/zalo_oa/user/z
 import { PageResponse } from '../../../../../models/responses/page-response.model';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { PaginationComponent } from '../../../../shared/components/pagination/pagination.component';
+import { PageSizeSelectorComponent } from '../../../../shared/components/page-size-selector/page-size-selector.component';
 import { TagService } from '../../../../../shared/services/zalo_oa/user/tag.service';
 import { TagResponse } from '../../../../../models/responses/zalo_oa/user/tag-response.model';
 import { 
@@ -16,10 +17,11 @@ import {
   faCircleInfo 
 } from '@fortawesome/free-solid-svg-icons';
 
+
 @Component({
   selector: 'app-list-user',
   templateUrl: './list-user.component.html',
-  imports: [CommonModule, FontAwesomeModule, FormsModule, RouterModule, PaginationComponent],
+  imports: [CommonModule, FontAwesomeModule, FormsModule, RouterModule, PaginationComponent, PageSizeSelectorComponent],
   standalone: true
 })
 export class ListUserComponent implements OnInit {
@@ -34,9 +36,12 @@ export class ListUserComponent implements OnInit {
   selectedTagId: string = '';
   tags: TagResponse[] = [];
 
+  loading: boolean = false;
+
   totalPages: number = 1;
   currentPage: number = 1;
   pageSize: number = 10;
+  pageSizeOptions: number[] = [5, 10, 20, 50, 100];
   totalElements: number = 0;
 
   notification: string = '';
@@ -44,7 +49,8 @@ export class ListUserComponent implements OnInit {
   constructor(
     private zaloUserService: ZaloUserService,
     private tagService: TagService,
-    private router: Router
+    private router: Router,
+    private route: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
@@ -64,6 +70,7 @@ export class ListUserComponent implements OnInit {
   }
 
   loadUsers(): void {
+    this.loading = true;
     this.zaloUserService.searchUsers(
       this.keyword,
       this.selectedTagId,
@@ -74,6 +81,7 @@ export class ListUserComponent implements OnInit {
         this.users = response.data;
         this.totalPages = response.totalPages;
         this.totalElements = response.totalElements;
+        this.loading = false;
       },
       error: (error) => {
         console.error('Error loading users:', error);
@@ -91,10 +99,16 @@ export class ListUserComponent implements OnInit {
     this.loadUsers();
   }
 
+  onPageSizeChange(newSize: number): void {
+    this.pageSize = newSize;
+    this.currentPage = 1;
+    this.loadUsers();
+  }
+
   copyToClipboard(id: string): void {
     navigator.clipboard.writeText(id)
       .then(() => {
-        this.notification = 'Đã sao chép ID!';
+        this.notification = 'Đã sao chép Zalo User ID!';
         setTimeout(() => {
           this.notification = '';
         }, 2000);
@@ -113,5 +127,10 @@ export class ListUserComponent implements OnInit {
         console.error('Error syncing users:', error);
       }
     });
+  }
+
+  goToDetailUser(userId: string): void {
+    console.log(userId);
+    this.router.navigate([userId], { relativeTo: this.route });
   }
 } 

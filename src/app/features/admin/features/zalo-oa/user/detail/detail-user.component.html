@@ -1,1 +1,21 @@
-<p>Detail User works!</p> 
+<!-- Nút Quay lại -->
+<div class="text-left mb-4">
+    <button
+      (click)="goBack()"
+      class="p-2 pl-4 pr-4 border-2 border-cyan-700 text-cyan-700 font-bold rounded-lg bg-white hover:bg-cyan-50 transition duration-300"
+    >
+      <fa-icon [icon]="faArrowLeft"></fa-icon> Quay lại
+    </button>
+</div>
+
+<app-zalo-information></app-zalo-information>
+<div class="flex gap-4">
+    <div class="w-1/2">
+        <app-tag-information></app-tag-information>
+    </div>
+    <div class="w-1/2">
+        <app-note></app-note>
+    </div>
+</div>
+<app-patient-list></app-patient-list>
+<app-history-appointment></app-history-appointment>

@@ -63,4 +63,32 @@ export class TagService {
   getTagByName(name: string): Observable<TagResponse> {
     return this.http.get<TagResponse>(`${this.API_URL}/by-name?name=${name}`);
   }
+
+  /**
+   * Tìm kiếm tags theo userId và từ khóa (phân trang)
+   */
+  searchTagsByUser(
+    userId: string,
+    keyword = '',
+    page = 1,
+    size = 10
+  ): Observable<PageResponse<TagResponse>> {
+    return this.http.get<PageResponse<TagResponse>>(
+      `${this.API_URL}/search-by-user?userId=${userId}&keyword=${keyword}&page=${page}&size=${size}`
+    );
+  }
+  
+  /**
+   * Lấy danh sách các tag có sẵn cho người dùng (phân trang)
+   */
+  getAvailableTagsForUser(
+    userId: string,
+    keyword = '',
+    page = 1,
+    size = 10
+  ): Observable<PageResponse<TagResponse>> {
+    return this.http.get<PageResponse<TagResponse>>(
+      `${this.API_URL}/available-tags?userId=${userId}&keyword=${keyword}&page=${page}&size=${size}`
+    );
+  }
 }

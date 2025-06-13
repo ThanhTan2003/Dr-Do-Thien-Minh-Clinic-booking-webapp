@@ -42,7 +42,7 @@ export const AdminMenuItems = [
       icon: faBriefcaseMedical,
       path: 'y-te',
       children: [
-        { id: 'PhongKham', label: 'Phòng khám', path: 'phong-kham', icon: faHospital },
+        // { id: 'PhongKham', label: 'Phòng khám', path: 'phong-kham', icon: faHospital },
         { id: 'DichVu', label: 'Dịch vụ', path: 'dich-vu', icon: faFileMedical },
         { id: 'NhomDichVu', label: 'Nhóm chuyên môn', path: 'nhom-dich-vu', icon: faLayerGroup }
         

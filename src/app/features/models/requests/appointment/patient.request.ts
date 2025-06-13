@@ -6,5 +6,7 @@ export interface PatientRequest {
     identityCard: string;
     address: string;
     insuranceId: string;
+    yearOfBirth: number;
+    relationship: string;
   }
   

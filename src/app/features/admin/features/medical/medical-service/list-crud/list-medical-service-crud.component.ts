@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Router, RouterModule } from '@angular/router';
+import { Router, RouterModule, ActivatedRoute } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { ServiceService } from '../../../../../shared/services/medical/service.service';
@@ -16,12 +16,21 @@ import {
   faMagnifyingGlass, 
   faPenToSquare
 } from '@fortawesome/free-solid-svg-icons';
+import { CreateMedicalServiceComponent } from '../create/create-medical-service.component';
 
 @Component({
   selector: 'app-list-medical-service-crud',
   templateUrl: './list-medical-service-crud.component.html',
   standalone: true,
-  imports: [FormsModule, PaginationComponent, PageSizeSelectorComponent, RouterModule, CommonModule, FontAwesomeModule]
+  imports: [
+    FormsModule, 
+    PaginationComponent, 
+    PageSizeSelectorComponent, 
+    RouterModule, 
+    CommonModule, 
+    FontAwesomeModule,
+    CreateMedicalServiceComponent
+  ]
 })
 export class ListMedicalServiceCrudComponent implements OnInit {
   // FontAwesome icons
@@ -40,16 +49,23 @@ export class ListMedicalServiceCrudComponent implements OnInit {
   totalPages: number = 1;
   totalElements: number = 0;
   loading: boolean = false;
+  showCreateModal: boolean = false;
 
   constructor(
     private serviceService: ServiceService,
     private serviceCategoryService: ServiceCategoryService,
-    private router: Router
+    private router: Router,
+    private route: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
     this.loadCategories();
     this.searchServices();
+  }
+
+  ngAfterViewInit(): void {
+    console.log("list-doctor-crud.component ngAfterViewInit....................");
+    window.scrollTo({ top: 0, behavior: 'smooth' }); // Cuộn mượt về đầu trang
   }
 
   loadCategories(): void {
@@ -103,7 +119,12 @@ export class ListMedicalServiceCrudComponent implements OnInit {
   }
 
   addService(): void {
-    this.router.navigate(['/admin/medical-service/create']);
+    this.showCreateModal = true;
+  }
+
+  onServiceCreated(): void {
+    this.showCreateModal = false;
+    this.searchServices();
   }
 
   onPageChange(page: number): void {
@@ -115,5 +136,10 @@ export class ListMedicalServiceCrudComponent implements OnInit {
     this.pageSize = newSize;
     this.currentPage = 1;
     this.searchServices();
+  }
+
+  goToEditMedicalService(serviceId: string): void {
+    console.log(serviceId);
+    this.router.navigate([serviceId], { relativeTo: this.route });
   }
 } 

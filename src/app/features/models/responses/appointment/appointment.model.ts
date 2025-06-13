@@ -12,6 +12,9 @@ export interface Appointment {
   appointmentDate: string;
   appointmentDateName: string;
   status: string;
+  patientMessage: string;
+  patientName: string;
+  note: String;
   patientResponse: Patient;
   doctorScheduleResponse: DoctorSchedule;
   doctorServiceResponse: DoctorService;

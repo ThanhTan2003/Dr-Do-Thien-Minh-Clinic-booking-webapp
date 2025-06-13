@@ -83,7 +83,7 @@ export class DoctorServiceComponent implements OnInit, OnDestroy {
 
     this.loading = true;
     this.doctorServiceService
-      .searchByService(this.keyword, this.serviceId, this.currentPage, this.pageSize)
+      .searchByService(this.keyword, this.serviceId, true, true, this.currentPage, this.pageSize)
       .subscribe({
         next: (res: PageResponse<DoctorService>) => {
           this.totalPages = res.totalPages || 1;

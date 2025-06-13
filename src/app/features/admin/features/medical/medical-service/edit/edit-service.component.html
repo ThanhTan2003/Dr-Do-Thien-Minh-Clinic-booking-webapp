@@ -1,0 +1,13 @@
+<!-- Nút Quay lại -->
+<div class="text-left mb-4">
+    <button
+      (click)="goBack()"
+      class="p-2 pl-4 pr-4 border-2 border-cyan-700 text-cyan-700 font-bold rounded-lg bg-white hover:bg-cyan-50 transition duration-300"
+    >
+      <fa-icon [icon]="faArrowLeft"></fa-icon> Quay lại
+    </button>
+</div>
+
+<app-edit-service-info></app-edit-service-info>
+<app-service-list-doctor></app-service-list-doctor>
+<app-service-appointment-history></app-service-appointment-history>

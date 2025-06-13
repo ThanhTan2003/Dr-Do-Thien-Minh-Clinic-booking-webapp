@@ -1,74 +1,95 @@
-<div class="container mx-auto">
-  <!-- Filter Section -->
-  <div class="flex justify-between items-center mb-4">
-    <div class="flex items-center">
-      <button class="bg-sky-600 text-white py-2 px-4 rounded font-bold hover:bg-sky-700" (click)="addService()">
-        Thêm dịch vụ mới &nbsp;<fa-icon [icon]="faPlus"></fa-icon>
-      </button>
-      <!-- <button class="bg-white text-sky-600 py-2 px-4 rounded border border-sky-600 font-bold hover:bg-sky-100 ml-2"
-        (click)="refreshList()">
-        Làm mới danh sách &nbsp;<fa-icon [icon]="faRotate"></fa-icon>
-      </button> -->
-      <app-page-size-selector
-        class="ml-4"
-        [pageSize]="pageSize"
-        [options]="pageSizeOptions"
-        (pageSizeChange)="onPageSizeChange($event)">
-      </app-page-size-selector>
-    </div>
-
-    <div class="flex items-center space-x-2">
-      <select class="border p-2 rounded border-blue-300 text-sky-900 font-semibold pr-5 pl-5"
-        [(ngModel)]="selectedCategory" (change)="handleCategoryChange()">
-        <option value="">Tất cả danh mục</option>
-        <option *ngFor="let category of categories" [value]="category.id">{{category.categoryName}}</option>
-      </select>
-      <input type="text" placeholder="Nhập từ khóa tìm kiếm" [(ngModel)]="keyword" (keyup.enter)="handleSearch()"
-        class="border p-2 rounded w-64 border-blue-300 text-gray-600" />
-      <button type="button" (click)="handleSearch()" class="bg-sky-600 text-white py-2 px-4 rounded hover:bg-sky-700">
-        <fa-icon [icon]="faMagnifyingGlass"></fa-icon>
-      </button>
-    </div>
-  </div>
-
-  <!-- Data Table -->
-  <div class="overflow-x-auto">
-    <table class="w-full border-collapse border border-gray-200 shadow-lg rounded-md">
-      <thead>
-        <tr class="bg-sky-600 text-white">
-          <th class="border p-2 text-center">STT</th>
-          <th class="border p-2 text-left">Tên dịch vụ</th>
-          <th class="border p-2 text-left whitespace-nowrap">Chuyên môn</th>
-          <th class="border p-2 text-left">Chi phí</th>
-          <th class="border p-2 text-center whitespace-nowrap">Số BS khám</th>
-          <th class="border p-2 text-left whitespace-nowrap"></th>
-        </tr>
-      </thead>
-      <tbody class="border border-gray-400">
-        <tr *ngIf="services.length === 0">
-          <td colspan="6" class="text-center p-4 border-gray-400">Không có dữ liệu</td>
-        </tr>
-        <tr *ngFor="let service of services; let i = index">
-          <td class="border border-gray-400 p-2 text-center">{{ (currentPage - 1) * pageSize + i + 1 }}</td>
-          <td class="border border-gray-400 p-2 text-left font-semibold text-sky-900">{{ service.serviceName }}</td>
-          <td class="border border-gray-400 p-2 text-left">{{ service.serviceCategoryResponse?.categoryName }}</td>
-          <td class="border border-gray-400 p-2 text-left text-amber-900 whitespace-nowrap">{{ service.price }}</td>
-          <td class="border border-gray-400 p-2 text-center font-semibold text-emerald-800">
-            {{service.numberOfDoctors}}
-          </td>
-          <td class="border border-gray-400 p-2 text-center justify-center whitespace-nowrap">
-            <button 
-              class="bg-white text-sky-600 px-3 py-1 rounded border border-sky-600 hover:bg-sky-700 hover:text-white font-semibold"
-              [routerLink]="['/admin/medical-service/edit', service.id]"
-            >
-              Chi tiết &nbsp;<fa-icon [icon]="faPenToSquare"></fa-icon>
-            </button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+<router-outlet #childOutlet="outlet"></router-outlet>
+<div *ngIf="!childOutlet.isActivated">
+  <div class="">
+    <!-- Create Medical Service Modal -->
+    <app-create-medical-service
+      *ngIf="showCreateModal"
+      (serviceCreated)="onServiceCreated()"
+    ></app-create-medical-service>
   
-  <app-pagination [totalElements]="totalElements" [currentPage]="currentPage" [totalPages]="totalPages"
-    (pageChange)="onPageChange($event)"></app-pagination>
-</div> 
+    <!-- Filter Section -->
+    <div class="flex justify-between items-center mb-4">
+      <div class="flex items-center">
+        <button class="bg-sky-600 text-white py-2 px-4 rounded font-bold hover:bg-sky-700" (click)="addService()">
+          Thêm dịch vụ mới &nbsp;<fa-icon [icon]="faPlus"></fa-icon>
+        </button>
+        <button class="bg-white text-sky-600 py-2 px-4 rounded border border-sky-600 font-bold hover:bg-sky-100 ml-2"
+          (click)="refreshList()">
+          Làm mới danh sách &nbsp;<fa-icon [icon]="faRotate"></fa-icon>
+        </button>
+        <app-page-size-selector
+          class="ml-4"
+          [pageSize]="pageSize"
+          [options]="pageSizeOptions"
+          (pageSizeChange)="onPageSizeChange($event)">
+        </app-page-size-selector>
+      </div>
+  
+      <div class="flex items-center space-x-2">
+        <select class="border p-2 rounded border-blue-300 text-sky-900 font-semibold pr-5 pl-5"
+          [(ngModel)]="selectedCategory" (change)="handleCategoryChange()">
+          <option value="">Tất cả danh mục</option>
+          <option *ngFor="let category of categories" [value]="category.id">{{category.categoryName}}</option>
+        </select>
+        <input type="text" placeholder="Nhập từ khóa tìm kiếm" [(ngModel)]="keyword" (keyup.enter)="handleSearch()"
+          class="border p-2 rounded w-64 border-blue-300 text-gray-600" />
+        <button type="button" (click)="handleSearch()" class="bg-sky-600 text-white py-2 px-4 rounded hover:bg-sky-700">
+          <fa-icon [icon]="faMagnifyingGlass"></fa-icon>
+        </button>
+      </div>
+    </div>
+  
+    <!-- Data Table -->
+    <div class="overflow-x-auto">
+      <table class="w-full border-collapse border border-gray-200 shadow-lg rounded-md">
+        <thead>
+          <tr class="bg-sky-600 text-white">
+            <th class="border p-2 text-center">STT</th>
+            <th class="border p-2 text-left">Tên dịch vụ</th>
+            <th class="border p-2 text-left whitespace-nowrap">Chuyên môn</th>
+            <th class="border p-2 text-left">Chi phí</th>
+            <th class="border p-2 text-center whitespace-nowrap">Số BS khám</th>
+            <th class="border p-2 text-center whitespace-nowrap">Số lượt khám</th>
+            <th class="border p-2 text-left whitespace-nowrap"></th>
+          </tr>
+        </thead>
+        <tbody class="border border-gray-400">
+          <tr *ngIf="loading">
+            <td colspan="6" class="text-center p-4 border-gray-400">
+              <div class="flex justify-center items-center">
+                <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-sky-600"></div>
+                <span class="ml-2">Đang tải dữ liệu...</span>
+              </div>
+            </td>
+          </tr>
+          <tr *ngIf="!loading && services.length === 0">
+            <td colspan="6" class="text-center p-4 border-gray-400">Không có dữ liệu</td>
+          </tr>
+          <tr *ngFor="let service of services; let i = index">
+            <td class="border border-gray-400 p-2 text-center">{{ (currentPage - 1) * pageSize + i + 1 }}</td>
+            <td class="border border-gray-400 p-2 text-left font-semibold text-sky-900">{{ service.serviceName }}</td>
+            <td class="border border-gray-400 p-2 text-left">{{ service.serviceCategoryResponse?.categoryName }}</td>
+            <td class="border border-gray-400 p-2 text-left text-amber-900 whitespace-nowrap">{{ service.price }}</td>
+            <td class="border border-gray-400 p-2 text-center font-semibold text-emerald-800">  
+              {{service.numberOfDoctors}}
+            </td>
+            <td class="border border-gray-400 p-2 text-center font-semibold text-purple-800">  
+              999
+            </td>
+            <td class="border border-gray-400 p-2 text-center justify-center whitespace-nowrap">
+              <button 
+                class="bg-white text-sky-600 px-3 py-1 rounded border border-sky-600 hover:bg-sky-700 hover:text-white font-semibold"
+                (click)="goToEditMedicalService(service.id)"
+              >
+                Chi tiết &nbsp;<fa-icon [icon]="faPenToSquare"></fa-icon>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    
+    <app-pagination [totalElements]="totalElements" [currentPage]="currentPage" [totalPages]="totalPages"
+      (pageChange)="onPageChange($event)"></app-pagination>
+  </div> 
+</div>

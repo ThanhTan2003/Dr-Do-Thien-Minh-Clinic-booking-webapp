@@ -1,7 +1,7 @@
 <router-outlet #childOutlet="outlet"></router-outlet>
 
 <div *ngIf="!childOutlet.isActivated">
-  <div class="container mx-auto">
+  <div class="">
     <!-- Create Doctor Modal -->
     <app-create-doctor
       *ngIf="showCreateModal"
@@ -39,8 +39,24 @@
           <option value="">Tất cả trạng thái</option>
           <option *ngFor="let status of statuses" [value]="status.status">{{status.description}}</option>
         </select>
-        <input type="text" placeholder="Nhập từ khóa tìm kiếm" [(ngModel)]="keyword" (keyup.enter)="handleSearch()"
-          class="border p-2 rounded w-64 border-blue-300 text-gray-600" />
+        <div class="relative w-64">
+          <input
+            type="text"
+            placeholder="Nhập từ khóa tìm kiếm"
+            [(ngModel)]="keyword"
+            (keyup.enter)="handleSearch()"
+            class="border p-2 rounded w-full border-blue-300 text-gray-600 pr-10"
+          />
+          <span class="absolute right-2 top-1/2 -translate-y-1/2 group cursor-pointer">
+            <fa-icon [icon]="faCircleQuestion" class="text-gray-400"></fa-icon>
+            <div
+              class="absolute right-0 mt-2 w-64 p-2 bg-white border border-gray-300 rounded shadow-lg text-sm text-sky-700 z-50 opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity text-justify"
+              style="top: 100%;"
+            >
+              Có thể tìm kiếm bằng mã bác sĩ, họ tên, số điện thoại, chuyên môn...
+            </div>
+          </span>
+        </div>
         <button type="button" (click)="handleSearch()" class="bg-sky-600 text-white py-2 px-4 rounded hover:bg-sky-700">
           <fa-icon [icon]="faMagnifyingGlass"></fa-icon>
         </button>
@@ -76,11 +92,11 @@
           </tr>
           <tr *ngFor="let doctor of doctors; let i = index">
             <td class="border border-gray-400 p-2 text-center">{{ (currentPage - 1) * pageSize + i + 1 }}</td>
-            <td class="border border-gray-400 p-2 text-left">{{ doctor.id }}</td>
-            <td class="border border-gray-400 p-2 text-left font-semibold text-sky-900">{{ doctor.name }}</td>
-            <td class="border border-gray-400 p-2 text-left">{{ doctor.gender }}</td>
-            <td class="border border-gray-400 p-2 text-left">{{ doctor.phone }}</td>
-            <td class="border border-gray-400 p-2 text-left font-semibold"
+            <td class="border border-gray-400 p-2 text-left whitespace-nowrap">{{ doctor.id }}</td>
+            <td class="border border-gray-400 p-2 text-left font-semibold text-sky-900 whitespace-nowrap">{{ doctor.name }}</td>
+            <td class="border border-gray-400 p-2 text-left whitespace-nowrap">{{ doctor.gender }}</td>
+            <td class="border border-gray-400 p-2 text-left whitespace-nowrap">{{ doctor.phone }}</td>
+            <td class="border border-gray-400 p-2 text-left font-semibold whitespace-nowrap"
             [ngClass]="{
               'text-green-700': removeVietnameseTones(doctor.statusName) === 'Dang lam viec',
               'text-red-700': removeVietnameseTones(doctor.statusName) === 'Ngung cong tac',
@@ -99,7 +115,7 @@
                 </span>
               </div>
             </td>
-            <td class="border border-gray-400 p-2 text-center justify-center">
+            <td class="border border-gray-400 p-2 text-center justify-center whitespace-nowrap">
               <button
                 (click)="goToEditDoctor(doctor.id)"
                 class="bg-white text-sky-600 px-3 py-1 rounded border border-sky-600 hover:bg-sky-700 hover:text-white font-semibold"

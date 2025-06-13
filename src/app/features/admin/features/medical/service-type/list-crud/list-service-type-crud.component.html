@@ -1,4 +1,35 @@
-<div class="container mx-auto">
+<div class="mx-auto">
+  <!-- Create Service Type Modal -->
+  <app-create-service-type
+    *ngIf="showCreateModal"
+    (serviceTypeCreated)="onServiceTypeCreated()"
+  ></app-create-service-type>
+
+  <!-- Update Service Type Modal -->
+  <app-update-service-type
+    *ngIf="showUpdateModal"
+    [category]="selectedCategory!"
+    (serviceTypeUpdated)="onServiceTypeUpdated()"
+  ></app-update-service-type>
+
+  <!-- Confirm Modal -->
+  <app-admin-modal-confirm
+    *ngIf="showConfirmModal"
+    [title]="'Xác nhận cập nhật'"
+    [content]="'Bạn có chắc chắn muốn cập nhật thông tin chuyên môn này?'"
+    (confirm)="onServiceTypeUpdated()"
+    (cancel)="showConfirmModal = false"
+  ></app-admin-modal-confirm>
+
+  <!-- Confirm Delete Modal -->
+  <app-admin-modal-confirm-delete
+    *ngIf="showConfirmDeleteModal"
+    [title]="'Xác nhận xóa'"
+    [content]="'Bạn có chắc chắn muốn xóa chuyên môn này?'"
+    (confirm)="onConfirmDelete()"
+    (cancel)="showConfirmDeleteModal = false"
+  ></app-admin-modal-confirm-delete>
+
   <!-- Filter Section -->
   <div class="flex justify-between items-center mb-4">
     <div class="flex items-center">
@@ -27,37 +58,59 @@
   </div>
 
   <!-- Data Table -->
-  <div class="overflow-x-auto">
-    <table class="w-full border-collapse border border-gray-200 shadow-lg rounded-md">
-      <thead>
-        <tr class="bg-sky-600 text-white">
-          <th class="border p-2 text-center">STT</th>
-          <th class="border p-2 text-left  whitespace-nowrap">Tên chuyên môn</th>
-          <th class="border p-2 text-left">Mô tả</th>
-          <th class="border p-2 text-center  whitespace-nowrap">Số dịch vụ</th>
-          <th class="border p-2 text-left"></th>
-        </tr>
-      </thead>
-      <tbody class="border border-gray-400">
-        <tr *ngIf="categories.length === 0">
-          <td colspan="5" class="text-center p-4 border-gray-400">Không có dữ liệu</td>
-        </tr>
-        <tr *ngFor="let category of categories; let i = index">
-          <td class="border border-gray-400 p-2 text-center">{{ (currentPage - 1) * pageSize + i + 1 }}</td>
-          <td class="border border-gray-400 p-2 text-left font-semibold text-sky-900">{{ category.categoryName }}</td>
-          <td class="border border-gray-400 p-2 text-justify">{{ category.description }}</td>
-          <td class="border border-gray-400 p-2 text-center font-semibold text-emerald-800">{{ category.quantity }}</td>
-          <td class="border border-gray-400 p-2 text-center justify-center whitespace-nowrap">
-            <button 
-              class="bg-white text-sky-600 px-3 py-1 rounded border border-sky-600 hover:bg-sky-700 hover:text-white font-semibold"
-              [routerLink]="['/admin/service-type/edit', category.id]"
-            >
-              Chi tiết &nbsp;<fa-icon [icon]="faPenToSquare"></fa-icon>
-            </button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+  <div class="relative">
+    <div class="">
+      <table class="w-full border-collapse border border-gray-200 shadow-lg rounded-md">
+        <thead>
+          <tr class="bg-sky-600 text-white">
+            <th class="border p-2 text-center">STT</th>
+            <th class="border p-2 text-left  whitespace-nowrap">Tên chuyên môn</th>
+            <th class="border p-2 text-left">Mô tả</th>
+            <th class="border p-2 text-center whitespace-nowrap">Số dịch vụ</th>
+            <th class="border p-2 text-center whitespace-nowrap">Số bác sĩ khám</th>
+            <th class="border p-2 text-center whitespace-nowrap">Số lượt khám</th>
+            <th class="border p-2 text-left"></th>
+          </tr>
+        </thead>
+        <tbody class="border border-gray-400">
+          <tr *ngIf="loading">
+            <td colspan="7" class="text-center p-4 border-gray-400">
+              <div class="flex justify-center items-center">
+                <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-sky-600"></div>
+                <span class="ml-2">Đang tải dữ liệu...</span>
+              </div>
+            </td>
+          </tr>
+          <tr *ngIf="!loading && categories.length === 0">
+            <td colspan="7" class="text-center p-4 border-gray-400">Không có dữ liệu</td>
+          </tr>
+          <tr *ngFor="let category of categories; let i = index">
+            <td class="border border-gray-400 p-2 text-center">{{ (currentPage - 1) * pageSize + i + 1 }}</td>
+            <td class="border border-gray-400 p-2 text-left font-semibold text-sky-900">{{ category.categoryName }}</td>
+            <td class="border border-gray-400 p-2 text-justify">{{ category.description }}</td>
+            <td class="border border-gray-400 p-2 text-center font-semibold text-emerald-800">{{ category.quantity }}</td>
+            <td class="border border-gray-400 p-2 text-center font-semibold text-purple-800">999</td>
+            <td class="border border-gray-400 p-2 text-center font-semibold text-purple-800">999</td>
+            <td class="border border-gray-400 p-2 text-center justify-center whitespace-nowrap">
+              <div class="flex gap-2">
+                <button 
+                  class="bg-white text-sky-600 px-3 py-1 rounded border border-sky-600 hover:bg-sky-700 hover:text-white font-semibold"
+                  (click)="updateCategory(category)"
+                >
+                  Cập nhật &nbsp;<fa-icon [icon]="faPenToSquare"></fa-icon>
+                </button>
+                <button 
+                  class="bg-white text-red-600 px-3 py-1 rounded border border-red-600 hover:bg-red-700 hover:text-white font-semibold"
+                  (click)="deleteCategory(category)"
+                >
+                  Xóa &nbsp;<fa-icon [icon]="faTrash"></fa-icon>
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
   
   <app-pagination [totalElements]="totalElements" [currentPage]="currentPage" [totalPages]="totalPages"

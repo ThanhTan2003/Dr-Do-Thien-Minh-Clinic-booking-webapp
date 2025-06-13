@@ -12,14 +12,31 @@ import {
   faRotate, 
   faPlus,
   faMagnifyingGlass, 
-  faPenToSquare
+  faPenToSquare,
+  faTrash
 } from '@fortawesome/free-solid-svg-icons';
+import { CreateServiceTypeComponent } from '../create/create-service-type.component';
+import { UpdateServiceTypeComponent } from '../update/update-service-type.component';
+import { AdminModalConfirmComponent } from '../../../../shared/components/modal-confirm/admin-modal-confirm.component';
+import { AdminModalConfirmDeleteComponent } from '../../../../shared/components/modal-confirm-delete/admin-modal-confirm-delete.component';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-list-service-type-crud',
   templateUrl: './list-service-type-crud.component.html',
   standalone: true,
-  imports: [FormsModule, PaginationComponent, PageSizeSelectorComponent, RouterModule, CommonModule, FontAwesomeModule]
+  imports: [
+    FormsModule, 
+    PaginationComponent, 
+    PageSizeSelectorComponent, 
+    RouterModule, 
+    CommonModule, 
+    FontAwesomeModule,
+    CreateServiceTypeComponent,
+    UpdateServiceTypeComponent,
+    AdminModalConfirmComponent,
+    AdminModalConfirmDeleteComponent
+  ]
 })
 export class ListServiceTypeCrudComponent implements OnInit {
   // FontAwesome icons
@@ -27,23 +44,35 @@ export class ListServiceTypeCrudComponent implements OnInit {
   faMagnifyingGlass = faMagnifyingGlass;
   faPlus = faPlus;
   faPenToSquare = faPenToSquare;
+  faTrash = faTrash;
 
   categories: ServiceCategory[] = [];
   keyword: string = '';
   currentPage: number = 1;
-  pageSize: number = 10;
+  pageSize: number = 5;
   pageSizeOptions: number[] = [5, 10, 20, 50, 100];
   totalPages: number = 1;
   totalElements: number = 0;
   loading: boolean = false;
+  showCreateModal: boolean = false;
+  showUpdateModal: boolean = false;
+  showConfirmModal: boolean = false;
+  showConfirmDeleteModal: boolean = false;
+  selectedCategory: ServiceCategory | null = null;
 
   constructor(
     private serviceCategoryService: ServiceCategoryService,
-    private router: Router
+    private router: Router,
+    private toastr: ToastrService
   ) {}
 
   ngOnInit(): void {
     this.searchCategories();
+  }
+
+  ngAfterViewInit(): void {
+    console.log("list-doctor-crud.component ngAfterViewInit....................");
+    window.scrollTo({ top: 0, behavior: 'smooth' }); // Cuộn mượt về đầu trang
   }
 
   searchCategories(page: number = 1): void {
@@ -79,7 +108,12 @@ export class ListServiceTypeCrudComponent implements OnInit {
   }
 
   addCategory(): void {
-    this.router.navigate(['/admin/service-type/create']);
+    this.showCreateModal = true;
+  }
+
+  onServiceTypeCreated(): void {
+    this.showCreateModal = false;
+    this.searchCategories();
   }
 
   onPageChange(page: number): void {
@@ -91,5 +125,36 @@ export class ListServiceTypeCrudComponent implements OnInit {
     this.pageSize = newSize;
     this.currentPage = 1;
     this.searchCategories();
+  }
+
+  updateCategory(category: ServiceCategory): void {
+    this.selectedCategory = category;
+    this.showUpdateModal = true;
+  }
+
+  onServiceTypeUpdated(): void {
+    this.showUpdateModal = false;
+    this.showConfirmModal = false;
+    this.searchCategories();
+  }
+
+  deleteCategory(category: ServiceCategory): void {
+    this.selectedCategory = category;
+    this.showConfirmDeleteModal = true;
+  }
+
+  onConfirmDelete(): void {
+    if (this.selectedCategory) {
+      this.serviceCategoryService.deleteById(this.selectedCategory.id).subscribe({
+        next: () => {
+          this.toastr.success('Xóa chuyên môn thành công!');
+          this.showConfirmDeleteModal = false;
+          this.searchCategories();
+        },
+        error: (err) => {
+          this.toastr.error(err.error?.message || 'Đã xảy ra lỗi. Vui lòng thử lại!');
+        }
+      });
+    }
   }
 } 

@@ -60,7 +60,7 @@ export class ConfirmComponent implements OnInit, OnDestroy {
     private doctorServiceService: DoctorServiceService,
     private doctorScheduleService: DoctorScheduleService,
     private toastr: ToastrService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     // Cuộn lên đầu trang
@@ -72,21 +72,21 @@ export class ConfirmComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe(params => {
         const current = this.route.snapshot.paramMap; // ConfirmComponent level
-  const level1 = this.route.parent?.snapshot.paramMap; // PatientComponent
-  const level2 = this.route.parent?.snapshot.paramMap; // ScheduleComponent
-  const level3 = this.route.parent?.parent?.snapshot.paramMap; // DoctorServiceComponent
+        const level1 = this.route.parent?.snapshot.paramMap; // PatientComponent
+        const level2 = this.route.parent?.snapshot.paramMap; // ScheduleComponent
+        const level3 = this.route.parent?.parent?.snapshot.paramMap; // DoctorServiceComponent
 
-  this.patientId = current.get('patientId') || '';
-  console.log('patientId', this.patientId);
+        this.patientId = current.get('patientId') || '';
+        console.log('patientId', this.patientId);
 
-  this.doctorScheduleId = level2?.get('doctorScheduleId') || '';
-  console.log('doctorScheduleId', this.doctorScheduleId);
+        this.doctorScheduleId = level2?.get('doctorScheduleId') || '';
+        console.log('doctorScheduleId', this.doctorScheduleId);
 
-  this.appointmentDate = level2?.get('date') || '';
-  console.log('appointmentDate', this.appointmentDate);
+        this.appointmentDate = level2?.get('date') || '';
+        console.log('appointmentDate', this.appointmentDate);
 
-  this.doctorServiceId = level3?.get('doctorServiceId') || '';
-  console.log('doctorServiceId', this.doctorServiceId);
+        this.doctorServiceId = level3?.get('doctorServiceId') || '';
+        console.log('doctorServiceId', this.doctorServiceId);
 
         // Gọi song song 3 API để lấy data
         forkJoin({
@@ -94,18 +94,18 @@ export class ConfirmComponent implements OnInit, OnDestroy {
           doctorService: this.doctorServiceService.getById(this.doctorServiceId),
           doctorSchedule: this.doctorScheduleService.getById(this.doctorScheduleId)
         })
-        .pipe(takeUntil(this.destroy$))
-        .subscribe({
-          next: ({ patient, doctorService, doctorSchedule }) => {
-            this.patient = patient;
-            this.doctorService = doctorService;
-            this.doctorSchedule = doctorSchedule;
-          },
-          error: (error) => {
-            console.error('Error fetching data:', error);
-            this.toastr.error('Đã xảy ra lỗi khi tải dữ liệu');
-          }
-        });
+          .pipe(takeUntil(this.destroy$))
+          .subscribe({
+            next: ({ patient, doctorService, doctorSchedule }) => {
+              this.patient = patient;
+              this.doctorService = doctorService;
+              this.doctorSchedule = doctorSchedule;
+            },
+            error: (error) => {
+              console.error('Error fetching data:', error);
+              this.toastr.error('Đã xảy ra lỗi khi tải dữ liệu');
+            }
+          });
       });
   }
 
@@ -127,25 +127,25 @@ export class ConfirmComponent implements OnInit, OnDestroy {
   // Thực hiện tạo appointment sau khi user confirm
   handleConfirm(): void {
     this.isConfirmModalOpen = false;
-  
+
     // Kiểm tra dữ liệu đầu vào
     if (!this.patientId || !this.doctorServiceId || !this.doctorScheduleId || !this.appointmentDate) {
       this.toastr.error('Thiếu thông tin đặt lịch, vui lòng thử lại.');
       return;
     }
-  
+
     // Nếu chắc chắn là yyyy-MM-dd thì không cần xử lý lại
     const formattedDate = this.appointmentDate;
-  
+
     const request: AppointmentRequest = {
       patientId: this.patientId,
       doctorServiceId: this.doctorServiceId,
       doctorScheduleId: this.doctorScheduleId,
-      appointmentDate: formattedDate
+      appointmentDate: formattedDate,
     };
-  
+
     console.log('Gửi yêu cầu tạo appointment:', request);
-  
+
     this.appointmentService.create(request)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
@@ -159,6 +159,4 @@ export class ConfirmComponent implements OnInit, OnDestroy {
         }
       });
   }
-  
-  
 }

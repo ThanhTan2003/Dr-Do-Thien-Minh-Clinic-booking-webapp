@@ -61,34 +61,35 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr *ngFor="let tf of getTimeFramesBySession(selectedSession); let i = index" 
-                                    class="border-b border-gray-200 hover:bg-gray-50">
-                                    <td class="p-3 text-center text-gray-600 border border-gray-400">{{ i + 1 }}</td>
-                                    <td class="p-3 text-sky-800 font-semibold border border-gray-400">{{ tf.name }}</td>
-                                    <td class="p-3 border border-gray-400 w-40">
-                                        <input type="number" min="0" 
-                                            [(ngModel)]="editableRows[tf.id].maxPatients"
-                                            class="w-full p-1 px-3 border border-sky-300 rounded-md focus:outline-none focus:ring-2 focus:ring-sky-500" />
-                                    </td>
-                                    <td class="p-3 text-center border border-gray-400">10</td>
-                                    <td class="p-3 border border-gray-400">
-                                        <select [(ngModel)]="editableRows[tf.id].status"
-                                            class="w-full p-1 border border-sky-300 rounded-md focus:outline-none focus:ring-2 focus:ring-sky-500 min-w-max"
-                                            [ngClass]="{
-                                                'text-green-700': editableRows[tf.id].status === true,
-                                                'text-red-700': editableRows[tf.id].status === false
-                                            }">
-                                            <option *ngFor="let st of statuses" [value]="st.status">
-                                                {{ st.description }}
-                                            </option>
-                                        </select>
-                                    </td>
-                                    <td class="border border-gray-400 p-2 text-center whitespace-nowrap">
-                                        <button (click)="onUpdateSchedule(tf)"
-                                            class="bg-white text-sky-600 px-3 py-1 rounded border border-sky-600 hover:bg-sky-100 font-semibold">
-                                            Cập nhật &nbsp;<fa-icon [icon]="faPen"></fa-icon>
-                                        </button>
-                                    </td>
+                                <tr *ngFor="let tf of getTimeFramesBySession(selectedSession); let i = index" class="border-b border-gray-200 hover:bg-gray-50">
+                                    <ng-container *ngIf="editableRows[tf.id]">
+                                        <td class="p-3 text-center text-gray-600 border border-gray-400">{{ i + 1 }}</td>
+                                        <td class="p-3 text-sky-800 font-semibold border border-gray-400">{{ tf.name }}</td>
+                                        <td class="p-3 border border-gray-400 w-40">
+                                            <input type="number" min="0"
+                                                [(ngModel)]="editableRows[tf.id].maxPatients"
+                                                class="w-full p-1 px-3 border border-sky-300 rounded-md focus:outline-none focus:ring-2 focus:ring-sky-500" />
+                                        </td>
+                                        <td class="p-3 text-center border border-gray-400">10</td>
+                                        <td class="p-3 border border-gray-400">
+                                            <select [(ngModel)]="editableRows[tf.id].status"
+                                                class="w-full p-1 border border-sky-300 rounded-md focus:outline-none focus:ring-2 focus:ring-sky-500 min-w-max"
+                                                [ngClass]="{
+                                                    'text-green-700': editableRows[tf.id].status === true,
+                                                    'text-red-700': editableRows[tf.id].status === false
+                                                }">
+                                                <option *ngFor="let st of statuses" [value]="st.status">
+                                                    {{ st.description }}
+                                                </option>
+                                            </select>
+                                        </td>
+                                        <td class="border border-gray-400 p-2 text-center whitespace-nowrap">
+                                            <button (click)="onUpdateSchedule(tf)"
+                                                class="bg-white text-sky-600 px-3 py-1 rounded border border-sky-600 hover:bg-sky-100 font-semibold">
+                                                Cập nhật &nbsp;<fa-icon [icon]="faPen"></fa-icon>
+                                            </button>
+                                        </td>
+                                    </ng-container>
                                 </tr>
                             </tbody>
                         </table>

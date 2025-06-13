@@ -1,1 +1,62 @@
-<p>Create Service Type works!</p> 
+<div class="fixed inset-0 flex items-center justify-center bg-black/80 z-50">
+    <div class="bg-white rounded-xl shadow-xl w-1/2">
+        <!-- Header -->
+        <div class="bg-sky-600 text-white p-2 rounded-t-xl flex justify-between items-center">
+            <h2 class="text-lg font-bold pl-2">
+                <fa-icon [icon]="faPlus"></fa-icon>&nbsp; THÊM CHUYÊN MÔN MỚI
+            </h2>
+            <button
+                (click)="goBack()"
+                class="text-white bg-transparent hover:bg-red-500 rounded-full p-1 flex items-center justify-center"
+                style="width: 30px; height: 30px;">
+                ✕
+            </button>
+        </div>
+
+        <!-- Content -->
+        <div class="p-6">
+            <!-- Thông báo lưu ý -->
+            <div class="bg-yellow-50 p-4 border border-yellow-300 rounded-md mb-6">
+                <div class="text-sm text-gray-600 text-justify">
+                    <b><fa-icon [icon]="faCircleInfo"></fa-icon> Lưu ý:</b> Vui lòng điền đầy đủ thông tin chuyên môn. Các thông tin này sẽ được hiển thị trên hệ thống đặt lịch khám bệnh.
+                </div>
+            </div>
+
+            <!-- Form nhập thông tin -->
+            <div class="grid grid-cols-1 gap-4">
+                <div>
+                    <label class="block text-sm font-semibold text-sky-800">Tên chuyên môn <span class="text-red-800">(*)</span></label>
+                    <input
+                        type="text"
+                        [(ngModel)]="formData.categoryName"
+                        name="categoryName"
+                        class="w-full p-2 border border-sky-300 rounded-md text-gray-700 mt-1 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-sky-800">Mô tả <span class="text-red-800">(*)</span></label>
+                    <textarea
+                        [(ngModel)]="formData.description"
+                        name="description"
+                        rows="4"
+                        class="w-full p-2 border border-sky-300 rounded-md text-gray-700 mt-1 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    ></textarea>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="flex justify-end gap-4 pb-6 pr-6">
+            <button
+                (click)="goBack()"
+                class="bg-white text-sky-600 border border-sky-600 font-semibold py-2 px-8 rounded-lg hover:bg-gray-100 transition duration-200">
+                Hủy &nbsp;<fa-icon [icon]="faXmark"></fa-icon>
+            </button>
+            <button
+                (click)="handleSubmit()"
+                class="bg-sky-600 text-white font-semibold py-2 px-8 rounded-lg hover:bg-blue-600 transition duration-200">
+                Thêm &nbsp;<fa-icon [icon]="faPlus"></fa-icon>
+            </button>
+        </div>
+    </div>
+</div> 

@@ -3,5 +3,8 @@ export interface AppointmentRequest {
     doctorServiceId: string;
     doctorScheduleId: string;
     appointmentDate: string; // yyyy-MM-dd
+    patientMessage?: string;
+    patientName?: string;
+    note?: String;
   }
   

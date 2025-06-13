@@ -31,6 +31,8 @@ export class CreatePatientComponent implements OnInit {
     identityCard: '',
     insuranceId: '',
     address: '',
+    yearOfBirth: 0, //Bo sung sau
+    relationship: '' //Bo sung sau
   };
 
   acceptTerms = false;

@@ -16,7 +16,8 @@ import {
   faMagnifyingGlass, 
   faCommentDots, 
   faCircleInfo,
-  faPenToSquare
+  faPenToSquare,
+  faCircleQuestion
 } from '@fortawesome/free-solid-svg-icons';
 import { ServiceCategory } from '../../../../models/responses/medical/service-category.model';
 import { CreateDoctorComponent } from '../create/create-doctor.component';
@@ -44,6 +45,7 @@ export class ListDoctorCrudComponent implements OnInit {
   faCircleInfo = faCircleInfo;
   faPlus = faPlus;
   faPenToSquare = faPenToSquare;
+  faCircleQuestion = faCircleQuestion;
 
   doctors: Doctor[] = [];
   categories: ServiceCategory[] = [];

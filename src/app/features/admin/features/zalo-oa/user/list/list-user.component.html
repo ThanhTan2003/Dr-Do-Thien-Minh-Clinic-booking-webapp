@@ -1,137 +1,162 @@
-<div class="container mx-auto">
-  <!-- Filter Section -->
-  <div class="flex justify-between items-center mb-4">
-    <div>
-      <button
-        class="bg-sky-600 text-white py-2 px-4 rounded font-bold hover:bg-sky-700"
-        (click)="syncUsers()"
-        title="Đồng bộ dữ liệu với Zalo OA"
-      >
-        Đồng bộ dữ liệu Zalo OA&nbsp;<fa-icon [icon]="faRotate"></fa-icon>
-      </button>
+<router-outlet #childOutlet="outlet"></router-outlet>
+<div *ngIf="!childOutlet.isActivated">
+  <div class="mx-auto">
+    <!-- Filter Section -->
+    <div class="flex justify-between items-center mb-4">
+      <div class="flex items-center">
+        <button
+          class="bg-sky-700 text-white py-2 px-4 rounded font-bold hover:bg-sky-700"
+          (click)="syncUsers()"
+          title="Đồng bộ dữ liệu với Zalo OA"
+        >
+          Đồng bộ dữ liệu Zalo OA&nbsp;<fa-icon [icon]="faRotate"></fa-icon>
+        </button>
+  
+        <button
+          class="bg-white text-sky-700 py-2 px-4 rounded border border-sky-700 font-bold hover:bg-sky-100 ml-2"
+          (click)="handleSearch()"
+          title="Tải lại danh sách với Zalo OA"
+        >
+          Tải lại danh sách&nbsp;<fa-icon [icon]="faRotate"></fa-icon>
+        </button>
 
-      <button
-        class="bg-white text-sky-600 py-2 px-4 rounded border border-sky-600 font-bold hover:bg-sky-100 ml-2"
-        (click)="handleSearch()"
-        title="Tải lại danh sách với Zalo OA"
-      >
-        Tải lại danh sách&nbsp;<fa-icon [icon]="faRotate"></fa-icon>
-      </button>
+        <app-page-size-selector
+          class="ml-4"
+          [pageSize]="pageSize"
+          [options]="pageSizeOptions"
+          (pageSizeChange)="onPageSizeChange($event)">
+        </app-page-size-selector>
+      </div>
+  
+      <div class="flex items-center space-x-2">
+        <!-- Dropdown cho Tags -->
+        <select
+          class="border p-2 rounded border-blue-300 text-sky-800 font-semibold"
+          [(ngModel)]="selectedTagId"
+          (change)="handleSearch()"
+        >
+          <option value="">Tất cả nhóm đối tượng</option>
+          <option *ngFor="let tag of tags" [value]="tag.id">
+            {{tag.name}}
+          </option>
+        </select>
+  
+        <!-- Ô tìm kiếm -->
+        <input
+          type="text"
+          placeholder="Nhập từ khóa tìm kiếm"
+          [(ngModel)]="keyword"
+          (keyup.enter)="handleSearch()"
+          class="border p-2 rounded w-64 border-blue-300 text-gray-700"
+        />
+  
+        <button
+          type="button"
+          (click)="handleSearch()"
+          class="bg-sky-700 text-white py-2 px-4 rounded hover:bg-sky-800"
+        >
+          <fa-icon [icon]="faMagnifyingGlass"></fa-icon>
+        </button>
+      </div>
     </div>
-
-    <div class="flex items-center space-x-2">
-      <!-- Dropdown cho Tags -->
-      <select
-        class="border p-2 rounded border-blue-300"
-        [(ngModel)]="selectedTagId"
-        (change)="handleSearch()"
-      >
-        <option value="">Tất cả nhóm đối tượng</option>
-        <option *ngFor="let tag of tags" [value]="tag.id">
-          {{tag.name}}
-        </option>
-      </select>
-
-      <!-- Ô tìm kiếm -->
-      <input
-        type="text"
-        placeholder="Nhập từ khóa tìm kiếm"
-        [(ngModel)]="keyword"
-        (keyup.enter)="handleSearch()"
-        class="border p-2 rounded w-64 border-blue-300"
-      />
-
-      <button
-        type="button"
-        (click)="handleSearch()"
-        class="bg-sky-600 text-white py-2 px-4 rounded hover:bg-sky-700"
-      >
-        <fa-icon [icon]="faMagnifyingGlass"></fa-icon>
-      </button>
-    </div>
-  </div>
-
-  <!-- Data Table -->
-  <div class="overflow-x-auto">
-    <table class="w-full border-collapse border border-gray-200 shadow-lg rounded-md">
-      <thead>
-        <tr class="bg-sky-600 text-white">
-          <th class="border p-2 text-center">STT</th>
-          <th class="border p-2 text-left">Zalo User ID</th>
-          <th class="border p-2 text-left whitespace-nowrap">Tên người dùng</th>
-          <th class="border p-2 text-left">Nhóm đối tượng</th>
-          <th class="border p-2 text-center"></th>
-          <th class="border p-2 text-center"></th>
-        </tr>
-      </thead>
-      <tbody class="borderborder-gray-400">
-        <tr *ngIf="users.length === 0">
-          <td colspan="6" class="text-center p-4 border-gray-400">Không có dữ liệu</td>
-        </tr>
-        <tr *ngFor="let user of users; let i = index" 
-            class="border hover:bg-gray-100 transition duration-200 ease-in-out align-top ">
-          <td class="border p-2 text-center align-top border-gray-400">{{i + 1}}</td>
-          <td
-            class="border p-2 text-left cursor-copy border-gray-400"
-            (click)="copyToClipboard(user.id)"
-            title="Sao chép"
-          >
-            {{user.id}}
-          </td>
-
-          <td
-            class="border border-gray-400 p-2 pr-4 font-semibold text-left whitespace-nowrap cursor-help"
-            title="Xem thông tin"
-          >
-            <div class="flex items-center space-x-2">
-              <img [src]="user.avatar" [alt]="user.displayName" class="w-8 h-8 rounded-full object-cover" />
-              <span>{{user.displayName}}</span>
-            </div>
-          </td>
-
-          <td class="border p-2 border-gray-400">
-            <div *ngIf="user.tags.length > 0" class="flex flex-wrap space-x-2 justify-start">
-              <span
-                *ngFor="let tag of user.tags"
-                class="bg-blue-50 text-sky-600 px-3 py-1 rounded-sm font-medium mb-1"
-                style="margin-left: 8px; white-space: nowrap"
-              >
-                {{tag.name}}
-              </span>
-            </div>
-          </td>
-          <td class="border p-2 text-center w-32 whitespace-nowrap border-gray-400">
-            <a [href]="user.chatLink" target="_blank" rel="noopener noreferrer">
-              <button class="bg-white text-sky-600 px-3 py-1 rounded border border-sky-600 hover:bg-sky-100">
-                Nhắn tin <fa-icon [icon]="faCommentDots"></fa-icon>
-              </button>
-            </a>
-          </td>
-          <td class="border p-2 text-center w-32 whitespace-nowrap border-gray-400">
-            <button 
-              class="bg-sky-600 text-white px-3 py-1 rounded border border-sky-600 hover:bg-sky-700"
-              [routerLink]="['/admin/zalo-oa/user', user.id]"
+  
+    <!-- Data Table -->
+    <div class="overflow-x-auto">
+      <table class="w-full border-collapse border border-gray-200 shadow-lg rounded-md">
+        <thead>
+          <tr class="bg-sky-600 text-white">
+            <th class="border p-2 text-center">STT</th>
+            <th class="border p-2 text-left">Zalo User ID</th>
+            <th class="border p-2 text-left whitespace-nowrap">Tên người dùng</th>
+            <th class="border p-2 text-left">Nhóm đối tượng</th>
+            <th class="border p-2 text-center">Số hồ sơ</th>
+            <th class="border p-2 text-center">Đã khám</th>
+            <th class="border p-2 text-center"></th>
+            <th class="border p-2 text-center"></th>
+          </tr>
+        </thead>
+        <tbody class="borderborder-gray-400">
+          <tr *ngIf="loading">
+            <td colspan="6" class="text-center p-4 border-gray-400">
+              <div class="flex justify-center items-center">
+                <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-sky-600"></div>
+                <span class="ml-2">Đang tải dữ liệu...</span>
+              </div>
+            </td>
+          </tr>
+          <tr *ngIf="!loading && users.length === 0">
+            <td colspan="6" class="text-center p-4 border-gray-400">Không có dữ liệu</td>
+          </tr>
+          <tr *ngFor="let user of users; let i = index" 
+              class="border hover:bg-gray-100 transition duration-200 ease-in-out align-top ">
+            <td class="border p-2 text-center align-top border-gray-400">{{ (currentPage - 1) * pageSize + i + 1 }}</td>
+            <td
+              class="border p-2 text-left cursor-copy border-gray-400"
+              (click)="copyToClipboard(user.id)"
+              title="Sao chép"
             >
-              Chi tiết <fa-icon [icon]="faCircleInfo"></fa-icon>
-            </button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-
-  <!-- Pagination -->
-  <app-pagination
-    [totalElements]="totalElements"
-    [currentPage]="currentPage"
-    [totalPages]="totalPages"
-    (pageChange)="onPageChange($event)"
-  ></app-pagination>
-
-  <!-- Notification -->
-  <div *ngIf="notification" class="fixed bottom-4 right-4 bg-green-500 text-white px-4 py-2 rounded shadow-lg">
-    {{notification}}
+              {{user.id}}
+            </td>
+  
+            <td
+              class="border border-gray-400 p-2 pr-4 font-semibold text-left whitespace-nowrap cursor-help"
+              title="Xem thông tin"
+            >
+              <div class="flex items-center space-x-2">
+                <img [src]="user.avatar" [alt]="user.displayName" class="w-8 h-8 rounded-full object-cover" />
+                <span>{{user.displayName}}</span>
+              </div>
+            </td>
+  
+            <td class="border p-2 border-gray-400">
+              <div *ngIf="user.tags.length > 0" class="flex flex-wrap space-x-2 justify-start">
+                <span
+                  *ngFor="let tag of user.tags"
+                  class="bg-blue-50 text-sky-600 px-3 py-1 rounded-sm font-medium mb-1"
+                  style="margin-left: 8px; white-space: nowrap"
+                >
+                  {{tag.name}}
+                </span>
+              </div>
+            </td>
+            <td class="border p-2 text-center border-gray-400 font-semibold text-purple-800">
+              999
+            </td>
+            <td class="border p-2 text-center border-gray-400 font-semibold text-purple-800">
+              999
+            </td>
+            <td class="border p-2 text-center w-32 whitespace-nowrap border-gray-400">
+              <a [href]="user.chatLink" target="_blank" rel="noopener noreferrer">
+                <button class="bg-white text-sky-600 px-3 py-1 rounded border border-sky-600 hover:bg-sky-100">
+                  Nhắn tin <fa-icon [icon]="faCommentDots"></fa-icon>
+                </button>
+              </a>
+            </td>
+            <td class="border p-2 text-center w-32 whitespace-nowrap border-gray-400">
+              <button 
+                class="bg-sky-600 text-white px-3 py-1 rounded border border-sky-600 hover:bg-sky-700"
+                (click)="goToDetailUser(user.id)"
+              >
+                Chi tiết <fa-icon [icon]="faCircleInfo"></fa-icon>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  
+    <!-- Pagination -->
+    <app-pagination
+      [totalElements]="totalElements"
+      [currentPage]="currentPage"
+      [totalPages]="totalPages"
+      (pageChange)="onPageChange($event)"
+    ></app-pagination>
+  
+    <!-- Notification -->
+    <div *ngIf="notification" class="fixed bottom-4 right-4 bg-green-500 text-white px-4 py-2 rounded shadow-lg">
+      {{notification}}
+    </div>
   </div>
 </div>
 
-<router-outlet></router-outlet> 

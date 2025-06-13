@@ -31,22 +31,56 @@ export class DoctorServiceService {
   }
 
   /**
-   * Tìm dịch vụ theo serviceId và từ khóa
-   */
-  searchByService(keyword = '', serviceId = '', page = 1, size = 10): Observable<PageResponse<DoctorService>> {
-    return this.http.get<PageResponse<DoctorService>>(
-      `${this.API_URL}/search-by-service?keyword=${keyword}&serviceId=${serviceId}&page=${page}&size=${size}`
-    );
+ * Tìm dịch vụ theo serviceId và từ khóa
+ */
+  searchByService(
+    keyword = '',
+    serviceId = '',
+    status?: boolean,
+    doctorStatus?: boolean,
+    page = 1,
+    size = 10
+  ): Observable<PageResponse<DoctorService>> {
+    let url = `${this.API_URL}/search-by-service?keyword=${keyword}&serviceId=${serviceId}&page=${page}&size=${size}`;
+
+    if (status !== undefined) {
+      url += `&status=${status}`;
+    }
+
+    if (doctorStatus !== undefined) {
+      url += `&doctorStatus=${doctorStatus}`;
+    }
+
+    return this.http.get<PageResponse<DoctorService>>(url);
   }
 
+
+
   /**
-   * Tìm dịch vụ theo doctorId và từ khóa
-   */
-  searchByDoctor(keyword = '', doctorId = '', page = 1, size = 10): Observable<PageResponse<DoctorService>> {
-    return this.http.get<PageResponse<DoctorService>>(
-      `${this.API_URL}/search-by-doctor?keyword=${keyword}&doctorId=${doctorId}&page=${page}&size=${size}`
-    );
+ * Tìm dịch vụ theo doctorId và từ khóa
+ */
+  searchByDoctor(
+    keyword = '',
+    doctorId = '',
+    status?: boolean,
+    doctorStatus?: boolean,
+    page = 1,
+    size = 10
+  ): Observable<PageResponse<DoctorService>> {
+    let url = `${this.API_URL}/search-by-doctor?keyword=${keyword}&doctorId=${doctorId}&page=${page}&size=${size}`;
+
+    if (status !== undefined) {
+      url += `&status=${status}`;
+    }
+
+    if (doctorStatus !== undefined) {
+      url += `&doctorStatus=${doctorStatus}`;
+    }
+
+    return this.http.get<PageResponse<DoctorService>>(url);
   }
+
+
 
   /**
    * Lấy chi tiết dịch vụ theo ID

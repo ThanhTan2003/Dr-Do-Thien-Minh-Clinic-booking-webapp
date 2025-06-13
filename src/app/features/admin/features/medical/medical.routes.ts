@@ -10,7 +10,7 @@ import { firstValueFrom } from 'rxjs';
 export const medicalRoutes: Routes = [
   {
     path: '',
-    redirectTo: 'phong-kham',
+    redirectTo: 'dich-vu',
     pathMatch: 'full'
   },
   {
@@ -34,7 +34,15 @@ export const medicalRoutes: Routes = [
         }
         return false;
       }
-    }
+    },
+    children: [
+      {
+        path: ':serviceTypeId',
+        loadComponent: () => import('./service-type/detail/detail-service-type.component').then(m => m.DetailServiceTypeComponent),
+        canActivate: [RoleGuard],
+        data: { roles: ADMIN_STAFF_ROLES }
+      }
+    ]
   },
   {
     path: 'nhom-dich-vu/xem',
@@ -42,12 +50,7 @@ export const medicalRoutes: Routes = [
     canActivate: [RoleGuard],
     data: { roles: STAFF_ROLES }
   },
-  {
-    path: 'nhom-dich-vu/:serviceTypeId',
-    loadComponent: () => import('./service-type/detail/detail-service-type.component').then(m => m.DetailServiceTypeComponent),
-    canActivate: [RoleGuard],
-    data: { roles: ADMIN_STAFF_ROLES }
-  },
+  
   {
     path: 'dich-vu',
     loadComponent: () => import('./medical-service/list-crud/list-medical-service-crud.component').then(m => m.ListMedicalServiceCrudComponent),
@@ -69,7 +72,15 @@ export const medicalRoutes: Routes = [
         }
         return false;
       }
-    }
+    },
+    children: [
+      {
+        path: ':serviceId',
+        loadComponent: () => import('./medical-service/edit/edit-service.component').then(m => m.EditServiceComponent),
+        canActivate: [RoleGuard],
+        data: { roles: ADMIN_ROLES }
+      }
+    ]
   },
   {
     path: 'dich-vu/xem',

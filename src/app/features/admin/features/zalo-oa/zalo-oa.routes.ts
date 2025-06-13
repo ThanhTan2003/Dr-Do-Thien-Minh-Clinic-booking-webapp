@@ -12,7 +12,15 @@ export const zaloOARoutes: Routes = [
     path: 'nguoi-dung',
     loadComponent: () => import('./user/list/list-user.component').then(m => m.ListUserComponent),
     canActivate: [RoleGuard],
-    data: { roles: ADMIN_MARKETING_ROLES }
+    data: { roles: ADMIN_MARKETING_ROLES },
+    children: [
+      {
+        path: ':userId',
+        loadComponent: () => import('./user/detail/detail-user.component').then(m => m.DetailUserComponent),
+        canActivate: [RoleGuard],
+        data: { roles: ADMIN_MARKETING_ROLES }
+      }
+    ]
   },
   {
     path: 'nhom-nguoi-dung',

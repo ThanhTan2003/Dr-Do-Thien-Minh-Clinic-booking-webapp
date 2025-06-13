@@ -1,0 +1,83 @@
+<div class="mt-10">
+  <div class="border border-blue-600 rounded-lg shadow-md relative p-2">
+    <!-- Tiêu đề -->
+    <div class="absolute -top-4 left-4 bg-white px-2 text-blue-900 font-bold text-xl">
+      <fa-icon [icon]="faUser"></fa-icon>&nbsp; THÔNG TIN ZALO NGƯỜI DÙNG
+    </div>
+
+    <!-- Nội dung -->
+    <div class="flex flex-row gap-6 pt-4 pb-2 items-start pr-2" *ngIf="user">
+      <!-- Ảnh đại diện -->
+      <div class="flex-shrink-0 flex justify-center w-1/5">
+        <img [src]="user.avatar || '...'" [alt]="user.displayName"
+          class="w-48 h-48 rounded-md object-cover text-center align-top" />
+      </div>
+
+      <!-- Thông tin -->
+      <div class="w-4/5">
+        <div class="grid grid-cols-2 gap-x-8 gap-y-2">
+          <!-- Cột trái -->
+          <div>
+            <div class="flex mb-2 items-center">
+              <span class="font-bold min-w-[120px]">Zalo User ID:</span>
+              <input type="text" [value]="user.id || '...'" disabled
+                class="ml-2 p-1 border border-sky-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 w-full" />
+            </div>
+            <div class="flex mb-2 items-center">
+              <span class="font-bold min-w-[120px]">Tên chia sẻ:</span>
+              <input type="text" [value]="user.nameSharedInfo || '...'" disabled
+                class="ml-2 p-1 border border-sky-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 w-full" />
+            </div>
+
+            <div class="flex mb-2 items-center">
+              <span class="font-bold min-w-[120px]">Số điện thoại:</span>
+              <input type="text" [value]="user.phone || '...'" disabled
+                class="ml-2 p-1 border border-sky-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 w-full" />
+            </div>
+            <div class="flex mb-2 align-top">
+              <span class="font-bold min-w-[120px] align-top">Địa chỉ:</span>
+              <textarea disabled
+                class="ml-2 p-1 border border-sky-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
+                rows="3">{{user.address || '...'}}</textarea>
+            </div>
+          </div>
+
+          <!-- Cột phải -->
+          <div>
+            <div class="flex mb-2 items-center">
+              <span class="font-bold min-w-[120px]">Tên hiển thị:</span>
+              <input type="text" [value]="user.displayName || '...'" disabled
+                class="ml-2 p-1 border border-sky-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 w-full" />
+            </div>
+            <div class="flex mb-2 items-center">
+              <span class="font-bold min-w-[120px]">Bí danh:</span>
+              <input type="text" [value]="user.userAlias || '...'" disabled
+                class="ml-2 p-1 border border-sky-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 w-full" />
+            </div>
+            <div class="flex mb-2 items-center">
+              <span class="font-bold min-w-[120px]">Trạng thái:</span>
+              <input type="text" [value]="user.status ? 'Đã quan tâm' : 'Chưa quan tâm'" disabled
+                class="ml-2 p-1 border border-sky-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 w-full" />
+            </div>
+            <div class="flex mb-2 items-center">
+              <span class="font-bold min-w-[120px]">Tương tác:</span>
+              <input type="text" [value]="user.userLastInteractionDate || '...'" disabled
+                class="ml-2 p-1 border border-sky-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 w-full" />
+            </div>
+            <div class="flex mb-2 align-top">
+              <span class="font-bold min-w-[120px]">Đối tượng:</span>
+              <div class="ml-2 flex flex-wrap gap-2">
+                <span *ngFor="let tag of user.tags"
+                  class="bg-blue-50 text-sky-600 px-2 py-1 font-medium shadow-md hover:shadow-lg transition">
+                  {{tag.name}}
+                </span>
+                <span *ngIf="!user.tags || user.tags.length === 0" class="text-gray-500">...</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+  </div>
+</div>

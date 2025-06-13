@@ -38,7 +38,21 @@ export const doctorRoutes: Routes = [
     children: [
       {
         path: ':doctorId',
-        loadComponent: () => import('./edit/edit-doctor.component').then(m => m.EditDoctorComponent)
+        loadComponent: () => import('./edit/edit-doctor.component').then(m => m.EditDoctorComponent),
+        children: [
+          {
+            path: 'dich-vu-kham-benh',
+            loadComponent: () => import('./edit/edit-doctor-service/edit-doctor-service.component').then(m => m.EditDoctorServiceComponent)
+          },
+          {
+            path: 'lich-kham',
+            loadComponent: () => import('./edit/edit-doctor-schedule/edit-doctor-schedule.component').then(m => m.EditDoctorScheduleComponent)
+          },
+          {
+            path: 'lich-su-kham-benh',
+            loadComponent: () => import('./edit/appointment-history/doctor-appointment-history.component').then(m => m.DoctorAppointmentHistoryComponent)
+          }
+        ]
       }
     ]
   },

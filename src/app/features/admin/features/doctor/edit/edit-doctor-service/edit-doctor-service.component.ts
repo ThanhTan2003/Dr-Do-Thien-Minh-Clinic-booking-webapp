@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -47,7 +47,7 @@ export class EditDoctorServiceComponent implements OnInit {
   faX = faX;
   faFileMedical = faFileMedical;
   faClockRotateLeft = faClockRotateLeft;
-  
+
   // Doctor ID from route
   doctorId: string | null = null;
   private destroy$ = new Subject<void>();
@@ -81,7 +81,8 @@ export class EditDoctorServiceComponent implements OnInit {
     private route: ActivatedRoute,
     private doctorServiceService: DoctorServiceService,
     private serviceCategoryService: ServiceCategoryService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private cdr: ChangeDetectorRef
   ) {
     // Initialize arrays
     this.doctorServices = [];
@@ -90,26 +91,33 @@ export class EditDoctorServiceComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    console.log('Component initialized');
-    this.route.paramMap.pipe(takeUntil(this.destroy$)).subscribe((params) => {
-      this.doctorId = params.get('doctorId');
-      console.log('Doctor ID:', this.doctorId);
-      if (this.doctorId) {
-        this.loadServiceStatuses();
-        this.loadServiceCategories();
-        this.loadData();
-      }
-    });
+    this.route.paramMap
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(params => {
+        const current = this.route.snapshot.paramMap;                 // DoctorServiceComponent
+        const level1 = this.route.parent?.snapshot.paramMap;          // DanhSachBacSiComponent chứa :doctorId
+        const level2 = this.route.parent?.parent?.snapshot.paramMap;  // Nếu có, ví dụ cấp trên nữa
+
+        this.doctorId = current?.get('doctorId') || '';
+        console.log('doctorId', this.doctorId);
+
+
+        if (this.doctorId) {
+          this.loadServiceStatuses();
+          this.loadServiceCategories();
+          this.loadData();
+        }
+      });
   }
 
   loadData(): void {
     if (!this.doctorId) return;
-    
+
     let status: boolean | undefined = undefined;
     if (this.selectedStatus !== '') {
       status = this.selectedStatus === 'true';
     }
-    
+
     console.log('Loading data with params:', {
       keyword: this.keyword,
       doctorId: this.doctorId,
@@ -258,22 +266,41 @@ export class EditDoctorServiceComponent implements OnInit {
   }
 
   onConfirmDelete(): void {
-    if (!this.selectedService) return;
-
+    if (!this.selectedService) {
+      console.warn('Không có dịch vụ được chọn để xoá.');
+      return;
+    }
+  
+    console.log('Bắt đầu xoá dịch vụ với ID:', this.selectedService.id);
+  
     this.doctorServiceService.deleteById(this.selectedService.id).subscribe({
-      next: () => {
-        console.log('Service deleted successfully');
-        this.showConfirmModalDelete = false;
+      next: (res) => {
+        console.log('Xóa thành công. Response:', res);
         this.toastr.success('Xóa dịch vụ thành công', 'Thông báo');
+        this.showConfirmModalDelete = false;
         this.loadData();
+        console.log('Gọi detectChanges() sau thành công xoá');
+        this.cdr.detectChanges();
       },
       error: (error) => {
-        console.error('Error deleting service:', error);
         this.showConfirmModalDelete = false;
-        this.toastr.error('Không thể xóa dịch vụ', 'Lỗi');
+        console.error('Lỗi khi xoá dịch vụ:', error);
+  
+        if (error.status === 500 && error.error?.message) {
+          this.toastr.error(error.error.message, 'Lỗi');
+          // this.toastr.error('Không thể xóa dịch vụ', 'Lỗi');
+          console.log('Lỗi 500 với message:', error.error.message);
+        } else {
+          this.toastr.error('Không thể xóa dịch vụ', 'Lỗi');
+          console.log('Lỗi khác:', error.status);
+        }
+  
+        console.log('Gọi detectChanges() sau khi lỗi xảy ra');
+        this.cdr.detectChanges();
       }
     });
   }
+  
 
   onCancelUpdate(): void {
     console.log('Cancelling action');
@@ -294,6 +321,8 @@ export class EditDoctorServiceComponent implements OnInit {
   onCloseCreateModal(): void {
     this.showCreateModal = false;
     this.loadData();
+    this.loadServiceCategories();
+    this.loadServiceStatuses();
   }
-  
+
 } 

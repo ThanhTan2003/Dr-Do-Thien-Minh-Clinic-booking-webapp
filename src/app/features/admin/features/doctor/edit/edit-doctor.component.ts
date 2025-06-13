@@ -1,17 +1,26 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { Router, RouterOutlet, ActivatedRoute } from '@angular/router';
 import { EditDoctorInfoComponent } from './edit-doctor-info/edit-doctor-info.component';
 import { EditDoctorServiceComponent } from './edit-doctor-service/edit-doctor-service.component';
 import { EditDoctorScheduleComponent } from './edit-doctor-schedule/edit-doctor-schedule.component';
 import { DoctorAppointmentHistoryComponent } from './appointment-history/doctor-appointment-history.component';
 import { Location } from '@angular/common';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { faMagnifyingGlass, faCaretDown, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
+import { faFileMedical, faArrowLeft, faCalendarDays } from '@fortawesome/free-solid-svg-icons';
 import { ScrollPositionService } from '../scroll-position.service';
+import { FormsModule } from '@angular/forms';
+import { takeUntil } from 'rxjs/operators';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-edit-doctor',
   standalone: true, // Đánh dấu component là standalone
   imports: [
+    CommonModule, 
+    FormsModule, 
+    FontAwesomeModule, 
+    RouterOutlet,
     // Import các component con để sử dụng trong template
     EditDoctorInfoComponent,
     EditDoctorServiceComponent,
@@ -24,30 +33,68 @@ import { ScrollPositionService } from '../scroll-position.service';
 export class EditDoctorComponent implements OnInit {
   faArrowLeft = faArrowLeft;
   private parentScrollKey = 'list-doctor-crud';
+  doctorId: string | null = null;
+  private destroy$ = new Subject<void>();
+
+  faFileMedical = faFileMedical;
+  faCalendarDays = faCalendarDays;
+
+  tabs = [
+    {
+      label: 'DỊCH VỤ KHÁM BỆNH',
+      path: 'dich-vu-kham-benh',
+      icon: this.faFileMedical,
+    },
+    {
+      label: 'LỊCH KHÁM BỆNH',
+      path: 'lich-kham',
+      icon: this.faCalendarDays,
+      color: 'cyan'
+    },
+    {
+      label: 'LỊCH SỬ KHÁM',
+      path: 'lich-su-kham-benh',
+      icon: null,
+    }
+  ];
+  
 
   constructor(
     private location: Location,
-    private scrollService: ScrollPositionService
+    private scrollService: ScrollPositionService,
+    private router: Router,
+    private route: ActivatedRoute
   ) {}
 
+
+
   ngOnInit(): void {
-    // Khi vào chi tiết, scroll về đầu trang
-    console.log("edit-doctor.component ngOnInit....................");
-    setTimeout(() => {
-      console.log("edit-doctor.component ngOnInit setTimeout....................");
-      window.scrollTo({ top: 0, behavior: 'auto' });
-    }, 0);
+    this.route.paramMap.pipe(takeUntil(this.destroy$)).subscribe((params) => {
+      this.doctorId = params.get('doctorId');
+      if (this.doctorId) {
+        this.goTo('dich-vu-kham-benh');
+      }
+    });
+  }
+
+  ngAfterViewInit(): void {
+    console.log("list-doctor-crud.component ngAfterViewInit....................");
+    window.scrollTo({ top: 0, behavior: 'smooth' }); // Cuộn mượt về đầu trang
   }
 
   goBack(): void {
-    this.location.back();
-    // Đợi router-outlet render lại, rồi scroll về vị trí cũ
-    setTimeout(() => {
-      console.log("edit-doctor.component goBack setTimeout....................");
-      console.log(this.scrollService.getPosition(this.parentScrollKey));
-      window.scrollTo({ top: this.scrollService.getPosition(this.parentScrollKey), behavior: 'auto' });
-    }, 100);
+    this.router.navigate(['/admin/bac-si/danh-sach']);
   }
+
+  goTo(path: string) {
+    this.router.navigate([path], { relativeTo: this.route });
+  }
+
+  isActive(path: string): boolean {
+    // Kiểm tra route con hiện tại có khớp với tab không
+    return this.router.url.includes(path);
+  }
+
   ngDestroy(): void {
     console.log("edit-doctor.component ngDestroy....................");
   }

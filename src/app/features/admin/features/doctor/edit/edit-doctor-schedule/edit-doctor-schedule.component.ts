@@ -72,8 +72,14 @@ export class EditDoctorScheduleComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    console.log('Component Doctor Schedule initialized');
     this.route.paramMap.subscribe(params => {
-      this.doctorId = params.get('doctorId');
+      const current = this.route.snapshot.paramMap;                 // DoctorServiceComponent
+        const level1 = this.route.parent?.snapshot.paramMap;          // DanhSachBacSiComponent chứa :doctorId
+        const level2 = this.route.parent?.parent?.snapshot.paramMap;  // Nếu có, ví dụ cấp trên nữa
+
+        this.doctorId = current?.get('doctorId') || '';
+        console.log('doctorId', this.doctorId);
       if (this.doctorId) {
         this.loadInitData();
       }
@@ -96,7 +102,7 @@ export class EditDoctorScheduleComponent implements OnInit {
 
   loadSchedules() {
     if (!this.doctorId) return;
-    this.doctorScheduleService.getActiveSchedules(this.doctorId, this.selectedDay)
+    this.doctorScheduleService.getSchedules(this.doctorId, this.selectedDay)
       .subscribe((res: DoctorSchedule[]) => {
         this.schedules = res;
         this.initEditableRows();

@@ -105,6 +105,15 @@ export class DoctorScheduleService {
     createOrUpdateBatch(requests: DoctorScheduleRequest[]): Observable<DoctorSchedule[]> {
       return this.http.post<DoctorSchedule[]>(`${this.API_URL}/batch`, requests);
     }
+
+    /**
+     * Lấy lịch làm việc của bác sĩ theo ngày trong tuần
+     */
+    getSchedules(doctorId: string, dayOfWeek: string): Observable<DoctorSchedule[]> {
+      return this.http.get<DoctorSchedule[]>(
+        `${this.API_URL}/schedules?doctorId=${doctorId}&dayOfWeek=${dayOfWeek}`
+      );
+    }
   
     /**
      * Lấy lịch làm việc đang hoạt động của bác sĩ theo ngày trong tuần

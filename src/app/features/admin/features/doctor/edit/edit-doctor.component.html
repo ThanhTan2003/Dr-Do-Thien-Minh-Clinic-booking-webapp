@@ -1,13 +1,35 @@
- <!-- Nút Quay lại -->
- <div class="text-left mb-4">
-    <button
-      (click)="goBack()"
-      class="p-2 pl-4 pr-4 border-2 border-cyan-700 text-cyan-700 font-bold rounded-lg bg-white hover:bg-cyan-50 transition duration-300"
-    >
-      <fa-icon [icon]="faArrowLeft"></fa-icon> Quay lại
-    </button>
+<!-- Nút Quay lại -->
+<div class="text-left mb-4">
+  <button
+    (click)="goBack()"
+    class="p-2 pl-4 pr-4 border-2 border-cyan-700 text-cyan-700 font-bold rounded-lg bg-white hover:bg-cyan-50 transition duration-300"
+  >
+    <fa-icon [icon]="faArrowLeft"></fa-icon> Quay lại
+  </button>
 </div>
+
 <app-edit-doctor-info></app-edit-doctor-info>
+
+<!-- Menu chuyển tab -->
+<!-- <nav class="mb-6 mt-6">
+  <div class="flex gap-4 border-b-2 border-sky-700 text-xl">
+    <button
+      *ngFor="let tab of tabs"
+      class="py-2 px-4 font-semibold text-sky-700 border-b-2 transition-all duration-200
+             hover:text-sky-900 hover:bg-sky-100"
+      [ngClass]="{
+        'border-sky-700 text-white bg-sky-800 hover:text-white hover:bg-sky-900': isActive(tab.path),
+        'border-transparent': !isActive(tab.path)
+      }"
+      (click)="goTo(tab.path)"
+    >
+      <fa-icon *ngIf="tab.icon" [icon]="tab.icon"></fa-icon>
+      <span *ngIf="tab.icon">&nbsp;</span>{{ tab.label }}
+    </button>
+  </div>
+</nav> -->
+
 <app-edit-doctor-service></app-edit-doctor-service>
 <app-edit-doctor-schedule></app-edit-doctor-schedule>
 <app-doctor-appointment-history></app-doctor-appointment-history>
+<!-- <router-outlet></router-outlet> -->

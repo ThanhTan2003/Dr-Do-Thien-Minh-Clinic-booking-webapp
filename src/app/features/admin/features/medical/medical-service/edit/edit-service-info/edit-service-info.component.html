@@ -1,0 +1,84 @@
+<div class="border border-blue-600 rounded-lg shadow-md relative p-2 mt-8">
+    <!-- Tiêu đề -->
+    <div class="absolute -top-4 left-4 bg-white px-2 text-blue-900 font-bold text-xl">
+        <fa-icon [icon]="faStethoscope"></fa-icon>&nbsp; THÔNG TIN DỊCH VỤ
+    </div>
+
+    <!-- Nội dung -->
+    <div class="flex flex-row gap-6 pt-4 pb-2 items-start pr-2 pl-2" *ngIf="service">
+        <!-- Thông tin -->
+        <div class="w-full">
+            <div class="flex mb-2 items-center">
+                <span class="font-bold min-w-[120px]">Tên dịch vụ:</span>
+                <input type="text" [(ngModel)]="service.serviceName"
+                    class="pl-2 ml-2 p-1 border border-sky-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 w-full" />
+            </div>
+            <div class="flex mb-2 items-start">
+                <span class="font-bold min-w-[120px]">Mô tả:</span>
+                <textarea [(ngModel)]="service.description"
+                    class="pl-2 ml-2 p-1 border border-sky-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
+                    rows="4"></textarea>
+            </div>
+            <div class="grid grid-cols-2 gap-x-8 gap-y-2">
+                <!-- Cột trái -->
+                <div>
+                    
+                    <div class="flex mb-2 items-center">
+                        <span class="font-bold min-w-[120px]">Chuyên môn:</span>
+                        <select [(ngModel)]="service.serviceCategoryId" 
+                            class="pl-1 ml-2 p-1 border border-sky-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 w-full text-sky-900">
+                            <option *ngFor="let category of categories" [value]="category.id">
+                                {{category.categoryName}}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Cột phải -->
+                <div>
+                    <div class="flex mb-2 items-center">
+                        <span class="font-bold min-w-[120px]">Phí khám bệnh:</span>
+                        <input type="text" [(ngModel)]="service.price"
+                            class="pl-2 ml-2 p-1 border border-sky-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 w-full text-amber-900" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Nút Cập nhật và Xóa thông tin -->
+    <div class="flex mb-2 pr-2 pl-2" *ngIf="service">
+        <!-- Bên trái: Nội dung, căn trái -->
+        <div class="w-1/2 flex items-center justify-start text-purple-800">
+            <i><span class="font-semibold">Số lượt khám: </span></i>
+            <i>
+                <span class="flex flex-wrap gap-2 pl-2 font-semibold text-purple-800">
+                    999
+                </span>
+            </i>
+        </div>
+        <!-- Bên phải: Hai nút, căn phải -->
+        <div class="w-1/2 flex items-center justify-end">
+            <div class="flex gap-3">
+                <button (click)="onUpdate()" 
+                    class="bg-sky-600 text-white font-semibold px-4 py-2 rounded-md hover:bg-sky-700 transition">
+                    Cập nhật thông tin &nbsp;<fa-icon [icon]="faPen"></fa-icon>
+                </button>
+                <button (click)="onDelete()"
+                    class="bg-white text-orange-800 border border-orange-800 font-semibold px-4 py-2 rounded-md hover:bg-orange-100 transition">
+                    Xóa thông tin &nbsp;<fa-icon [icon]="faX"></fa-icon>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Confirmation Modal -->
+<app-admin-modal-confirm *ngIf="showConfirmModal" [title]="modalTitle" [content]="modalContent"
+    (confirm)="onConfirmUpdate()" (cancel)="onCancelUpdate()">
+</app-admin-modal-confirm>
+
+<!-- Confirmation Modal Delete -->
+<app-admin-modal-confirm-delete *ngIf="showConfirmModalDelete" [title]="modalTitleDelete" [content]="modalContentDelete"
+    (confirm)="onConfirmDelete()" (cancel)="onCancelDelete()">
+</app-admin-modal-confirm-delete>

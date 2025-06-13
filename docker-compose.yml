@@ -1,0 +1,11 @@
+version: '3.8'
+services:
+  webapp:
+    build:
+      context: .
+      args:
+        - API_BASE_URL=${API_BASE_URL}
+    ports:
+      - "80:80"
+    environment:
+      - API_BASE_URL=${API_BASE_URL} 
