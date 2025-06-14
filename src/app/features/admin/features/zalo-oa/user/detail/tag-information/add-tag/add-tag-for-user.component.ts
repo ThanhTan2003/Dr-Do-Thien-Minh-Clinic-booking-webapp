@@ -69,7 +69,7 @@ export class AddTagForUserComponent implements OnInit {
       },
       error: () => { 
         this.loading = false;
-        this.toastr.error('Không thể tải danh sách tag có sẵn');
+        this.toastr.error('Không thể tải danh sách nhóm đối tượng có sẵn');
       }
     });
   }
@@ -108,14 +108,14 @@ export class AddTagForUserComponent implements OnInit {
     if (!this.tagToAdd) return;
     this.zaloUserTagService.addTagForUser(this.userId, this.tagToAdd.name).subscribe({
       next: () => {
-        this.toastr.success('Thêm tag thành công!');
+        this.toastr.success('Thêm nhóm đối tượng thành công!');
         this.showConfirmAdd = false;
         this.tagToAdd = null;
         this.loadAvailableTags();
         this.tagAdded.emit();
       },
       error: () => {
-        this.toastr.error('Thêm tag thất bại!');
+        this.toastr.error('Thêm nhóm đối tượng thất bại!');
       }
     });
   }

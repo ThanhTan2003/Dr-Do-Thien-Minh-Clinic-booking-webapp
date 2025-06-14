@@ -20,49 +20,24 @@
           <div>
             <div class="flex mb-2 items-center">
               <span class="font-bold min-w-[120px]">Zalo User ID:</span>
-              <input type="text" [value]="user.id || '...'" disabled
-                class="ml-2 p-1 border border-sky-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 w-full" />
+              <input type="text" [value]="user.id || ''" disabled
+                class="ml-2 p-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 w-full" />
             </div>
             <div class="flex mb-2 items-center">
               <span class="font-bold min-w-[120px]">Tên chia sẻ:</span>
-              <input type="text" [value]="user.nameSharedInfo || '...'" disabled
+              <input type="text" [(ngModel)]="formData.nameSharedInfo"
                 class="ml-2 p-1 border border-sky-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 w-full" />
             </div>
 
             <div class="flex mb-2 items-center">
               <span class="font-bold min-w-[120px]">Số điện thoại:</span>
-              <input type="text" [value]="user.phone || '...'" disabled
-                class="ml-2 p-1 border border-sky-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 w-full" />
-            </div>
-            <div class="flex mb-2 align-top">
-              <span class="font-bold min-w-[120px] align-top">Địa chỉ:</span>
-              <textarea disabled
-                class="ml-2 p-1 border border-sky-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
-                rows="3">{{user.address || '...'}}</textarea>
-            </div>
-          </div>
-
-          <!-- Cột phải -->
-          <div>
-            <div class="flex mb-2 items-center">
-              <span class="font-bold min-w-[120px]">Tên hiển thị:</span>
-              <input type="text" [value]="user.displayName || '...'" disabled
+              <input type="text" [(ngModel)]="formData.phone"
                 class="ml-2 p-1 border border-sky-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 w-full" />
             </div>
             <div class="flex mb-2 items-center">
-              <span class="font-bold min-w-[120px]">Bí danh:</span>
-              <input type="text" [value]="user.userAlias || '...'" disabled
-                class="ml-2 p-1 border border-sky-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 w-full" />
-            </div>
-            <div class="flex mb-2 items-center">
-              <span class="font-bold min-w-[120px]">Trạng thái:</span>
-              <input type="text" [value]="user.status ? 'Đã quan tâm' : 'Chưa quan tâm'" disabled
-                class="ml-2 p-1 border border-sky-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 w-full" />
-            </div>
-            <div class="flex mb-2 items-center">
-              <span class="font-bold min-w-[120px]">Tương tác:</span>
+              <span class="font-bold min-w-[120px]">Tương tác cuối:</span>
               <input type="text" [value]="user.userLastInteractionDate || '...'" disabled
-                class="ml-2 p-1 border border-sky-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 w-full" />
+                class="ml-2 p-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 w-full" />
             </div>
             <div class="flex mb-2 align-top">
               <span class="font-bold min-w-[120px]">Đối tượng:</span>
@@ -74,10 +49,101 @@
                 <span *ngIf="!user.tags || user.tags.length === 0" class="text-gray-500">...</span>
               </div>
             </div>
+            <!-- <div class="flex mb-2 items-center">
+              <span class="font-bold min-w-[120px]">Nhắn tin:</span>
+              <input type="text" [value]="'Không thể gửi tin nhắn'" disabled
+                class="ml-2 p-1 border border-sky-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 w-full" />
+            </div> -->
           </div>
+
+          <!-- Cột phải -->
+          <div>
+            <div class="flex mb-2 items-center">
+              <span class="font-bold min-w-[120px]">Tên hiển thị:</span>
+              <input type="text" [value]="user.displayName || ''" disabled
+                class="ml-2 p-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 w-full" />
+            </div>
+            <div class="flex mb-2 items-center">
+              <span class="font-bold min-w-[120px]">Bí danh:</span>
+              <input type="text" [(ngModel)]="formData.userAlias"
+                class="ml-2 p-1 border border-sky-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 w-full" />
+            </div>
+            <div class="flex mb-2 items-center">
+              <span class="font-bold min-w-[120px]">Trạng thái:</span>
+              <input
+                type="text"
+                [value]="user.status ? 'Đã quan tâm' : 'Chưa quan tâm'"
+                disabled
+                class="ml-2 p-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
+                [ngClass]="{
+                  'text-green-700': user.status === true,
+                  'text-orange-600': user.status === false
+                }"
+              />
+            </div>
+            <div class="flex mb-2 align-top">
+              <span class="font-bold min-w-[120px] align-top">Địa chỉ:</span>
+              <textarea
+                [(ngModel)]="formData.address"
+                class="ml-2 p-1 border border-sky-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
+                rows="3"></textarea>
+            </div>
+            
+            <!-- <div class="flex mb-2 align-top">
+              <span class="font-bold min-w-[120px]">Đối tượng:</span>
+              <div class="ml-2 flex flex-wrap gap-2">
+                <span *ngFor="let tag of user.tags"
+                  class="bg-blue-50 text-sky-600 px-2 py-1 font-medium shadow-md hover:shadow-lg transition">
+                  {{tag.name}}
+                </span>
+                <span *ngIf="!user.tags || user.tags.length === 0" class="text-gray-500">...</span>
+              </div>
+            </div> -->
+          </div>
+        </div>
+        <!-- <div class="bg-yellow-50 p-2 border border-yellow-300 rounded-md">
+          <div class="text-sm text-gray-600 text-justify">
+            <b><fa-icon [icon]="faCircleInfo"></fa-icon> Lưu ý:</b> Zalo OA chỉ cho phép gửi tin nhắn cho người dùng có tương tác cuối 3 ngày gần nhất!
+          </div>
+        </div> -->
+      </div>
+    </div>
+
+    <!-- Nút Cập nhật và Xóa thông tin -->
+    <div class="flex mb-2  pr-2" *ngIf="user">
+      <!-- Bên trái: Nội dung aaa, căn trái -->
+      <div class="w-1/2 flex items-center justify-start pl-4">
+        <!-- <span class="font-bold">Đối tượng:</span>
+        <span class="ml-2 flex flex-wrap gap-2">
+          <span *ngFor="let category of user.tags"
+            class="bg-blue-50 text-sky-600 px-2 py-1 font-medium shadow-md hover:shadow-lg transition">
+            {{category.name}}
+          </span>
+        </span> -->
+      </div>
+      <!-- Bên phải: Hai nút, căn phải -->
+      <div class="w-1/2 flex items-center justify-end">
+        <div class="flex gap-3">
+          <button (click)="onUpdateClick()" class="bg-sky-600 text-white font-semibold px-4 py-2 rounded-md hover:bg-sky-700 transition">
+            Cập nhật thông tin &nbsp;<fa-icon [icon]="faPen"></fa-icon>
+          </button>
+          <a [href]="user.chatLink" target="_blank" rel="noopener noreferrer">
+            <button
+            class="bg-white text-sky-800 border border-sky-800 font-semibold px-4 py-2 rounded-md hover:bg-sky-100 transition">
+            Nhắn tin &nbsp;<fa-icon [icon]="faCommentDots"></fa-icon>
+          </button>
+          </a>
         </div>
       </div>
     </div>
-    
   </div>
 </div>
+
+<!-- Modal xác nhận cập nhật -->
+<app-admin-modal-confirm
+  *ngIf="showConfirmModalUpdate"
+  title="Xác nhận cập nhật"
+  content="Bạn có chắc chắn muốn cập nhật thông tin người dùng này?"
+  (confirm)="onConfirmUpdate()"
+  (cancel)="onCancelUpdate()">
+</app-admin-modal-confirm>

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { from, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
 import { HttpService } from '../../../../core/services/http.service';
 import { Patient } from '../../../models/responses/appointment/patient.model';
 import { PatientRequest } from '../../../models/requests/appointment/patient.request';
@@ -18,15 +18,6 @@ export class PatientService {
    */
   getAll(page = 1, size = 10): Observable<PageResponse<Patient>> {
     return this.http.get<PageResponse<Patient>>(`${this.API_URL}?page=${page}&size=${size}`);
-  }
-
-  /**
-   * Tìm bệnh nhân theo từ khoá (có phân trang)
-   */
-  search(keyword = '', page = 1, size = 10): Observable<PageResponse<Patient>> {
-    return this.http.get<PageResponse<Patient>>(
-      `${this.API_URL}/search?keyword=${keyword}&page=${page}&size=${size}`
-    );
   }
 
   /**
@@ -55,5 +46,35 @@ export class PatientService {
    */
   delete(id: string): Observable<string> {
     return this.http.delete<string>(`${this.API_URL}/${id}`);
+  }
+
+  /**
+   * Tìm kiếm bệnh nhân theo từ khóa (có phân trang)
+   */
+  search(keyword = '', page = 1, size = 10): Observable<PageResponse<Patient>> {
+    return this.http.get<PageResponse<Patient>>(
+      `${this.API_URL}/search?keyword=${keyword}&page=${page}&size=${size}`
+    );
+  }
+
+  /**
+   * Lấy danh sách quan hệ bệnh nhân (danh sách các kiểu quan hệ)
+   */
+  getRelationships(): Observable<string[]> {
+    return this.http.get<string[]>(`${this.API_URL}/relationships`);
+  }
+
+  /**
+   * Tìm kiếm bệnh nhân theo zaloUid (có phân trang)
+   */
+  searchByZaloUid(
+    zaloUid: string,
+    keyword = '',
+    page = 1,
+    size = 10
+  ): Observable<PageResponse<Patient>> {
+    return this.http.get<PageResponse<Patient>>(
+      `${this.API_URL}/search-by-zalo-user?zaloUid=${zaloUid}&keyword=${keyword}&page=${page}&size=${size}`
+    );
   }
 }

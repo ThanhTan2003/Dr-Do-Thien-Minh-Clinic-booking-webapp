@@ -116,16 +116,32 @@ export class TagInformationComponent implements OnInit {
   }
 
   deleteTag(): void {
-    if (!this.tagToDelete) return;
+    if (!this.tagToDelete) {
+      console.warn('Không có tag nào được chọn để xoá.');
+      return;
+    }
+  
+    console.log('Bắt đầu xoá tag với tên:', this.tagToDelete.name);
+  
     this.zaloUserTagService.removeTagFromUser(this.userId, this.tagToDelete.name).subscribe({
-      next: () => {
+      next: (res) => {
+        console.log('Xóa thành công. Response:', res);
         this.toastr.success('Xóa tag thành công!');
         this.showConfirmDelete = false;
         this.tagToDelete = null;
         this.loadTags();
       },
-      error: () => {
-        this.toastr.error('Xóa tag thất bại!');
+      error: (error) => {
+        this.showConfirmDelete = false;
+        console.error('Lỗi khi xoá tag:', error);
+  
+        if (error.status === 500 && error.error?.message) {
+          this.toastr.error(error.error.message, 'Lỗi');
+          console.log('Lỗi 500 với message:', error.error.message);
+        } else {
+          this.toastr.error('Không thể xóa tag', 'Lỗi');
+          console.log('Lỗi khác:', error.status);
+        }
       }
     });
   }

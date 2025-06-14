@@ -9,5 +9,7 @@ export interface Patient {
     address: string;
     insuranceId: string;
     image: string;
+    yearOfBirth: string;
+    relationship: string;
   }
   

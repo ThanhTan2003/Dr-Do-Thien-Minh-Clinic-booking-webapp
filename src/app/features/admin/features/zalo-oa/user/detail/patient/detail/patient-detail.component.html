@@ -1,1 +1,80 @@
-<p>Patient Detail</p>
+<div class="fixed inset-0 flex items-center justify-center bg-black/80 z-50">
+    <div class="bg-white rounded-xl shadow-xl w-2/3">
+        <!-- Header -->
+        <div class="bg-sky-600 text-white p-2 rounded-t-xl flex justify-between items-center">
+            <h2 class="text-lg font-bold pl-2">
+                THÔNG TIN HỒ SƠ KHÁM BỆNH
+            </h2>
+            <button
+                (click)="closeModal()"
+                class="text-white bg-transparent hover:bg-red-500 rounded-full p-1 flex items-center justify-center"
+                style="width: 30px; height: 30px;">
+                <fa-icon [icon]="faXmark"></fa-icon>
+            </button>
+        </div>
+
+        <!-- Content -->
+        <div class="p-6">
+            <div class="grid grid-cols-2 gap-6">
+                <!-- Cột trái -->
+                <div>
+                    <div class="mb-4">
+                        <label class="block text-sm font-semibold text-sky-800">Mã hồ sơ</label>
+                        <div class="mt-1 p-2 bg-gray-50 rounded border border-gray-200">
+                            {{ patient?.id }}
+                        </div>
+                    </div>
+                    
+                    
+                    <div class="mb-4">
+                        <label class="block text-sm font-semibold text-sky-800">Ngày sinh</label>
+                        <div class="mt-1 p-2 bg-gray-50 rounded border border-gray-200">
+                            {{ patient?.dateOfBirth }}
+                        </div>
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-sm font-semibold text-sky-800">CCCD/CMND</label>
+                        <div class="mt-1 p-2 bg-gray-50 rounded border border-gray-200">
+                            {{ patient?.identityCard }}
+                        </div>
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-sm font-semibold text-sky-800">Số điện thoại</label>
+                        <div class="mt-1 p-2 bg-gray-50 rounded border border-gray-200">
+                            {{ patient?.phoneNumber }}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cột phải -->
+                <div>
+                    <div class="mb-4">
+                        <label class="block text-sm font-semibold text-sky-800">Họ và tên</label>
+                        <div class="mt-1 p-2 bg-gray-50 rounded border border-gray-200">
+                            {{ patient?.fullName }}
+                        </div>
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-sm font-semibold text-sky-800">Giới tính</label>
+                        <div class="mt-1 p-2 bg-gray-50 rounded border border-gray-200">
+                            {{ patient?.gender }}
+                        </div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label class="block text-sm font-semibold text-sky-800">Mã BHYT</label>
+                        <div class="mt-1 p-2 bg-gray-50 rounded border border-gray-200">
+                            {{ patient?.insuranceId || '...' }}
+                        </div>
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-sm font-semibold text-sky-800">Địa chỉ</label>
+                        <div class="mt-1 p-2 bg-gray-50 rounded border border-gray-200">
+                            {{ patient?.address }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
