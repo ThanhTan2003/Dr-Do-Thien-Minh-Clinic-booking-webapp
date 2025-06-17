@@ -1,12 +1,11 @@
 <div class="fixed inset-0 flex items-center justify-center bg-black/80 z-50">
-    <div class="bg-white rounded-xl shadow-xl w-2/3">
+    <div class="bg-white rounded-xl shadow-xl w-2/3 max-h-[90vh] flex flex-col">
         <!-- Header -->
         <div class="bg-sky-600 text-white p-2 rounded-t-xl flex justify-between items-center">
             <h2 class="text-lg font-bold pl-2">
                 THÔNG TIN HỒ SƠ KHÁM BỆNH
             </h2>
-            <button
-                (click)="closeModal()"
+            <button (click)="closeModal()"
                 class="text-white bg-transparent hover:bg-red-500 rounded-full p-1 flex items-center justify-center"
                 style="width: 30px; height: 30px;">
                 <fa-icon [icon]="faXmark"></fa-icon>
@@ -14,67 +13,135 @@
         </div>
 
         <!-- Content -->
-        <div class="p-6">
+        <div class="p-6 overflow-y-auto flex-grow">
             <div class="grid grid-cols-2 gap-6">
                 <!-- Cột trái -->
                 <div>
-                    <div class="mb-4">
-                        <label class="block text-sm font-semibold text-sky-800">Mã hồ sơ</label>
-                        <div class="mt-1 p-2 bg-gray-50 rounded border border-gray-200">
-                            {{ patient?.id }}
-                        </div>
-                    </div>
-                    
-                    
-                    <div class="mb-4">
-                        <label class="block text-sm font-semibold text-sky-800">Ngày sinh</label>
-                        <div class="mt-1 p-2 bg-gray-50 rounded border border-gray-200">
-                            {{ patient?.dateOfBirth }}
-                        </div>
-                    </div>
-                    <div class="mb-4">
-                        <label class="block text-sm font-semibold text-sky-800">CCCD/CMND</label>
-                        <div class="mt-1 p-2 bg-gray-50 rounded border border-gray-200">
-                            {{ patient?.identityCard }}
-                        </div>
-                    </div>
-                    <div class="mb-4">
-                        <label class="block text-sm font-semibold text-sky-800">Số điện thoại</label>
-                        <div class="mt-1 p-2 bg-gray-50 rounded border border-gray-200">
-                            {{ patient?.phoneNumber }}
-                        </div>
-                    </div>
+                  <div class="mb-4">
+                    <label class="block text-sm font-semibold text-sky-800">Mã hồ sơ</label>
+                    <input type="text" [value]="patient?.id"
+                           readonly
+                           class="mt-1 p-2 bg-gray-50 border border-gray-200 rounded-md w-full" />
+                  </div>
+            
+                  <div class="mb-4">
+                    <label class="block text-sm font-semibold text-sky-800">Ngày sinh</label>
+                    <input type="text" [value]="formatDate(patient?.dateOfBirth || '')"
+                           readonly
+                           class="mt-1 p-2 bg-gray-50 border border-gray-200 rounded-md w-full" />
+                  </div>
+            
+                  <div class="mb-4">
+                    <label class="block text-sm font-semibold text-sky-800">CCCD/CMND</label>
+                    <input type="text" [value]="patient?.identityCard"
+                           readonly
+                           class="mt-1 p-2 bg-gray-50 border border-gray-200 rounded-md w-full" />
+                  </div>
+            
+                  <div class="mb-4">
+                    <label class="block text-sm font-semibold text-sky-800">Mối quan hệ</label>
+                    <input type="text" [value]="patient?.relationship || '...'"
+                           readonly
+                           class="mt-1 p-2 bg-gray-50 border border-gray-200 rounded-md w-full" />
+                  </div>
+            
+                  <div class="mb-4">
+                    <label class="block text-sm font-semibold text-sky-800">Nhóm đối tượng</label>
+                    <textarea rows="3"
+                              class="mt-1 p-2 bg-gray-50 border border-gray-200 rounded-md w-full resize-none"
+                              readonly>{{ patient?.tags?.join(', ') || '...' }}</textarea>
+                  </div>
                 </div>
-
+            
                 <!-- Cột phải -->
                 <div>
-                    <div class="mb-4">
-                        <label class="block text-sm font-semibold text-sky-800">Họ và tên</label>
-                        <div class="mt-1 p-2 bg-gray-50 rounded border border-gray-200">
-                            {{ patient?.fullName }}
-                        </div>
-                    </div>
-                    <div class="mb-4">
-                        <label class="block text-sm font-semibold text-sky-800">Giới tính</label>
-                        <div class="mt-1 p-2 bg-gray-50 rounded border border-gray-200">
-                            {{ patient?.gender }}
-                        </div>
-                    </div>
-                    
-                    <div class="mb-4">
-                        <label class="block text-sm font-semibold text-sky-800">Mã BHYT</label>
-                        <div class="mt-1 p-2 bg-gray-50 rounded border border-gray-200">
-                            {{ patient?.insuranceId || '...' }}
-                        </div>
-                    </div>
-                    <div class="mb-4">
-                        <label class="block text-sm font-semibold text-sky-800">Địa chỉ</label>
-                        <div class="mt-1 p-2 bg-gray-50 rounded border border-gray-200">
-                            {{ patient?.address }}
-                        </div>
-                    </div>
+                  <div class="mb-4">
+                    <label class="block text-sm font-semibold text-sky-800">Họ và tên</label>
+                    <input type="text" [value]="patient?.fullName"
+                           readonly
+                           class="mt-1 p-2 bg-gray-50 border border-gray-200 rounded-md w-full" />
+                  </div>
+            
+                  <div class="mb-4">
+                    <label class="block text-sm font-semibold text-sky-800">Giới tính</label>
+                    <input type="text" [value]="patient?.gender"
+                           readonly
+                           class="mt-1 p-2 bg-gray-50 border border-gray-200 rounded-md w-full" />
+                  </div>
+            
+                  <div class="mb-4">
+                    <label class="block text-sm font-semibold text-sky-800">Mã BHYT</label>
+                    <input type="text" [value]="patient?.insuranceId || '...'"
+                           readonly
+                           class="mt-1 p-2 bg-gray-50 border border-gray-200 rounded-md w-full" />
+                  </div>
+            
+                  <div class="mb-4">
+                    <label class="block text-sm font-semibold text-sky-800">Số điện thoại</label>
+                    <input type="text" [value]="patient?.phoneNumber"
+                           readonly
+                           class="mt-1 p-2 bg-gray-50 border border-gray-200 rounded-md w-full" />
+                  </div>
+            
+                  <div class="mb-4">
+                    <label class="block text-sm font-semibold text-sky-800">Địa chỉ</label>
+                    <textarea rows="3"
+                              class="mt-1 p-2 bg-gray-50 border border-gray-200 rounded-md w-full resize-none"
+                              readonly>{{ patient?.address }}</textarea>
+                  </div>
+                </div>
+              </div>
+
+            <div *ngIf="notes && notes.length > 0">
+                <h3 class="text-lg font-semibold text-sky-800">GHI CHÚ</h3>
+                <hr class="border border-sky-700 mb-2">
+
+                <!-- <div class="flex justify-between items-center mb-4">
+                    <app-page-size-selector
+                        [pageSize]="pageSize"
+                        [options]="pageSizeOptions"
+                        (pageSizeChange)="onPageSizeChange($event)">
+                    </app-page-size-selector>
+                </div> -->
+
+                <div class="overflow-x-auto">
+                    <table class="w-full border-collapse border border-gray-200 shadow-lg rounded-md">
+                        <thead>
+                            <tr class="bg-sky-600 text-white">
+                                <th class="border p-2 text-center">STT</th>
+                                <th class="border p-2 text-left">Nội dung</th>
+                                <th class="border p-2 text-center whitespace-nowrap">Ngày thêm</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngIf="loading">
+                                <td colspan="3" class="text-center p-4 border-gray-400">
+                                    <div class="flex justify-center items-center">
+                                        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-sky-600"></div>
+                                        <span class="ml-2">Đang tải dữ liệu...</span>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr *ngIf="!loading && notes.length === 0">
+                                <td colspan="3" class="text-center p-4 border-gray-400">Không có dữ liệu</td>
+                            </tr>
+                            <tr *ngFor="let note of notes; let i = index">
+                                <td class="border border-gray-400 p-2 text-center">{{ (currentPage - 1) * pageSize + i + 1 }}</td>
+                                <td class="border border-gray-400 p-2 text-justify">{{ note.content }}</td>
+                                <td class="border border-gray-400 p-2 text-center">{{ formatDate(note.createdAt) }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="mt-4">
+                    <app-pagination [totalElements]="totalElements" [currentPage]="currentPage"
+                        [totalPages]="totalPages" (pageChange)="onPageChange($event)">
+                    </app-pagination>
                 </div>
             </div>
+
+            
         </div>
     </div>
 </div>

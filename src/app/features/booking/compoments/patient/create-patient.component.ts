@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router} from '@angular/router';
-import { PatientService } from '../../../shared/services/appointment/patient.service';
-import { PatientRequest } from '../../../models/requests/appointment/patient.request';
+import { PatientService } from '../../../shared/services/patient/patient.service';
+import { PatientRequest } from '../../../models/requests/patient/patient.request';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faArrowLeft, faCircleInfo, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { Location } from '@angular/common';
@@ -31,7 +31,6 @@ export class CreatePatientComponent implements OnInit {
     identityCard: '',
     insuranceId: '',
     address: '',
-    yearOfBirth: 0, //Bo sung sau
     relationship: '' //Bo sung sau
   };
 

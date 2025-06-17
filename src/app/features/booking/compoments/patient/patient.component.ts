@@ -1,8 +1,8 @@
 import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule, NgIf, NgFor } from '@angular/common';
 import { Router, RouterOutlet, ActivatedRoute, RouterLink } from '@angular/router';
-import { PatientService } from '../../../shared/services/appointment/patient.service';
-import { Patient } from '../../../models/responses/appointment/patient.model';
+import { PatientService } from '../../../shared/services/patient/patient.service';
+import { Patient } from '../../../models/responses/patient/patient.model';
 import { DetailPatientComponent } from './detail-patient.component';
 import { FormsModule } from '@angular/forms';
 import { Subject, debounceTime, distinctUntilChanged, takeUntil } from 'rxjs';

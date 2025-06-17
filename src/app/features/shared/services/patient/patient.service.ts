@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { HttpService } from '../../../../core/services/http.service';
-import { Patient } from '../../../models/responses/appointment/patient.model';
-import { PatientRequest } from '../../../models/requests/appointment/patient.request';
+import { Patient } from '../../../models/responses/patient/patient.model';
+import { PatientRequest } from '../../../models/requests/patient/patient.request';
 import { PageResponse } from '../../../models/responses/page-response.model';
 
 @Injectable({
@@ -32,6 +32,13 @@ export class PatientService {
    */
   create(request: PatientRequest): Observable<Patient> {
     return this.http.post<Patient>(this.API_URL, request);
+  }
+
+  /**
+   * Tạo mới bệnh nhân theo ZaloUid
+   */
+  createByZaloUid(zaloUid: string, request: PatientRequest): Observable<Patient> {
+    return this.http.post<Patient>(`${this.API_URL}/${zaloUid}`, request);
   }
 
   /**
@@ -70,11 +77,12 @@ export class PatientService {
   searchByZaloUid(
     zaloUid: string,
     keyword = '',
+    tagName = '',
     page = 1,
     size = 10
   ): Observable<PageResponse<Patient>> {
     return this.http.get<PageResponse<Patient>>(
-      `${this.API_URL}/search-by-zalo-user?zaloUid=${zaloUid}&keyword=${keyword}&page=${page}&size=${size}`
+      `${this.API_URL}/search-by-zalo-user?zaloUid=${zaloUid}&keyword=${keyword}&tagName=${tagName}&page=${page}&size=${size}`
     );
   }
 }

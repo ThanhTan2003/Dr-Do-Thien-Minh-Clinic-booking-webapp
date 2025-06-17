@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { HttpService } from '../../../../core/services/http.service';
-import { PatientNoteRequest } from '../../../models/requests/appointment/patient-note.request';
-import { PatientNoteResponse } from '../../../models/responses/appointment/patient-note.response';
+import { PatientNoteRequest } from '../../../models/requests/patient/patient-note.request';
+import { PatientNoteResponse } from '../../../models/responses/patient/patient-note.response';
 import { PageResponse } from '../../../models/responses/page-response.model';
 
 @Injectable({

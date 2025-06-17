@@ -58,8 +58,12 @@ export class ListUserComponent implements OnInit {
     this.loadUsers();
   }
 
+  ngAfterViewInit(): void {
+    window.scrollTo({ top: 0, behavior: 'smooth' }); // Cuộn mượt về đầu trang
+  }
+
   loadTags(): void {
-    this.tagService.getTags().subscribe({
+    this.tagService.getTags('', 1, 100).subscribe({
       next: (response: PageResponse<TagResponse>) => {
         this.tags = response.data;
       },

@@ -1,0 +1,178 @@
+<div class="fixed inset-0 flex items-center justify-center bg-black/80 z-50">
+    <div class="bg-white rounded-xl shadow-xl w-4/5 max-h-[90vh] flex flex-col">
+        <!-- Header -->
+        <div class="bg-sky-600 text-white p-2 rounded-t-xl flex justify-between items-center">
+            <h2 class="text-lg font-bold pl-2">
+                THÔNG TIN LỊCH HẸN
+            </h2>
+            <button (click)="closeModal()"
+                class="text-white bg-transparent hover:bg-red-500 rounded-full p-1 flex items-center justify-center"
+                style="width: 30px; height: 30px;">
+                <fa-icon [icon]="faXmark"></fa-icon>
+            </button>
+        </div>
+
+        <!-- Content -->
+
+        <div class="p-6 overflow-y-auto flex-grow pt-3">
+            <div *ngIf="loading" class="flex justify-center items-center h-32">
+                <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-sky-600"></div>
+                <span class="ml-2">Đang tải dữ liệu...</span>
+            </div>
+
+            <h2 class="text-lg font-bold text-sky-700">THÔNG TIN HỒ SƠ</h2>
+            <hr class="my-2 border-sky-700">
+            <div *ngIf="!loading && appointment" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
+                <!-- Thông tin cơ bản -->
+                <div class="mb-0">
+                    <label class="block text-sm font-semibold text-sky-800">Mã hồ sơ</label>
+                    <input type="text" [value]="appointment.patientResponse.id" readonly
+                        class="mt-1 p-2 bg-gray-50 border border-gray-200 rounded-md w-full" />
+                </div>
+
+                <div class="mb-0">
+                    <label class="block text-sm font-semibold text-sky-800">Họ tên</label>
+                    <input type="text" [value]="appointment.patientResponse.fullName" readonly
+                        class="mt-1 p-2 bg-gray-50 border border-gray-200 rounded-md w-full fo" />
+                </div>
+
+                <div class="mb-0">
+                    <label class="block text-sm font-semibold text-sky-800">Mối quan hệ</label>
+                    <input type="text" [value]="appointment.patientResponse.relationship" readonly
+                        class="mt-1 p-2 bg-gray-50 border border-gray-200 rounded-md w-full" />
+                </div>
+
+                <div class="mb-0">
+                    <label class="block text-sm font-semibold text-sky-800">Giới tính</label>
+                    <input type="text" [value]="appointment.patientResponse.gender" readonly
+                        class="mt-1 p-2 bg-gray-50 border border-gray-200 rounded-md w-full" />
+                </div>
+
+                <div class="mb-0">
+                    <label class="block text-sm font-semibold text-sky-800">Ngày sinh</label>
+                    <input type="text" [value]="formatDate(appointment.patientResponse.dateOfBirth)" readonly
+                        class="mt-1 p-2 bg-gray-50 border border-gray-200 rounded-md w-full" />
+                </div>
+
+                <div class="mb-0">
+                    <label class="block text-sm font-semibold text-sky-800">Số căn cước</label>
+                    <input type="text" [value]="appointment.patientResponse.identityCard" readonly
+                        class="mt-1 p-2 bg-gray-50 border border-gray-200 rounded-md w-full" />
+                </div>
+
+                <div class="mb-0">
+                    <label class="block text-sm font-semibold text-sky-800">Số thẻ BHYT</label>
+                    <input type="text" [value]="appointment.patientResponse.insuranceId" readonly
+                        class="mt-1 p-2 bg-gray-50 border border-gray-200 rounded-md w-full" />
+                </div>
+
+                <div class="mb-0">
+                    <label class="block text-sm font-semibold text-sky-800">Số điện thoại</label>
+                    <input type="text" [value]="formatPhoneNumber(appointment.patientResponse.phoneNumber)" readonly
+                        class="mt-1 p-2 bg-gray-50 border border-gray-200 rounded-md w-full" />
+                </div>
+
+                <div class="mb-0">
+                    <label class="block text-sm font-semibold text-sky-800">Zalo UID</label>
+                    <input type="text" [value]="appointment.zaloUid" readonly
+                        class="mt-1 p-2 bg-gray-50 border border-gray-200 rounded-md w-full" />
+                </div>
+
+                <!-- <div class="mb-0">
+                    <label class="block text-sm font-semibold text-sky-800">Tên Zalo</label>
+                    <input type="text" [value]="appointment.zaloUid" readonly
+                        class="mt-1 p-2 bg-gray-50 border border-gray-200 rounded-md w-full" />
+                </div> -->
+
+                <div class="mb-0 md:col-span-2 lg:col-span-3">
+                    <label class="block text-sm font-semibold text-sky-800">Địa chỉ</label>
+                    <textarea rows="1" class="mt-1 p-2 bg-gray-50 border border-gray-200 rounded-md w-full"
+                        readonly>{{ appointment.patientResponse.address || 'Không có' }}</textarea>
+                </div>
+
+                <!-- Lời nhắn -->
+                <!-- <div class="mb-0 col-span-1 md:col-span-2 lg:col-span-3">
+                    <label class="block text-sm font-semibold text-sky-800">Lời nhắn</label>
+                    <textarea rows="3" class="mt-1 p-2 bg-gray-50 border border-gray-200 rounded-md w-full resize-none"
+                        readonly>{{ appointment.patientMessage || 'Không có' }}</textarea>
+                </div> -->
+
+                <!-- Ghi chú -->
+                <!-- <div class="mb-0 col-span-1 md:col-span-2 lg:col-span-3">
+                    <label class="block text-sm font-semibold text-sky-800">Ghi chú</label>
+                    <textarea rows="3" class="mt-1 p-2 bg-gray-50 border border-gray-200 rounded-md w-full resize-none"
+                        readonly>{{ appointment.note || 'Không có' }}</textarea>
+                </div> -->
+            </div>
+
+            <h2 class="text-lg font-bold text-sky-700 pt-4">THÔNG TIN ĐẶT LỊCH KHÁM</h2>
+            <hr class="my-2 border-sky-700">
+            <div *ngIf="!loading && appointment" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
+
+                <div class="mb-0 md:col-span-2 lg:col-span-4">
+                    <label class="block text-sm font-semibold text-sky-800">Dịch vụ đặt khám</label>
+                    <textarea rows="1" class="mt-1 p-2 bg-gray-50 border border-gray-200 rounded-md w-full"
+                        readonly>{{ appointment.doctorServiceResponse.serviceResponse.serviceName }}</textarea>
+                </div>
+                <!-- Thông tin cơ bản -->
+                <div class="mb-0">
+                    <label class="block text-sm font-semibold text-sky-800">Mã lịch hẹn</label>
+                    <input type="text" [value]="appointment.id" readonly
+                        class="mt-1 p-2 bg-gray-50 border border-gray-200 rounded-md w-full" />
+                </div>
+
+                <div class="mb-0">
+                    <label class="block text-sm font-semibold text-sky-800">Bác sĩ</label>
+                    <input type="text" [value]="appointment.doctorScheduleResponse.doctorResponse.name" readonly
+                        class="mt-1 p-2 bg-gray-50 border border-gray-200 rounded-md w-full" />
+                </div>
+
+                <div class="mb-0">
+                    <label class="block text-sm font-semibold text-sky-800">Ngày khám</label>
+                    <input type="text" [value]="appointment.appointmentDateName" readonly
+                        class="mt-1 p-2 bg-gray-50 border border-gray-200 rounded-md w-full" />
+                </div>
+
+                <div class="mb-0">
+                    <label class="block text-sm font-semibold text-sky-800">Khung giờ khám</label>
+                    <input type="text" [value]="appointment.doctorScheduleResponse.timeFrameResponse.fullName" readonly
+                        class="mt-1 p-2 bg-gray-50 border border-gray-200 rounded-md w-full" />
+                </div>
+
+                <div class="mb-0">
+                    <label class="block text-sm font-semibold text-sky-800">Thời gian đặt</label>
+                    <input type="text" [value]="formatDateTime(appointment.bookingTime)" readonly
+                        class="mt-1 p-2 bg-gray-50 border border-gray-200 rounded-md w-full" />
+                </div>
+
+                <div class="mb-0">
+                    <label class="block text-sm font-semibold text-sky-800">Trạng thái</label>
+                    <input type="text" [value]="appointment.status" readonly
+                        class="mt-1 p-2 bg-gray-50 border border-gray-200 rounded-md w-full" />
+                </div>
+
+                <div class="mb-0 md:col-span-2 lg:col-span-2">
+                    <label class="block text-sm font-semibold text-sky-800">Lời nhắn của bệnh nhân</label>
+                    <textarea rows="1" class="mt-1 p-2 bg-gray-50 border border-gray-200 rounded-md w-full"
+                        readonly>{{ appointment.patientMessage || '' }}</textarea>
+                </div>
+            </div>
+
+            <h2 class="text-lg font-bold text-sky-700 pt-4">THÔNG TIN SAU KHÁM</h2>
+            <hr class="my-2 border-sky-700">
+            <div *ngIf="!loading && appointment" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
+                <div class="mb-0 md:col-span-2 lg:col-span-2">
+                    <label class="block text-sm font-semibold text-sky-800">Lời nhắn của bác sĩ</label>
+                    <textarea rows="1" class="mt-1 p-2 bg-gray-50 border border-gray-200 rounded-md w-full"
+                        readonly>{{ appointment.doctorMessage || '' }}</textarea>
+                </div>
+
+                <div class="mb-0 md:col-span-2 lg:col-span-2">
+                    <label class="block text-sm font-semibold text-sky-800">Ghi chú</label>
+                    <textarea rows="1" class="mt-1 p-2 bg-gray-50 border border-gray-200 rounded-md w-full"
+                        readonly>{{ appointment.note || '' }}</textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -4,13 +4,13 @@ import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 import { Location } from '@angular/common';
 import { Subject, forkJoin, from, takeUntil } from 'rxjs';
 
-import { Patient } from '../../../models/responses/appointment/patient.model';
+import { Patient } from '../../../models/responses/patient/patient.model';
 import { DoctorService as DoctorServiceModel } from '../../../models/responses/doctor/doctor-service.model';
 import { DoctorSchedule } from '../../../models/responses/doctor/doctor-schedule.model';
 import { AppointmentRequest } from '../../../models/requests/appointment/appointment.request';
 
 import { AppointmentService } from '../../../shared/services/appointment/appointment.service';
-import { PatientService } from '../../../shared/services/appointment/patient.service';
+import { PatientService } from '../../../shared/services/patient/patient.service';
 import { DoctorServiceService } from '../../../shared/services/doctor/doctor-service.service';
 import { DoctorScheduleService } from '../../../shared/services/doctor/doctor-schedule.service';
 

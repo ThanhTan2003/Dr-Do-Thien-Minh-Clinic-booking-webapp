@@ -1,15 +1,11 @@
-export interface Patient {
-    id: string;
-    zaloUid: string;
+export interface PatientRequest {
     fullName: string;
     gender: string;
     phoneNumber: string;
-    dateOfBirth: string;
+    dateOfBirth: string; // yyyy-MM-dd
     identityCard: string;
     address: string;
     insuranceId: string;
-    image: string;
-    yearOfBirth: string;
     relationship: string;
   }
   

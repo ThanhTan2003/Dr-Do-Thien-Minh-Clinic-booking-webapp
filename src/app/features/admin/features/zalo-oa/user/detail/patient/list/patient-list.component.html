@@ -5,7 +5,9 @@
     </div>
     <div class="pt-3 flex justify-between items-center p-2">
       <div class="flex justify-start">
-        <button type="button" class="bg-sky-700 text-white py-2 px-4 rounded hover:bg-sky-800 font-semibold">
+        <button type="button" 
+          class="bg-sky-700 text-white py-2 px-4 rounded hover:bg-sky-800 font-semibold"
+          (click)="showCreatePatientModal()">
           Thêm hồ sơ khám bệnh mới +
         </button>
         <button class="bg-white text-sky-600 py-2 px-4 rounded border border-sky-600 font-bold hover:bg-sky-100 ml-2"
@@ -20,11 +22,37 @@
           (pageSizeChange)="onPageSizeChange($event)">
         </app-page-size-selector>
       </div>
-      <div>
-        <input type="text" placeholder="Nhập từ khóa tìm kiếm"
-          [(ngModel)]="keyword"
-          (keyup.enter)="handleSearch()"
-          class="border p-2 rounded w-64 border-blue-300 text-gray-700" />
+      <div class="flex items-center space-x-2">
+        <!-- Dropdown cho Tags -->
+        <select
+          class="border p-2 rounded border-blue-300 text-sky-800 font-semibold"
+          [(ngModel)]="selectedTag"
+          (change)="handleSearch()"
+        >
+          <option value="">Tất cả nhóm đối tượng</option>
+          <option *ngFor="let tag of tags" [value]="tag">
+            {{tag}}
+          </option>
+        </select>
+
+        <div class="relative w-64">
+          <input
+            type="text"
+            placeholder="Nhập từ khóa tìm kiếm"
+            [(ngModel)]="keyword"
+            (keyup.enter)="handleSearch()"
+            class="border p-2 rounded w-full border-blue-300 text-gray-600 pr-10"
+          />
+          <span class="absolute right-2 top-1/2 -translate-y-1/2 group cursor-pointer">
+            <fa-icon [icon]="faCircleQuestion" class="text-gray-400"></fa-icon>
+            <div
+              class="absolute right-0 mt-2 w-64 p-2 bg-white border border-gray-300 rounded shadow-lg text-sm text-sky-700 z-50 opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity text-justify"
+              style="top: 100%;"
+            >
+              Có thể tìm kiếm theo mã hồ sơ, họ tên, số điện thoại, số căn cước, số thẻ BHYT
+            </div>
+          </span>
+        </div>
         <button type="button" class="bg-sky-700 text-white py-2 px-4 rounded hover:bg-sky-800 ml-2"
           (click)="handleSearch()">
           <fa-icon [icon]="faMagnifyingGlass"></fa-icon>
@@ -37,18 +65,19 @@
           <thead>
             <tr class="bg-sky-600 text-white">
               <th class="border p-2 text-center">STT</th>
-              <th class="border p-2 text-left">Mã hồ sơ</th>
-              <th class="border p-2 text-left">Họ tên</th>
-              <th class="border p-2 text-left">Giới tính</th>
-              <th class="border p-2 text-left">Số điện thoại</th>
-              <th class="border p-2 text-left">Mối quan hệ</th>
-              <th class="border p-2 text-left">Nhóm đối tượng</th>
-              <th class="border p-2 text-center"></th>
+              <th class="border p-2 text-left whitespace-nowrap">Mã hồ sơ</th>
+              <th class="border p-2 text-left whitespace-nowrap">Họ tên</th>
+              <th class="border p-2 text-left whitespace-nowrap">Giới tính</th>
+              <th class="border p-2 text-left whitespace-nowrap">Số điện thoại</th>
+              <th class="border p-2 text-left whitespace-nowrap">Mối quan hệ</th>
+              <th class="border p-2 text-left whitespace-nowrap">Nhóm đối tượng</th>
+              <th class="border p-2 text-center whitespace-nowrap">Đã khám</th>
+              <th class="border p-2 text-center whitespace-nowrap"></th>
             </tr>
           </thead>
           <tbody>
             <tr *ngIf="loading">
-              <td colspan="6" class="text-center p-4 border-gray-400">
+              <td colspan="8" class="text-center p-4 border-gray-400">
                 <div class="flex justify-center items-center">
                   <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-sky-600"></div>
                   <span class="ml-2">Đang tải dữ liệu...</span>
@@ -56,20 +85,31 @@
               </td>
             </tr>
             <tr *ngIf="!loading && patients.length === 0">
-              <td colspan="6" class="text-center p-4 border-gray-400">Không có dữ liệu</td>
+              <td colspan="8" class="text-center p-4 border-gray-400">Không có dữ liệu</td>
             </tr>
             <tr *ngFor="let patient of patients; let i = index">
-              <td class="border p-2 text-center">{{ (currentPage - 1) * pageSize + i + 1 }}</td>
-              <td class="border p-2 text-left whitespace-nowrap">{{ patient.id }}</td>
-              <td class="border p-2 text-left whitespace-nowrap">{{ patient.fullName }}</td>
-              <td class="border p-2 text-left whitespace-nowrap">{{ patient.gender }}</td>
-              <td class="border p-2 text-left whitespace-nowrap">{{ patient.phoneNumber }}</td>
-              <td class="border p-2 text-left whitespace-nowrap">{{ patient.relationship }}</td>
-              <td class="border p-2 text-left whitespace-nowrap">
-                
+              <td class="border border-gray-400 p-2 text-center">{{ (currentPage - 1) * pageSize + i + 1 }}</td>
+              <td class="border border-gray-400 p-2 text-left whitespace-nowrap">{{ patient.id }}</td>
+              <td class="border border-gray-400 p-2 text-left whitespace-nowrap font-semibold text-sky-800">{{ patient.fullName }}</td>
+              <td class="border border-gray-400 p-2 text-left whitespace-nowrap">{{ patient.gender }}</td>
+              <td class="border border-gray-400 p-2 text-left whitespace-nowrap">{{ patient.phoneNumber }}</td>
+              <td class="border border-gray-400 p-2 text-left whitespace-nowrap">{{ patient.relationship }}</td>
+              <td class="border border-gray-400 p-2 text-left whitespace-nowrap">
+                <div *ngIf="patient.tags.length > 0" class="flex flex-wrap space-x-2 justify-start">
+                  <span
+                    *ngFor="let tag of patient.tags"
+                    class="bg-blue-50 text-sky-600 px-3 py-1 rounded-sm font-medium mb-1"
+                    style="margin-left: 8px; white-space: nowrap"
+                  >
+                    {{tag}}
+                  </span>
+                </div>
               </td>
-              <td class="border p-2 text-center whitespace-nowrap w-32">
-                <button class="bg-white text-sky-700 px-3 py-1 rounded border border-sky-700 hover:bg-sky-100"
+              <td class="border p-2 text-center border-gray-400 font-semibold text-purple-800">
+                999
+              </td>
+              <td class="border border-gray-400 p-2 text-center whitespace-nowrap w-32">
+                <button class="bg-white text-sky-700 px-3 py-1 rounded border border-sky-700 hover:bg-sky-100 font-semibold"
                   (click)="showPatientDetail(patient)">
                   Chi tiết <fa-icon [icon]="faCircleInfo"></fa-icon>
                 </button>
@@ -93,4 +133,11 @@
     [patient]="selectedPatient"
     (close)="closeDetailModal()">
   </app-patient-detail>
+
+  <!-- Create Patient Modal -->
+  <app-create-patient
+    *ngIf="showCreateModal"
+    [userId]="userId"
+    (patientCreated)="onPatientCreated()">
+  </app-create-patient>
 </div>

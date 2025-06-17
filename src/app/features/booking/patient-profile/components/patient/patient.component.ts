@@ -7,8 +7,8 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faMagnifyingGlass, faCaretDown, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { DetailPatientComponent } from '../../../compoments/patient/detail-patient.component';
 import { ModalErrorComponent } from '../../../../shared/components/modal-error.component';
-import { PatientService } from '../../../../shared/services/appointment/patient.service';
-import { Patient } from '../../../../models/responses/appointment/patient.model';
+import { PatientService } from '../../../../shared/services/patient/patient.service';
+import { Patient } from '../../../../models/responses/patient/patient.model';
 import { PageResponse } from '../../../../models/responses/page-response.model';
 
 @Component({
