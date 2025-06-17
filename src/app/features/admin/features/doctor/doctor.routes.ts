@@ -39,18 +39,26 @@ export const doctorRoutes: Routes = [
       {
         path: ':doctorId',
         loadComponent: () => import('./edit/edit-doctor.component').then(m => m.EditDoctorComponent),
+        canActivate: [RoleGuard],
+        data: { roles: ADMIN_ROLES },
         children: [
           {
             path: 'dich-vu-kham-benh',
-            loadComponent: () => import('./edit/edit-doctor-service/edit-doctor-service.component').then(m => m.EditDoctorServiceComponent)
+            loadComponent: () => import('./edit/edit-doctor-service/edit-doctor-service.component').then(m => m.EditDoctorServiceComponent),
+            canActivate: [RoleGuard],
+            data: { roles: ADMIN_ROLES }
           },
           {
             path: 'lich-kham',
-            loadComponent: () => import('./edit/edit-doctor-schedule/edit-doctor-schedule.component').then(m => m.EditDoctorScheduleComponent)
+            loadComponent: () => import('./edit/edit-doctor-schedule/edit-doctor-schedule.component').then(m => m.EditDoctorScheduleComponent),
+            canActivate: [RoleGuard],
+            data: { roles: ADMIN_ROLES }
           },
           {
             path: 'lich-su-kham-benh',
-            loadComponent: () => import('./edit/appointment-history/doctor-appointment-history.component').then(m => m.DoctorAppointmentHistoryComponent)
+            loadComponent: () => import('./edit/appointment-history/doctor-appointment-history.component').then(m => m.DoctorAppointmentHistoryComponent),
+            canActivate: [RoleGuard],
+            data: { roles: ADMIN_ROLES }
           }
         ]
       }

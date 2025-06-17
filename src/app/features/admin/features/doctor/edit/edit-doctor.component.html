@@ -11,25 +11,23 @@
 <app-edit-doctor-info></app-edit-doctor-info>
 
 <!-- Menu chuyển tab -->
-<!-- <nav class="mb-6 mt-6">
-  <div class="flex gap-4 border-b-2 border-sky-700 text-xl">
+<!-- Menu chuyển tab -->
+<nav class="mb-6 mt-6">
+  <div class="flex gap-2 border-b-2 border-sky-700">
     <button
       *ngFor="let tab of tabs"
-      class="py-2 px-4 font-semibold text-sky-700 border-b-2 transition-all duration-200
-             hover:text-sky-900 hover:bg-sky-100"
+      class="py-2 px-4 font-bold border-b-2 transition-colors duration-200
+             hover:text-sky-900"
       [ngClass]="{
-        'border-sky-700 text-white bg-sky-800 hover:text-white hover:bg-sky-900': isActive(tab.path),
-        'border-transparent': !isActive(tab.path)
+        'border-b-cyan-700 text-white bg-cyan-800 hover:bg-cyan-900 hover:text-white': isActive(tab.path),
+        'border border-transparent text-cyan-700 hover:border hover:border-cyan-700 hover:bg-cyan-50': !isActive(tab.path)
       }"
       (click)="goTo(tab.path)"
     >
-      <fa-icon *ngIf="tab.icon" [icon]="tab.icon"></fa-icon>
-      <span *ngIf="tab.icon">&nbsp;</span>{{ tab.label }}
+      <fa-icon *ngIf="tab.icon" [icon]="tab.icon" class="mr-1"></fa-icon>
+      {{ tab.label }}
     </button>
   </div>
-</nav> -->
+</nav>
 
-<app-edit-doctor-service></app-edit-doctor-service>
-<app-edit-doctor-schedule></app-edit-doctor-schedule>
-<app-doctor-appointment-history></app-doctor-appointment-history>
-<!-- <router-outlet></router-outlet> -->
+<router-outlet></router-outlet>

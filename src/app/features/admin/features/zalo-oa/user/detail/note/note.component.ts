@@ -27,7 +27,7 @@ export class NoteComponent implements OnInit {
     ) {}
 
     ngOnInit(): void {
-        this.userId = this.route.snapshot.paramMap.get('userId') || '';
+        this.userId = this.route.parent?.snapshot.paramMap.get('userId') || '';
         this.loadNotes();
     }
 

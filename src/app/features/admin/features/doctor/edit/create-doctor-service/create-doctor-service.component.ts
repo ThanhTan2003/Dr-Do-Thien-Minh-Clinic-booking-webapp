@@ -2,7 +2,7 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { faPlus, faRefresh, faMagnifyingGlass, faX, faFileMedical, faCircleInfo } from '@fortawesome/free-solid-svg-icons';
+import { faPlus, faRefresh, faMagnifyingGlass, faX, faFileMedical, faCircleInfo, faCircleQuestion } from '@fortawesome/free-solid-svg-icons';
 import { ServiceCategoryService } from '../../../../../shared/services/medical/service-category.service';
 import { ServiceService } from '../../../../../shared/services/medical/service.service';
 import { DoctorServiceService } from '../../../../../shared/services/doctor/doctor-service.service';
@@ -42,6 +42,8 @@ export class CreateDoctorServiceComponent implements OnInit {
   faX = faX;
   faFileMedical = faFileMedical;
   faCircleInfo = faCircleInfo;
+  faCircleQuestion = faCircleQuestion;
+
   // Data
   services: Service[] = [];
   serviceCategories: ServiceCategory[] = [];

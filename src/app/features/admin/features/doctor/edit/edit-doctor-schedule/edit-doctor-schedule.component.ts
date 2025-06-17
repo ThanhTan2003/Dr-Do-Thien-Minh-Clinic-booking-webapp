@@ -78,7 +78,7 @@ export class EditDoctorScheduleComponent implements OnInit {
         const level1 = this.route.parent?.snapshot.paramMap;          // DanhSachBacSiComponent chứa :doctorId
         const level2 = this.route.parent?.parent?.snapshot.paramMap;  // Nếu có, ví dụ cấp trên nữa
 
-        this.doctorId = current?.get('doctorId') || '';
+        this.doctorId = this.route.parent?.snapshot.paramMap?.get('doctorId') || '';
         console.log('doctorId', this.doctorId);
       if (this.doctorId) {
         this.loadInitData();

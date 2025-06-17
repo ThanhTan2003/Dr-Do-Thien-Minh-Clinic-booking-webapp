@@ -49,8 +49,25 @@
     </div>
 
     <div class="flex items-center space-x-2">
-      <input type="text" placeholder="Nhập từ khóa tìm kiếm" [(ngModel)]="keyword" (keyup.enter)="handleSearch()"
-        class="border p-2 rounded w-64 border-blue-300 text-gray-600" />
+      <div class="relative w-64">
+        <input type="text" placeholder="Nhập từ khóa tìm kiếm" [(ngModel)]="keyword" (keyup.enter)="handleSearch()"
+          class="border p-2 rounded w-full border-blue-300 text-gray-600 pr-10" />
+
+        <!-- Tooltip icon -->
+        <div class="absolute right-2 top-1/2 -translate-y-1/2 group">
+          <fa-icon [icon]="faCircleQuestion" class="text-gray-400 cursor-pointer"></fa-icon>
+
+          <!-- Tooltip content -->
+          <div
+            class="absolute left-[-230px] mt-2 w-63 p-3 bg-white border border-gray-300 rounded shadow-lg text-sm text-sky-700 z-50 opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity"
+            style="top: 100%; white-space: normal;">
+            <p class="font-semibold text-sky-800 mb-1">Có thể tìm kiếm theo:</p>
+            <ul class="list-disc list-inside text-justify space-y-1">
+              <li>Tên chuyên môn</li>
+            </ul>
+          </div>
+        </div>
+      </div>
       <button type="button" (click)="handleSearch()" class="bg-sky-600 text-white py-2 px-4 rounded hover:bg-sky-700">
         <fa-icon [icon]="faMagnifyingGlass"></fa-icon>
       </button>
@@ -58,7 +75,7 @@
   </div>
 
   <!-- Data Table -->
-  <div class="relative">
+  <div class="overflow-x-auto">
     <div class="">
       <table class="w-full border-collapse border border-gray-200 shadow-lg rounded-md">
         <thead>

@@ -95,11 +95,17 @@ export class EditDoctorInfoComponent implements OnInit, OnDestroy {
 
   getDoctorImage(doctor: Doctor): string {
     return (
-      doctor.image ||
-      (doctor.gender === 'Nam'
+      doctor.gender === 'Nam'
         ? '/images/default-male-doctor.jpg'
-        : '/images/default-female-doctor.jpg')
+        : '/images/default-female-doctor.jpg'
     );
+
+    // return (
+    //   doctor.image ||
+    //   (doctor.gender === 'Nam'
+    //     ? '/images/default-male-doctor.jpg'
+    //     : '/images/default-female-doctor.jpg')
+    // );
   }
 
   onUpdate(): void {

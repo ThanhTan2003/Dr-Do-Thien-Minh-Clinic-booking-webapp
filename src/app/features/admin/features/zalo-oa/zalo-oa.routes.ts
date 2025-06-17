@@ -18,7 +18,33 @@ export const zaloOARoutes: Routes = [
         path: ':userId',
         loadComponent: () => import('./user/detail/detail-user.component').then(m => m.DetailUserComponent),
         canActivate: [RoleGuard],
-        data: { roles: ADMIN_MARKETING_ROLES }
+        data: { roles: ADMIN_MARKETING_ROLES },
+        children: [
+          {
+            path: 'nhom-doi-tuong',
+            loadComponent: () => import('./user/detail/tag-information/tag-information.component').then(m => m.TagInformationComponent),
+            canActivate: [RoleGuard],
+            data: { roles: ADMIN_MARKETING_ROLES }
+          },
+          {
+            path: 'ghi-chu',
+            loadComponent: () => import('./user/detail/note/note.component').then(m => m.NoteComponent),
+            canActivate: [RoleGuard],
+            data: { roles: ADMIN_MARKETING_ROLES }
+          },
+          {
+            path: 'ho-so-kham-benh',
+            loadComponent: () => import('./user/detail/history-appointment/history-appointment.component').then(m => m.HistoryAppointmentComponent),
+            canActivate: [RoleGuard],
+            data: { roles: ADMIN_MARKETING_ROLES }
+          },
+          {
+            path: 'lich-su-kham-benh',
+            loadComponent: () => import('./user/detail/history-appointment/history-appointment.component').then(m => m.HistoryAppointmentComponent),
+            canActivate: [RoleGuard],
+            data: { roles: ADMIN_MARKETING_ROLES }
+          }
+        ]
       }
     ]
   },

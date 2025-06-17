@@ -10,7 +10,7 @@ import { ServiceCategory } from '../../../../../models/responses/medical/service
 import { DoctorServiceStatus } from '../../../../../models/responses/doctor/doctor-service-status.model';
 import { DoctorServiceRequest } from '../../../../../models/requests/doctor/doctor-service.request';
 import { PageResponse } from '../../../../../models/responses/page-response.model';
-import { faPlus, faRefresh, faPen, faMagnifyingGlass, faX, faFileMedical, faClockRotateLeft } from '@fortawesome/free-solid-svg-icons';
+import { faPlus, faRefresh, faPen, faMagnifyingGlass, faX, faFileMedical, faClockRotateLeft, faCircleQuestion } from '@fortawesome/free-solid-svg-icons';
 import { PageSizeSelectorComponent } from '../../../../shared/components/page-size-selector/page-size-selector.component';
 import { PaginationComponent } from '../../../../shared/components/pagination/pagination.component';
 import { AdminModalConfirmComponent } from '../../../../shared/components/modal-confirm/admin-modal-confirm.component';
@@ -47,6 +47,7 @@ export class EditDoctorServiceComponent implements OnInit {
   faX = faX;
   faFileMedical = faFileMedical;
   faClockRotateLeft = faClockRotateLeft;
+  faCircleQuestion = faCircleQuestion;
 
   // Doctor ID from route
   doctorId: string | null = null;
@@ -61,7 +62,7 @@ export class EditDoctorServiceComponent implements OnInit {
   keyword: string = '';
   selectedCategoryId: string = '';
   selectedStatus: string = '';
-  pageSize: number = 5;
+  pageSize: number = 10;
   pageSizeOptions: number[] = [5, 10, 20, 50, 100];
   currentPage: number = 1;
   totalItems: number = 0;
@@ -98,7 +99,7 @@ export class EditDoctorServiceComponent implements OnInit {
         const level1 = this.route.parent?.snapshot.paramMap;          // DanhSachBacSiComponent chứa :doctorId
         const level2 = this.route.parent?.parent?.snapshot.paramMap;  // Nếu có, ví dụ cấp trên nữa
 
-        this.doctorId = current?.get('doctorId') || '';
+        this.doctorId = this.route.parent?.snapshot.paramMap?.get('doctorId') || '';
         console.log('doctorId', this.doctorId);
 
 

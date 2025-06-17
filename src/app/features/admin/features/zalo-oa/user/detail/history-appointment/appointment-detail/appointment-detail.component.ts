@@ -1,7 +1,7 @@
 import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { faXmark } from '@fortawesome/free-solid-svg-icons';
+import { faXmark, faIdCard, faCalendarCheck, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import { Appointment } from '../../../../../../../models/responses/appointment/appointment.model';
 import { AppointmentService } from '../../../../../../../shared/services/appointment/appointment.service';
 
@@ -16,10 +16,28 @@ export class AppointmentDetailComponent implements OnInit {
   @Output() close = new EventEmitter<void>();
 
   faXmark = faXmark;
+  faIdCard = faIdCard;
+  faCalendarCheck = faCalendarCheck;
+  faInfoCircle = faInfoCircle;
+  
   appointment: Appointment | null = null;
   loading: boolean = false;
 
   constructor(private appointmentService: AppointmentService) {}
+
+  // Mảng trạng thái và màu sắc tương ứng
+  statusColorMap: { [key: string]: string } = {
+    "Chờ xác nhận": "text-orange-700",
+    "Đã xác nhận": "text-green-700",
+    "Đã huỷ": "text-red-700",
+    "Chờ khám": "text-purple-700",
+    "Đã khám": "text-blue-700 border"
+  };
+
+  // Hàm trả về màu sắc, nếu không có trong danh sách thì trả về màu xám
+  getStatusClass(status: string): string {
+    return this.statusColorMap[status] || 'text-gray-700';  // Màu xám cho trường hợp không xác định
+  }
 
   ngOnInit(): void {
     if (this.appointmentId) {

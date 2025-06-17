@@ -5,7 +5,7 @@ import { TagService } from '../../../../../../../shared/services/zalo_oa/user/ta
 import { TagResponse } from '../../../../../../../models/responses/zalo_oa/user/tag-response.model';
 import { PageResponse } from '../../../../../../../models/responses/page-response.model';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { faCircleInfo, faPlus, faXmark, faRotate, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
+import { faCircleInfo, faPlus, faXmark, faRotate, faMagnifyingGlass, faCircleQuestion } from '@fortawesome/free-solid-svg-icons';
 import { ToastrService } from 'ngx-toastr';
 import { PaginationComponent } from '../../../../../../shared/components/pagination/pagination.component';
 import { PageSizeSelectorComponent } from '../../../../../../shared/components/page-size-selector/page-size-selector.component';
@@ -46,6 +46,7 @@ export class AddTagForUserComponent implements OnInit {
   faXmark = faXmark;
   faRotate = faRotate;
   faMagnifyingGlass = faMagnifyingGlass;
+  faCircleQuestion = faCircleQuestion;
 
   constructor(
     private tagService: TagService,

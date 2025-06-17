@@ -14,9 +14,12 @@ import {
   faRotate, 
   faPlus,
   faMagnifyingGlass, 
-  faPenToSquare
+  faPenToSquare,
+  faCircleQuestion
 } from '@fortawesome/free-solid-svg-icons';
-import { CreateMedicalServiceComponent } from '../create/create-medical-service.component';
+import { CreateMedicalServiceComponent
+
+ } from '../create/create-medical-service.component';
 
 @Component({
   selector: 'app-list-medical-service-crud',
@@ -38,6 +41,7 @@ export class ListMedicalServiceCrudComponent implements OnInit {
   faMagnifyingGlass = faMagnifyingGlass;
   faPlus = faPlus;
   faPenToSquare = faPenToSquare;
+  faCircleQuestion = faCircleQuestion;
 
   services: Service[] = [];
   categories: ServiceCategory[] = [];

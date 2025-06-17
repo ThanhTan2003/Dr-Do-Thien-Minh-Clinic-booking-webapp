@@ -8,7 +8,7 @@ import { TagResponse } from '../../../../../../models/responses/zalo_oa/user/tag
 import { PageResponse } from '../../../../../../models/responses/page-response.model';
 import { ToastrService } from 'ngx-toastr';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { faMagnifyingGlass, faXmark, faPeopleGroup, faRotate, faPlus } from '@fortawesome/free-solid-svg-icons';
+import { faMagnifyingGlass, faXmark, faPeopleGroup, faRotate, faPlus, faCircleQuestion } from '@fortawesome/free-solid-svg-icons';
 import { AdminModalConfirmComponent } from '../../../../../shared/components/modal-confirm/admin-modal-confirm.component';
 import { AdminModalConfirmDeleteComponent } from '../../../../../shared/components/modal-confirm-delete/admin-modal-confirm-delete.component';
 import { PaginationComponent } from '../../../../../shared/components/pagination/pagination.component';
@@ -50,6 +50,7 @@ export class TagInformationComponent implements OnInit {
   faPeopleGroup = faPeopleGroup;
   faRotate = faRotate;
   faPlus = faPlus;
+  faCircleQuestion = faCircleQuestion;
 
   constructor(
     private route: ActivatedRoute,
@@ -59,7 +60,7 @@ export class TagInformationComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.userId = this.route.snapshot.paramMap.get('userId') || '';
+    this.userId = this.route.parent?.snapshot.paramMap.get('userId') || '';
     this.loadTags();
   }
 

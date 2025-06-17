@@ -2,13 +2,9 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterOutlet, ActivatedRoute } from '@angular/router';
 import { EditDoctorInfoComponent } from './edit-doctor-info/edit-doctor-info.component';
-import { EditDoctorServiceComponent } from './edit-doctor-service/edit-doctor-service.component';
-import { EditDoctorScheduleComponent } from './edit-doctor-schedule/edit-doctor-schedule.component';
-import { DoctorAppointmentHistoryComponent } from './appointment-history/doctor-appointment-history.component';
 import { Location } from '@angular/common';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { faFileMedical, faArrowLeft, faCalendarDays } from '@fortawesome/free-solid-svg-icons';
-import { ScrollPositionService } from '../scroll-position.service';
+import { faFileMedical, faArrowLeft, faCalendarDays, faStethoscope, faUmbrellaBeach, faHistory } from '@fortawesome/free-solid-svg-icons';
 import { FormsModule } from '@angular/forms';
 import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
@@ -23,22 +19,21 @@ import { Subject } from 'rxjs';
     RouterOutlet,
     // Import các component con để sử dụng trong template
     EditDoctorInfoComponent,
-    EditDoctorServiceComponent,
-    EditDoctorScheduleComponent,
-    DoctorAppointmentHistoryComponent,
     FontAwesomeModule
   ],
   templateUrl: './edit-doctor.component.html'
 })
 export class EditDoctorComponent implements OnInit {
   faArrowLeft = faArrowLeft;
-  private parentScrollKey = 'list-doctor-crud';
   doctorId: string | null = null;
   private destroy$ = new Subject<void>();
 
   faFileMedical = faFileMedical;
   faCalendarDays = faCalendarDays;
-
+  faStethoscope = faStethoscope;
+  faUmbrellaBeach = faUmbrellaBeach;
+  faHistory = faHistory;
+  
   tabs = [
     {
       label: 'DỊCH VỤ KHÁM BỆNH',
@@ -46,22 +41,30 @@ export class EditDoctorComponent implements OnInit {
       icon: this.faFileMedical,
     },
     {
-      label: 'LỊCH KHÁM BỆNH',
+      label: 'LỊCH LÀM VIỆC',
       path: 'lich-kham',
       icon: this.faCalendarDays,
-      color: 'cyan'
+    },
+    {
+      label: 'LỊCH KHÁM THEO NGÀY',
+      path: 'lich-kham-theo-ngay',
+      icon: this.faStethoscope,
+    },
+    {
+      label: 'NGHỈ PHÉP',
+      path: 'nghi-phep',
+      icon: this.faUmbrellaBeach,
     },
     {
       label: 'LỊCH SỬ KHÁM',
       path: 'lich-su-kham-benh',
-      icon: null,
+      icon: faHistory,
     }
   ];
   
 
   constructor(
     private location: Location,
-    private scrollService: ScrollPositionService,
     private router: Router,
     private route: ActivatedRoute
   ) {}

@@ -67,7 +67,7 @@ export class HistoryAppointmentComponent implements OnInit {
     private appointmentService: AppointmentService) {}
 
   ngOnInit(): void {
-    this.userId = this.route.snapshot.paramMap.get('userId') || '';
+    this.userId = this.route.parent?.snapshot.paramMap.get('userId') || '';
     this.loadStatuses();
     this.loadAppointments();
   }

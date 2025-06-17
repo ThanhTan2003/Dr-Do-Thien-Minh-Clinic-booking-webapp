@@ -13,7 +13,8 @@ import {
   faPlus,
   faMagnifyingGlass, 
   faPenToSquare,
-  faTrash
+  faTrash,
+  faCircleQuestion
 } from '@fortawesome/free-solid-svg-icons';
 import { CreateServiceTypeComponent } from '../create/create-service-type.component';
 import { UpdateServiceTypeComponent } from '../update/update-service-type.component';
@@ -45,6 +46,7 @@ export class ListServiceTypeCrudComponent implements OnInit {
   faPlus = faPlus;
   faPenToSquare = faPenToSquare;
   faTrash = faTrash;
+  faCircleQuestion = faCircleQuestion;
 
   categories: ServiceCategory[] = [];
   keyword: string = '';
