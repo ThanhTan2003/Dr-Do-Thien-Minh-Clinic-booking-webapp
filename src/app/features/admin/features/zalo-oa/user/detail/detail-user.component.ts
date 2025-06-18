@@ -63,7 +63,14 @@ export class DetailUserComponent implements OnInit {
     this.route.paramMap.pipe(takeUntil(this.destroy$)).subscribe((params) => {
       this.userId = params.get('userId');
       if (this.userId) {
-        this.goTo('nhom-doi-tuong');
+        // Kiểm tra xem có route con nào đang active không
+        const currentPath = this.router.url.split('/').pop();
+        const isValidPath = this.tabs.some(tab => tab.path === currentPath);
+        
+        // Nếu không có route con nào active hoặc route không hợp lệ, mới chuyển về tab mặc định
+        if (!currentPath || !isValidPath) {
+          this.goTo('nhom-doi-tuong');
+        }
       }
     });
   }
@@ -85,7 +92,8 @@ export class DetailUserComponent implements OnInit {
     return this.router.url.includes(path);
   }
 
-  ngDestroy(): void {
-    
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 } 

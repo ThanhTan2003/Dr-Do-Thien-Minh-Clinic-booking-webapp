@@ -34,7 +34,7 @@ export const zaloOARoutes: Routes = [
           },
           {
             path: 'ho-so-kham-benh',
-            loadComponent: () => import('./user/detail/history-appointment/history-appointment.component').then(m => m.HistoryAppointmentComponent),
+            loadComponent: () => import('./user/detail/patient/list/patient-list.component').then(m => m.PatientListComponent),
             canActivate: [RoleGuard],
             data: { roles: ADMIN_MARKETING_ROLES }
           },

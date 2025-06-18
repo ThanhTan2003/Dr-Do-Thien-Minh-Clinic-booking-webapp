@@ -92,6 +92,7 @@ export class EditDoctorServiceComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    //window.scrollTo({ top: 0, behavior: 'smooth' });
     this.route.paramMap
       .pipe(takeUntil(this.destroy$))
       .subscribe(params => {

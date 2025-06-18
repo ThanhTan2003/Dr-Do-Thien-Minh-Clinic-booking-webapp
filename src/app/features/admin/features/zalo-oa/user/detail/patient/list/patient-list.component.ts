@@ -59,7 +59,7 @@ export class PatientListComponent implements OnInit {
     ) {}
 
     ngOnInit(): void {
-        this.userId = this.route.snapshot.paramMap.get('userId') || '';
+        this.userId = this.route.snapshot.parent?.paramMap.get('userId') || '';
         this.loadTags();
         this.loadPatients();
     }

@@ -56,7 +56,7 @@ export const doctorRoutes: Routes = [
           },
           {
             path: 'lich-su-kham-benh',
-            loadComponent: () => import('./edit/appointment-history/doctor-appointment-history.component').then(m => m.DoctorAppointmentHistoryComponent),
+            loadComponent: () => import('./edit/appointment/appointment-history/appointment-history.component').then(m => m.DoctorAppointmentHistoryComponent),
             canActivate: [RoleGuard],
             data: { roles: ADMIN_ROLES }
           }
