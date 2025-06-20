@@ -51,9 +51,8 @@ export class HistoryAppointmentComponent implements OnInit {
   // Mảng trạng thái và màu sắc tương ứng
   statusColorMap: { [key: string]: string } = {
     "Chờ xác nhận": "bg-orange-50 text-orange-600 border border-orange-600",
-    "Đã xác nhận": "bg-green-50 text-green-600 border border-green-600",
+    "Chờ khám": "bg-green-50 text-green-600 border border-green-600",
     "Đã huỷ": "bg-red-50 text-red-600 border border-red-600",
-    "Chờ khám": "bg-purple-50 text-purple-600 border border-purple-600",
     "Đã khám": "bg-blue-50 text-blue-600 border border-blue-600"
   };
 

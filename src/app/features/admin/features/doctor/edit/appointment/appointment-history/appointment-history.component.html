@@ -1,99 +1,103 @@
-<div class="border border-blue-600 rounded-lg shadow-md relative mt-10">
-    <!-- Tiêu đề -->
-    <div class="absolute -top-4 left-4 bg-white px-2 text-blue-900 font-bold text-xl">
-        LỊCH SỬ KHÁM BỆNH
+<div class="mx-auto p-0">
+  <!-- Filter Section -->
+  <div class="flex justify-between items-center mb-4">
+    <!-- Left side filters -->
+    <div class="flex items-center">
+      <button class="bg-white text-sky-700 py-2 px-4 rounded border border-sky-700 font-bold hover:bg-sky-100"
+        title="Làm mới danh sách" (click)="refreshList()">
+        Tải lại dữ liệu &nbsp; <fa-icon [icon]="faRotate"></fa-icon>
+      </button>
+      <app-page-size-selector class="ml-4" [pageSize]="pageSize" [options]="pageSizeOptions"
+        (pageSizeChange)="onPageSizeChange($event)">
+      </app-page-size-selector>
     </div>
-    
-    <div class="mx-auto p-4 mt-4">
-        <!-- Filter Section -->
-        <div class="flex justify-between items-center mb-4">
-          <!-- Left side filters -->
-          <div class="flex items-center space-x-2">
-            <span class="font-medium text-gray-900">Từ ngày</span>
-            <input type="date" class="border p-2 rounded border-blue-300 text-gray-900" />
-            <span class="font-medium text-gray-900">đến</span>
-            <input type="date" class="border p-2 rounded border-blue-300 text-gray-900" />
-            <button class="bg-white text-sky-600 py-2 px-4 rounded border border-sky-600 font-bold hover:bg-sky-100">
-              Tải lại
-            </button>
-          </div>
-          
-      
-          <!-- Right side filters -->
-          <div class="flex items-center space-x-2">
-            <select class="border p-2 rounded border-blue-300 text-gray-600">
-              <option value="">Tất cả trạng thái</option>
-              <option value="done">Đã khám</option>
-              <option value="pending">Chưa khám</option>
-              <option value="cancel">Đã hủy</option>
-            </select>
-            <input type="text" placeholder="Nhập từ khóa..."
-              class="border p-2 rounded w-64 border-blue-300 text-gray-600" />
-            <button type="button" class="bg-sky-600 text-white py-2 px-4 rounded hover:bg-sky-700">
-              Tìm
-            </button>
-          </div>
-        </div>
-      
-        <!-- Data Table -->
-        <div class="overflow-x-auto">
-          <table class="w-full border-collapse border border-gray-200 shadow-lg rounded-md">
-            <thead>
-              <tr class="bg-sky-600 text-white">
-                <th class="border p-2 text-center">STT</th>
-                <th class="border p-2 text-left whitespace-nowrap">Mã lịch hẹn</th>
-                <th class="border p-2 text-left whitespace-nowrap">Dịch vụ</th>
-                <th class="border p-2 text-left whitespace-nowrap">Bệnh nhân</th>
-                <th class="border p-2 text-left whitespace-nowrap">Ngày khám</th>
-                <th class="border p-2 text-left whitespace-nowrap">Trạng thái</th>
-                <th class="border p-2 text-center whitespace-nowrap"></th>
-              </tr>
-            </thead>
-            <tbody class="border border-gray-400">
-              <tr>
-                <td class="border border-gray-400 p-2 text-center">1</td>
-                <td class="border border-gray-400 p-2 text-left font-semibold">HS12345</td>
-                <td class="border border-gray-400 p-2 text-left font-semibold text-sky-900">Khám tổng quát</td>
-                <td class="border border-gray-400 p-2 text-left">Nguyễn Văn A</td>
-                <td class="border border-gray-400 p-2 text-left">06/06/2025</td>
-                <td class="border border-gray-400 p-2 text-left">Đã khám</td>
-                <td class="border border-gray-400 p-2 text-center">
-                  <button class="bg-white text-sky-600 px-3 py-1 rounded border border-sky-600 hover:bg-sky-700 hover:text-white font-semibold">
-                    Chi tiết
-                  </button>
-                </td>
-              </tr>
-              <tr>
-                <td class="border border-gray-400 p-2 text-center">2</td>
-                <td class="border border-gray-400 p-2 text-left font-semibold">HS12345</td>
-                <td class="border border-gray-400 p-2 text-left font-semibold text-sky-900">Khám tai mũi họng</td>
-                <td class="border border-gray-400 p-2 text-left">Trần Thị B</td>
-                <td class="border border-gray-400 p-2 text-left">05/06/2025</td>
-                <td class="border border-gray-400 p-2 text-left">Chưa khám</td>
-                <td class="border border-gray-400 p-2 text-center">
-                  <button class="bg-white text-sky-600 px-3 py-1 rounded border border-sky-600 hover:bg-sky-700 hover:text-white font-semibold">
-                    Chi tiết
-                  </button>
-                </td>
-              </tr>
-              <tr>
-                <td class="border border-gray-400 p-2 text-center">3</td>
-                <td class="border border-gray-400 p-2 text-left font-semibold">HS12345</td>
-                <td class="border border-gray-400 p-2 text-left font-semibold text-sky-900">Khám da liễu</td>
-                <td class="border border-gray-400 p-2 text-left">Lê Văn C</td>
-                <td class="border border-gray-400 p-2 text-left">04/06/2025</td>
-                <td class="border border-gray-400 p-2 text-left">Đã hủy</td>
-                <td class="border border-gray-400 p-2 text-center">
-                  <button class="bg-white text-sky-600 px-3 py-1 rounded border border-sky-600 hover:bg-sky-700 hover:text-white font-semibold">
-                    Chi tiết
-                  </button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      
-      </div>
-</div>
 
-  
+    <!-- Right side filters -->
+    <div class="flex items-center space-x-2">
+      <div class="relative w-64">
+        <input type="text" placeholder="Nhập từ khóa tìm kiếm" [(ngModel)]="keyword" (keyup.enter)="handleSearch()"
+          class="border p-2 rounded w-full border-blue-300 text-gray-600 pr-10" />
+
+        <!-- Group bao icon và tooltip -->
+        <div class="absolute right-2 top-1/2 -translate-y-1/2 group">
+          <fa-icon [icon]="faCircleQuestion" class="text-gray-400 cursor-pointer"></fa-icon>
+
+          <!-- Tooltip -->
+          <div
+            class="absolute left-[-230px] mt-2 w-63 p-3 bg-white border border-gray-300 rounded shadow-lg text-sm text-sky-700 z-50 opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity"
+            style="top: 100%; white-space: normal;">
+            <p class="font-semibold text-sky-800 mb-1">Có thể tìm kiếm theo:</p>
+            <ul class="list-disc list-inside text-justify space-y-1">
+              <li>Mã lịch hẹn</li>
+              <li>Mã hồ sơ</li>
+              <li>Tên bệnh nhân</li>
+              <li>Dịch vụ khám</li>
+          </ul>
+          </div>
+        </div>
+      </div>
+      <button type="button" class="bg-sky-700 text-white py-2 px-4 rounded hover:bg-sky-800" (click)="handleSearch()">
+        <fa-icon [icon]="faMagnifyingGlass"></fa-icon>
+      </button>
+    </div>
+  </div>
+
+  <!-- Data Table -->
+  <div class="overflow-x-auto">
+    <table class="w-full border-collapse border border-gray-200 shadow-lg rounded-md">
+      <thead>
+        <tr class="bg-sky-600 text-white">
+          <th class="border p-2 text-center">STT</th>
+          <th class="border p-2 text-left whitespace-nowrap">Mã lịch hẹn</th>
+          <th class="border p-2 text-left whitespace-nowrap">Bệnh nhân</th>
+          <th class="border p-2 text-left whitespace-nowrap">Ngày sinh</th>
+          <th class="border p-2 text-left whitespace-nowrap">Dịch vụ khám</th>
+          <th class="border p-2 text-left whitespace-nowrap">Ngày khám</th>
+          <th class="border p-2 text-center whitespace-nowrap"></th>
+        </tr>
+      </thead>
+      <tbody class="border border-gray-400">
+        <tr *ngIf="loading">
+          <td colspan="7" class="text-center p-4 border-gray-400">
+            <div class="flex justify-center items-center">
+              <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-sky-600"></div>
+              <span class="ml-2">Đang tải dữ liệu...</span>
+            </div>
+          </td>
+        </tr>
+        <tr *ngIf="!loading && appointments.length === 0">
+          <td colspan="7" class="text-center p-4 border-gray-400">Không có dữ liệu</td>
+        </tr>
+        <tr *ngFor="let appointment of appointments; let i = index" class="align-top">
+          <td class="border border-gray-400 p-2 text-center  whitespace-nowrap">
+            {{ (currentPage - 1) * pageSize + i + 1 }}
+          </td>
+          <td class="border border-gray-400 p-2 text-left font-semibold whitespace-nowrap text-gray-800">
+            {{ appointment.id }}
+          </td>
+          <td class="border border-gray-400 p-2 text-left whitespace-nowrap">
+            {{ appointment.patientResponse.fullName }}
+          </td>
+          <td class="border border-gray-400 p-2 text-left whitespace-nowrap">
+            {{ formatDate(appointment.patientResponse.dateOfBirth) }}
+          </td>
+          <td class="border border-gray-400 p-2 text-justify font-semibold text-sky-900">
+            {{ appointment.doctorServiceResponse.serviceResponse.serviceName }}
+          </td>
+          <td class="border border-gray-400 p-2 text-left whitespace-nowrap">{{ formatDate(appointment.appointmentDate)
+            }}</td>
+          <td class="border border-gray-400 p-2 text-center whitespace-nowrap">
+            <button
+              class="bg-white text-sky-600 px-3 py-1 rounded border border-sky-600 hover:bg-sky-700 hover:text-white font-semibold">
+              Chi tiết
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="mt-4">
+    <app-pagination [totalElements]="totalElements" [currentPage]="currentPage" [totalPages]="totalPages"
+      (pageChange)="onPageChange($event)"></app-pagination>
+  </div>
+</div>

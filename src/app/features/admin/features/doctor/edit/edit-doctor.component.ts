@@ -47,7 +47,7 @@ export class EditDoctorComponent implements OnInit {
     },
     {
       label: 'LỊCH KHÁM THEO NGÀY',
-      path: 'lich-kham-theo-ngay',
+      path: 'kham-theo-ngay',
       icon: this.faStethoscope,
     },
     {

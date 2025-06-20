@@ -55,6 +55,12 @@ export const doctorRoutes: Routes = [
             data: { roles: ADMIN_ROLES }
           },
           {
+            path: 'kham-theo-ngay',
+            loadComponent: () => import('./edit/appointment/appointment-daily/appointment-daily.component').then(m => m.AppointmentDailyComponent),
+            canActivate: [RoleGuard],
+            data: { roles: ADMIN_ROLES }
+          },
+          {
             path: 'lich-su-kham-benh',
             loadComponent: () => import('./edit/appointment/appointment-history/appointment-history.component').then(m => m.DoctorAppointmentHistoryComponent),
             canActivate: [RoleGuard],
@@ -78,7 +84,7 @@ export const doctorRoutes: Routes = [
   // },
   {
     path: 'lich-kham',
-    loadComponent: () => import('./list-view/list-doctor-view.component').then(m => m.ListDoctorViewComponent),
+    loadComponent: () => import('./appointment/doctor-appointment-list.component').then(m => m.DoctorAppointmentListComponent),
     canActivate: [RoleGuard],
     data: { roles: ADMIN_STAFF_ROLES }
   },
