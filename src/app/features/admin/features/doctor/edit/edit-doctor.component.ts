@@ -75,18 +75,17 @@ export class EditDoctorComponent implements OnInit {
     this.route.paramMap.pipe(takeUntil(this.destroy$)).subscribe((params) => {
       this.doctorId = params.get('doctorId');
       if (this.doctorId) {
-        // Kiểm tra xem có route con nào đang active không
-        const currentPath = this.router.url.split('/').pop();
+        // Lấy path cuối cùng, loại bỏ query string nếu có
+        let currentPath = this.router.url.split('/').pop() || '';
+        if (currentPath.includes('?')) {
+          currentPath = currentPath.split('?')[0];
+        }
         const isValidPath = this.tabs.some(tab => tab.path === currentPath);
-        
-        // Nếu không có route con nào active hoặc route không hợp lệ, mới chuyển về tab mặc định
+
         if (!currentPath || !isValidPath) {
           this.goTo('dich-vu-kham-benh');
         }
       }
-      // if (this.doctorId) {
-      //   this.goTo('dich-vu-kham-benh');
-      // }
     });
   }
 

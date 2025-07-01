@@ -2,9 +2,11 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { HttpService } from '../../../../core/services/http.service';
 import { DoctorSchedule } from '../../../models/responses/doctor/doctor-schedule.model';
+import { ServiceSchedule } from '../../../models/responses/medical/service-schedule.model';
 import { DoctorScheduleRequest } from '../../../models/requests/doctor/doctor-schedule.request';
 import { PageResponse } from '../../../models/responses/page-response.model';
 import { DoctorScheduleStatus } from '../../../models/responses/doctor/doctor-schedule-status.model';
+
 
 @Injectable({
   providedIn: 'root'
@@ -66,6 +68,11 @@ export class DoctorScheduleService {
       `${this.API_URL}/doctor/${doctorId}/schedule?date=${date}`
     );
   }
+  getScheduleByServiceAndDate(serviceId: string, date: string): Observable<ServiceSchedule[]> {
+    return this.http.get<ServiceSchedule[]>(
+      `${this.API_URL}/service/${serviceId}/schedule?date=${date}`
+    );
+  }
 
   /**
    * Lấy lịch làm việc theo khung giờ
@@ -96,7 +103,11 @@ export class DoctorScheduleService {
    * Lấy danh sách ngày trong tuần theo dịch vụ bác sĩ
    */
   getListDayOfWeekByDoctorService(doctorServiceId: string): Observable<string[]> {
-    return this.http.get<string[]>(`${this.API_URL}/get-day-of-week-by-doctor-service/${doctorServiceId}`);
+    return this.http.get<string[]>(`${this.API_URL}/customer/get-day-of-week-by-doctor-service/${doctorServiceId}`);
+  }
+
+  getListDayOfWeekByService(serviceId: string): Observable<string[]> {
+    return this.http.get<string[]>(`${this.API_URL}/customer/get-day-of-week-by-service/${serviceId}`);
   }
 
     /**

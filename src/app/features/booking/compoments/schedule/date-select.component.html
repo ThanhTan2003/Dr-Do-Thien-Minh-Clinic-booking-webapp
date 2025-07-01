@@ -15,9 +15,9 @@
     </div>
   
     <!-- Thông báo -->
-    <div class="bg-white p-2 border border-sky-300 rounded-md m-4">
-      <div class="text-sm text-gray-600 text-justify">
-        <fa-icon [icon]="faCircleInfo"></fa-icon> <b>Phòng Khám Đa Khoa Dân Quý</b> hỗ trợ đặt lịch khám trước hẹn từ <b>1</b> đến <b>30</b> ngày.
+    <div class="bg-white p-2 border border-amber-500 rounded-md m-4">
+      <div class="text-sm text-amber-700 text-justify">
+        <fa-icon [icon]="faCircleInfo"></fa-icon> <b> Phòng Khám Đa Khoa Dân Quý</b> hỗ trợ đặt lịch khám trước hẹn từ <b>1</b> đến <b>30</b> ngày.
       </div>
     </div>
   
@@ -104,6 +104,7 @@
       [selectedDate]="selectedDate"
       [timeSlots]="timeSlots"
       [doctorId]="doctorId"
+      [loading]="loadingTimeSlots"
       (timeSlotSelection)="handleTimeSlotSelection($event)"
       (close)="closeModal()"
     ></app-select-time>

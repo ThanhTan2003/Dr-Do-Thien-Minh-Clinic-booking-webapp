@@ -12,6 +12,7 @@ export class SelectTimeComponent {
   @Input() selectedDate: Date | null = null;
   @Input() timeSlots: { id: string; session: string; name: string }[] = [];
   @Input() doctorId: string | null = null;
+  @Input() loading: boolean = false;
   @Output() timeSlotSelection = new EventEmitter<{ id: string; session: string; name: string }>();
   @Output() close = new EventEmitter<void>();
 

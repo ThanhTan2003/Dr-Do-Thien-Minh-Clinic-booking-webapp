@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { ToastrService } from 'ngx-toastr';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
@@ -26,7 +26,8 @@ export class LoginComponent {
     private fb: FormBuilder,
     private authService: AuthService,
     private router: Router,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private route: ActivatedRoute
   ) {
     this.loginForm = this.fb.group({
       userName: ['', [Validators.required]],
@@ -60,9 +61,9 @@ export class LoginComponent {
       this.isLoading = true;
       this.authService.login(this.loginForm.value).subscribe({
         next: (res) => {
-          console.log('Đăng nhập thành công, response:', res);
-          this.router.navigate(['/admin']);
-          //this.toastr.success('Đăng nhập thành công');
+          // Lấy redirectUrl từ query params
+          const redirectUrl = this.route.snapshot.queryParamMap.get('redirectUrl') || '/admin';
+          this.router.navigateByUrl(redirectUrl);
         },
         error: (error) => {
           console.error('Đăng nhập thất bại, lỗi:', error);

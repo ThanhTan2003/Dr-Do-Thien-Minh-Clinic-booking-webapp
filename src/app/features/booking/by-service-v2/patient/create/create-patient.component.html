@@ -64,11 +64,19 @@
     <div>
       <label class="block text-sm font-semibold text-sky-800">Ngày sinh <span class="text-red-800">(*)</span></label>
       <input
-        type="date"
-        [(ngModel)]="formData.dateOfBirth"
-        name="dateOfBirth"
+        type="text"
+        [(ngModel)]="displayDateOfBirth"
+        (input)="onDateInput($event)"
+        (blur)="onDateBlur()"
+        name="displayDateOfBirth"
+        placeholder="dd/MM/yyyy"
+        maxlength="10"
         class="w-full p-1 border border-gray-300 rounded-md text-gray-700"
+        [class.border-red-500]="dateError"
       />
+      <div *ngIf="dateError" class="text-red-600 text-sm mt-1">
+        {{ dateError }}
+      </div>
     </div>
     <div>
       <label class="block text-sm font-semibold text-sky-800">Số điện thoại liên hệ <span class="text-red-800">(*)</span></label>
@@ -89,6 +97,19 @@
       />
     </div>
     <div>
+      <label class="block text-sm font-semibold text-sky-800">Mối quan hệ <span class="text-red-800">(*)</span></label>
+      <select
+        [(ngModel)]="formData.relationship"
+        name="relationship"
+        class="border p-2 rounded-lg w-full mt-1"
+      >
+        <option value="">Chọn mối quan hệ</option>
+        <option *ngFor="let relationship of relationships" [value]="relationship">
+          {{ relationship }}
+        </option>
+      </select>
+    </div>
+    <div>
       <label class="block text-sm font-semibold text-sky-800">Số thẻ BHYT (nếu có)</label>
       <input
         type="text"
@@ -98,7 +119,7 @@
       />
     </div>
     <div>
-      <label class="block text-sm font-semibold text-sky-800">Địa chỉ <span class="text-red-800">(*)</span></label>
+      <label class="block text-sm font-semibold text-sky-800">Địa chỉ</label>
       <textarea
         [(ngModel)]="formData.address"
         name="address"
@@ -131,4 +152,4 @@
       Tạo hồ sơ mới <fa-icon [icon]="faPlus"></fa-icon>
     </button>
   </div>
-</div>
+</div> 

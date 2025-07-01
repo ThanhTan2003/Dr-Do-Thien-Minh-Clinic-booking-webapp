@@ -53,13 +53,6 @@ export class AuthService {
     return !!this.localStorageService.getAccessToken();
   }
 
-  // getUserInfo(): Observable<UserResponse> {
-  //   console.log("Lay thong tin nguoi dung 1");
-  //   const user = this.userService.getInfo();
-  //   console.log("user: ", user.roleName);
-  //   return user;
-  // }
-
   getUserInfo(): Observable<UserResponse> {
     //console.log("Lay thong tin nguoi dung 1");
     return this.userService.getInfo().pipe(

@@ -26,9 +26,9 @@ export class DoctorService {
   /**
    * Tìm bác sĩ theo từ khoá
    */
-  searchDoctors(keyword: string, page = 1, size = 10): Observable<PageResponse<Doctor>> {
+  searchDoctorsByCustomer(keyword: string, page = 1, size = 10): Observable<PageResponse<Doctor>> {
     return this.http.get<PageResponse<Doctor>>(
-      `${this.API_URL}/search?keyword=${keyword}&page=${page}&size=${size}`
+      `${this.API_URL}/customer/search?keyword=${keyword}&page=${page}&size=${size}`
     );
   }
 

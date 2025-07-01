@@ -1,0 +1,21 @@
+<router-outlet #childOutlet="outlet"></router-outlet>
+
+<div *ngIf="!childOutlet.isActivated">
+  <!-- Nút Quay lại -->
+  <div class="text-center pb-2 p-4">
+    <button
+      (click)="goBack()"
+      class="w-full h-12 border-2 border-cyan-700 text-cyan-700 font-bold rounded-lg bg-white hover:bg-cyan-50 transition duration-300"
+    >
+      <fa-icon [icon]="faArrowLeft"></fa-icon> Quay lại
+    </button>
+  </div>
+
+  <app-select-date
+    [serviceId]="serviceId"
+    [availableDays]="availableDays"
+    [holidayMatrix]="holidayMatrix"
+    [specificHolidays]="specificHolidays"
+    (dateTimeSelection)="handleDateTimeSelection($event.date, $event.serviceScheduleId)"
+  ></app-select-date>
+</div>

@@ -42,8 +42,14 @@
     </button>
   </div>
 
+  <!-- Loading indicator -->
+  <div *ngIf="loading" class="flex items-center justify-center py-4 pt-6">
+    <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-sky-600"></div>
+    <span class="ml-2 text-sky-700 font-medium">Đang lấy thông tin...</span>
+  </div>
+
   <!-- Danh sách bác sĩ -->
-  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4">
+  <div *ngIf="!loading" class="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4">
     <div
       *ngFor="let doctorService of doctorServices"
       class="bg-white rounded-lg shadow-md p-3 flex flex-col justify-between relative border border-slate-300"

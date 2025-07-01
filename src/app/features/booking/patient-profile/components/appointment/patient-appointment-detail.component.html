@@ -1,4 +1,10 @@
-<div class="p-4">
+<!-- Hiển thị loading khi lấy dữ liệu ban đầu -->
+<div *ngIf="loadingData" class="flex flex-col items-center justify-center py-12">
+  <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-sky-600"></div>
+  <span class="mt-4 text-sky-700 font-medium text-lg">Đang tải thông tin lịch hẹn...</span>
+</div>
+
+<div *ngIf="!loadingData" class="p-0">
   <div class="text-center pb-2 p-4">
     <button
       (click)="goBack()"
@@ -22,72 +28,107 @@
     <div class="mt-2 w-32 mx-auto h-1 bg-gradient-to-r from-cyan-600 to-blue-800 rounded-full"></div>
   </div>
 
-  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-    <div class="bg-white rounded-lg shadow-md p-3 border border-sky-600">
-      <div class="text-1xl font-bold text-sky-800 mb-2">HỒ SƠ ĐẶT KHÁM</div>
-      <hr class="border-sky-600 mb-2" />
-      <div class="grid grid-cols-[4fr,6fr] gap-2 text-sm">
-        <p><strong>Mã hồ sơ:</strong></p>
-        <p>{{ appointment?.patientResponse?.id || "..." }}</p>
-
-        <p><strong>Họ tên:</strong></p>
-        <p>{{ appointment?.patientResponse?.fullName || "..." }}</p>
-
-        <p><strong>Giới tính:</strong></p>
-        <p>{{ appointment?.patientResponse?.gender || "..." }}</p>
-
-        <p><strong>Ngày sinh:</strong></p>
-        <p>{{ appointment?.patientResponse?.dateOfBirth ? (appointment?.patientResponse?.dateOfBirth | date:'dd/MM/yyyy') : "..." }}</p>
-
-        <p><strong>Số điện thoại:</strong></p>
-        <p>{{ appointment?.patientResponse?.phoneNumber || "..." }}</p>
-
-        <p><strong>Số căn cước:</strong></p>
-        <p>{{ appointment?.patientResponse?.identityCard || "..." }}</p>
-
-        <p><strong>Số thẻ BHYT:</strong></p>
-        <p>{{ appointment?.patientResponse?.insuranceId || "..." }}</p>
-
-        <p><strong>Địa chỉ:</strong></p>
-        <p>{{ appointment?.patientResponse?.address || "..." }}</p>
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 p-4 pt-0">
+    <div class="bg-white rounded-lg overflow-hidden border border-sky-600 flex flex-col justify-between relative">
+      <div class="text-xl font-bold text-white bg-sky-600 px-4 py-2">
+        HỒ SƠ ĐẶT KHÁM
+      </div>
+    
+      <div class="grid grid-cols-1 gap-2 p-4">
+        <div class="grid [grid-template-columns:4fr_6fr] gap-2">
+          <p class="font-semibold">Mã hồ sơ:</p>
+          <p>{{ appointment?.patientResponse?.id || "..." }}</p>
+        </div>
+        <div class="grid [grid-template-columns:4fr_6fr] gap-2">
+          <p class="font-semibold">Họ tên:</p>
+          <p class="text-sky-800 font-semibold">{{ appointment?.patientResponse?.fullName || "..." }}</p>
+        </div>
+        <div class="grid [grid-template-columns:4fr_6fr] gap-2">
+          <p class="font-semibold">Giới tính:</p>
+          <p>{{ appointment?.patientResponse?.gender || "..." }}</p>
+        </div>
+        <div class="grid [grid-template-columns:4fr_6fr] gap-2">
+          <p class="font-semibold">Ngày sinh:</p>
+          <p>{{ formatDate(appointment?.patientResponse?.dateOfBirth || '') || "..." }}</p>
+        </div>
+        <div class="grid [grid-template-columns:4fr_6fr] gap-2">
+          <p class="font-semibold">Số điện thoại:</p>
+          <p>{{ formatPhone(appointment?.patientResponse?.phoneNumber || '') || "..." }}</p>
+        </div>
+        <div class="grid [grid-template-columns:4fr_6fr] gap-2">
+          <p class="font-semibold">Số căn cước:</p>
+          <p>{{ formatNationalId(appointment?.patientResponse?.identityCard || '') || "..." }}</p>
+        </div>
+        <div class="grid [grid-template-columns:4fr_6fr] gap-2">
+          <p class="font-semibold">Số thẻ BHYT:</p>
+          <p>{{ formatInsuranceId(appointment?.patientResponse?.insuranceId || '') || "..." }}</p>
+        </div>
+        <div class="grid [grid-template-columns:4fr_6fr] gap-2">
+          <p class="font-semibold">Địa chỉ:</p>
+          <p class="text-justify">{{ appointment?.patientResponse?.address || "..." }}</p>
+        </div>
       </div>
     </div>
 
-    <div class="bg-white rounded-lg shadow-md p-3 border border-sky-600">
-      <div class="text-1xl font-bold text-sky-800 mb-2">THÔNG TIN ĐẶT KHÁM</div>
-      <hr class="border-sky-600 mb-2" />
-      <div class="grid grid-cols-[4fr,6fr] gap-2 text-sm">
-        <p><strong>Dịch vụ:</strong></p>
-        <p>{{ appointment?.doctorServiceResponse?.serviceResponse?.serviceName || "..." }}</p>
-
-        <p><strong>Bác sĩ:</strong></p>
-        <p>{{ appointment?.doctorServiceResponse?.doctorResponse?.name || "..." }}</p>
-
-        <p><strong>Ngày khám:</strong></p>
-        <p>{{ appointment?.appointmentDateName || "..." }}</p>
-
-        <p><strong>Giờ khám:</strong></p>
-        <p>{{ appointment?.doctorScheduleResponse?.timeFrameResponse?.fullName || "..." }}</p>
-
-        <p><strong>Phòng khám:</strong></p>
-        <p>{{ appointment?.doctorScheduleResponse?.roomName || "..." }}</p>
-
-        <p><strong>Phí khám bệnh:</strong></p>
-        <p>{{ appointment?.doctorServiceResponse?.serviceResponse?.price || "..." }}</p>
-
-        <p><strong>Trạng thái:</strong></p>
-        <div class="flex items-center">
-          <span [class]="'inline-block font-bold text-sm py-1 rounded ' + getStatusColorClass(appointment?.status ?? '')">
+    <div class="bg-white rounded-lg overflow-hidden border border-sky-600 flex flex-col justify-between relative">
+      <div class="text-xl font-bold text-white bg-sky-600 mb-2 p-4 pt-2 pb-2">THÔNG TIN LỊCH HẸN</div>
+      <div class="grid grid-cols-1 gap-2 p-4 pt-0">
+        <div class="grid [grid-template-columns:4fr_6fr] gap-2">
+          <p class="font-semibold">Dịch vụ:</p>
+          <p class="text-green-800 font-semibold text-justify">{{ appointment?.serviceName?.toUpperCase() }}</p>
+        </div>
+        <div *ngIf="appointment?.doctorName" class="grid [grid-template-columns:4fr_6fr] gap-2">
+          <p class="font-semibold">Bác sĩ:</p>
+          <p class="text-sky-800 font-semibold">{{ appointment?.doctorName || "..." }}</p>
+        </div>
+        <div class="grid [grid-template-columns:4fr_6fr] gap-2">
+          <p class="font-semibold">Ngày khám:</p>
+          <p>{{ formatDate(appointment?.appointmentDate || '') || "..." }}</p>
+        </div>
+        <div class="grid [grid-template-columns:4fr_6fr] gap-2">
+          <p class="font-semibold">Khung giờ:</p>
+          <p>{{ appointment?.doctorScheduleResponse?.timeFrameResponse?.fullName || "..." }}</p>
+        </div>
+        <!-- <div class="grid [grid-template-columns:4fr_6fr] gap-2">
+          <p class="font-semibold">Phòng khám:</p>
+          <p>{{ appointment?.doctorScheduleResponse?.roomName || "..." }}</p>
+        </div> -->
+        <div class="grid [grid-template-columns:4fr_6fr] gap-2">
+          <p class="font-semibold">Phí khám bệnh:</p>
+          <p class="text-orange-700">{{ appointment?.doctorServiceResponse?.serviceResponse?.price || "..." }}</p>
+        </div>
+        <div class="grid [grid-template-columns:4fr_6fr] gap-2">
+          <p class="font-semibold">Trạng thái:</p>
+          <span [class]="getStatusClass(appointment?.status || '') + ' rounded-full font-bold'">
             {{ appointment?.status || "..." }}
           </span>
         </div>
       </div>
     </div>
+  </div>
 
-    <div class="bg-white rounded-lg shadow-md p-3 border border-sky-600">
-      <div class="text-1xl font-bold text-sky-800 mb-2">KẾT QUẢ KHÁM</div>
-      <hr class="border-sky-600 mb-2" />
-      <p>Không có dữ liệu</p>
+  <!-- KẾT QUẢ KHÁM: chỉ hiển thị nếu có ít nhất một trường result, doctorMessage, reExaminationDate -->
+  <div class="p-4 pt-0 mb-4" *ngIf="appointment && (appointment.result || appointment.doctorMessage || appointment.reExaminationDate)">
+    <div class="bg-white rounded-lg overflow-hidden border border-emerald-600 flex flex-col justify-between relative">
+      <div class="text-xl font-bold text-white bg-emerald-600 px-4 py-2">
+        KẾT QUẢ KHÁM
+      </div>
+      <div class="p-4 space-y-3">
+        <div *ngIf="appointment.result">
+          <span class="font-semibold text-emerald-700">Kết quả:</span>
+          <span class="block text-gray-800 mt-1 text-justify">{{ appointment.result }}</span>
+        </div>
+        <div *ngIf="appointment.doctorMessage">
+          <hr class="border border-emerald-700 mb-1" />
+          <span class="font-semibold text-emerald-700">Lời nhắn của bác sĩ:</span>
+          <span class="block text-gray-800 mt-1 text-justify">{{ appointment.doctorMessage }}</span>
+        </div>
+        <div *ngIf="appointment.reExaminationDate">
+          <hr class="border border-emerald-700 mb-1" />
+          <span class="font-semibold text-emerald-700">Lịch tái khám:</span>
+          <span class="block text-gray-800 mt-1">{{ formatDate(appointment.reExaminationDate) }}</span>
+        </div>
+      </div>
     </div>
   </div>
 </div> 

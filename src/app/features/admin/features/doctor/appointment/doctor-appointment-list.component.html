@@ -143,7 +143,8 @@
                     <td class="border border-gray-400 p-1 text-center justify-center whitespace-nowrap">
                         <div class="flex justify-center space-x-2">
                             <button
-                                class="bg-white text-sky-700 px-3 py-1 rounded border border-sky-700 hover:bg-sky-800 hover:text-white font-semibold">
+                                class="bg-white text-sky-700 px-3 py-1 rounded border border-sky-700 hover:bg-sky-800 hover:text-white font-semibold"
+                                (click)="openUpdateModal(appointment.id)">
                                 Xử lý &nbsp;<fa-icon [icon]="faPenToSquare"></fa-icon>
                             </button>
                         </div>
@@ -158,3 +159,5 @@
             (pageChange)="onPageChange($event)"></app-pagination>
     </div>
 </div>
+
+<app-doctor-appointment-update *ngIf="showUpdateModal" [appointmentId]="selectedAppointmentId!" (close)="closeUpdateModal($event)"></app-doctor-appointment-update>

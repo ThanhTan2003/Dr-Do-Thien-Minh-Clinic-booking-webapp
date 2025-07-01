@@ -7,7 +7,7 @@ import { ModalDetailComponent } from '../../../../shared/components/modal-detail
 import { FormsModule } from '@angular/forms';
 import { Subject, debounceTime, distinctUntilChanged, takeUntil } from 'rxjs';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { faMagnifyingGlass, faCaretDown } from '@fortawesome/free-solid-svg-icons';
+import { faMagnifyingGlass, faCaretDown, faHome } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-doctor',
@@ -30,10 +30,13 @@ export class DoctorComponent implements OnInit, OnDestroy {
   // FontAwesome icons
   faMagnifyingGlass = faMagnifyingGlass;
   faCaretDown = faCaretDown;
+  faHome = faHome;
 
   // Debounce search
   private searchSubject = new Subject<string>();
   private destroy$ = new Subject<void>();
+
+  loadingMore = false;
 
   constructor(
     private doctorService: DoctorService,
@@ -68,7 +71,7 @@ export class DoctorComponent implements OnInit, OnDestroy {
 
   fetchDoctors(): void {
     this.loading = true;
-    this.doctorService.searchDoctors(this.keyword, this.currentPage, this.pageSize).subscribe({
+    this.doctorService.searchDoctorsByCustomer(this.keyword, this.currentPage, this.pageSize).subscribe({
       next: (res) => {
         this.totalPages = res.totalPages || 1;
         this.doctors = this.currentPage === 1 ? res.data : [...this.doctors, ...res.data];
@@ -104,9 +107,24 @@ export class DoctorComponent implements OnInit, OnDestroy {
   }
 
   goToNextPage(): void {
-    if (this.currentPage < this.totalPages) {
+    if (this.currentPage < this.totalPages && !this.loadingMore) {
       this.currentPage++;
-      this.fetchDoctors();
+      this.loadingMore = true;
+      this.doctorService.searchDoctorsByCustomer(this.keyword, this.currentPage, this.pageSize).subscribe({
+        next: (res) => {
+          this.totalPages = res.totalPages || 1;
+          this.doctors = [...this.doctors, ...res.data];
+          this.cdr.detectChanges();
+        },
+        error: (err) => {
+          console.error('Error fetching doctors:', err);
+          this.loadingMore = false;
+        },
+        complete: () => {
+          this.loadingMore = false;
+          this.cdr.detectChanges();
+        },
+      });
     }
   }
 
@@ -121,5 +139,8 @@ export class DoctorComponent implements OnInit, OnDestroy {
         ? '/images/default-male-doctor.jpg'
         : '/images/default-female-doctor.jpg')
     );
+  }
+  goToHome(): void {
+    this.router.navigate(['/booking']);
   }
 }

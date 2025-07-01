@@ -1,9 +1,14 @@
 import { Routes } from '@angular/router';
+import { AuthGuard } from '../auth/guards/auth.guard';
+import { RoleGuard } from '../auth/guards/role.guard';
+import { USER_ROLES } from '../core/constants/role.constant';
 
 export const byDoctorRoutes: Routes = [
   {
     path: '',
     loadComponent: () => import('./components/doctor/doctor.component').then(m => m.DoctorComponent),
+    canActivate: [AuthGuard, RoleGuard],
+    data: { roles: USER_ROLES },
     children: [
       {
         path: ':doctorId',
@@ -19,15 +24,24 @@ export const byDoctorRoutes: Routes = [
                 children: [
                   {
                     path: 'create',
-                    loadComponent: () => import('../compoments/patient/create-patient.component').then(m => m.CreatePatientComponent)
+                    loadComponent: () => import('../compoments/patient/create/create-patient.component').then(m => m.CreatePatientComponent)
                   },
                   {
                     path: ':patientId',
-                    loadComponent: () => import('../compoments/confirm/confirm.component').then(m => m.ConfirmComponent),
                     children: [
                       {
-                        path: ':appointmentId',
-                        loadComponent: () => import('../compoments/result/result.component').then(m => m.BookingResultComponent)
+                        path: 'update',
+                        loadComponent: () => import('../compoments/patient/update/update-patient.component').then(m => m.UpdatePatientComponent)
+                      },
+                      {
+                        path: '',
+                        loadComponent: () => import('../compoments/confirm/confirm.component').then(m => m.ConfirmComponent),
+                        children: [
+                          {
+                            path: ':appointmentId',
+                            loadComponent: () => import('../compoments/result/result.component').then(m => m.BookingResultComponent)
+                          }
+                        ]
                       }
                     ]
                   }

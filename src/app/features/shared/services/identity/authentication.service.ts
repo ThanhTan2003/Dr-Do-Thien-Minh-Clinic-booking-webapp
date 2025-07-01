@@ -21,9 +21,9 @@ export class AuthenticationService {
         return this.http.post<AuthenticationResponse>(`${this.API_URL}/log-in`, request);
     }
 
-    //   loginCustomer(request: CustomerAuthenticationRequest): Observable<AuthenticationResponse> {
-    //     return this.http.post<AuthenticationResponse>(`${this.API_URL}/customer/log-in`, request);
-    //   }
+    loginCustomer(request: AuthenticationRequest): Observable<AuthenticationResponse> {
+        return this.http.post<AuthenticationResponse>(`${this.API_URL}/customer/log-in`, request);
+    }
 
     introspect(request: IntrospectRequest): Observable<IntrospectResponse> {
         return this.http.post<IntrospectResponse>(`${this.API_URL}/introspect`, request);

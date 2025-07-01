@@ -1,0 +1,132 @@
+<div>
+    <!-- Modal thông báo thành công -->
+    <app-modal-success *ngIf="isModalOpen" [title]="modalContent.title" [content]="modalContent.content"
+        (close)="handleModalClose()"></app-modal-success>
+
+    <!-- Loading -->
+    <div *ngIf="loading" class="flex flex-col items-center justify-center py-12">
+        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-sky-600"></div>
+        <span class="mt-4 text-sky-700 font-medium text-lg">Đang tải thông tin...</span>
+    </div>
+
+    <!-- Form cập nhật -->
+    <div *ngIf="!loading && patient">
+        <!-- Nút Quay lại -->
+        <div class="text-center pb-2 p-4">
+            <button (click)="goBack()"
+                class="w-full h-12 border-2 border-cyan-700 text-cyan-700 font-bold rounded-lg bg-white hover:bg-cyan-50 transition duration-300">
+                <fa-icon [icon]="faArrowLeft"></fa-icon> Quay lại
+            </button>
+        </div>
+
+        <!-- Tiêu đề -->
+        <div class="text-center pb-2 p-4">
+            <h1 class="text-2xl font-bold relative" style="
+          background: linear-gradient(to right, #0078B7, #00A3E0);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+        ">
+                CẬP NHẬT HỒ SƠ
+            </h1>
+            <div class="mt-2 w-32 mx-auto h-1 bg-gradient-to-r from-cyan-600 to-blue-800 rounded-full"></div>
+        </div>
+
+        <!-- Thông báo lưu ý -->
+<div class="bg-yellow-50 p-4 border border-yellow-300 rounded-md m-4 mb-2">
+    <div class="text-sm text-gray-600 text-justify">
+      <b><fa-icon [icon]="faCircleInfo"></fa-icon> Lưu ý:</b>
+      <ul class="list-disc list-inside mt-2 space-y-1">
+        <li>Thông tin hồ sơ chỉ được nhập một lần duy nhất.</li>
+        <li>Phòng khám chỉ cho phép thay đổi một số thông tin nhất định.
+          
+        </li>
+        <li>Đối với các thông tin khác nếu có sai lệch, vui lòng liên hệ trực tiếp với phòng khám để được hỗ trợ điều chỉnh.</li>
+      </ul>
+    </div>
+  </div>
+  
+
+
+        <!-- Form nhập thông tin -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4">
+            <div>
+                <label class="block text-sm font-semibold text-sky-800">Mã hồ sơ</label>
+                <input type="text" [value]="patient.id" readonly
+                    class="w-full p-1 border border-gray-300 rounded-md text-gray-700 bg-gray-100" />
+            </div>
+            <div>
+                <label class="block text-sm font-semibold text-sky-800">Họ và tên</label>
+                <input type="text" [value]="patient.fullName" readonly
+                    class="w-full p-1 border border-gray-300 rounded-md text-gray-700 bg-gray-100" />
+            </div>
+            <div>
+                <label class="block text-sm font-semibold text-sky-800">Giới tính</label>
+                <input type="text" [value]="patient.gender" readonly
+                    class="w-full p-1 border border-gray-300 rounded-md text-gray-700 bg-gray-100" />
+            </div>
+            <div>
+                <label class="block text-sm font-semibold text-sky-800">Ngày sinh</label>
+                <input type="text" [value]="patient.dateOfBirth | date: 'dd/MM/yyyy'" readonly
+                    class="w-full p-1 border border-gray-300 rounded-md text-gray-700 bg-gray-100" />
+            </div>
+
+            <div>
+                <label class="block text-sm font-semibold text-sky-800">
+                    Số căn cước
+                    <span *ngIf="canEditIdentityCard" class="text-red-800">(*)</span>
+                </label>
+                <input type="text" [(ngModel)]="formData.identityCard" name="identityCard"
+                    [readonly]="!canEditIdentityCard" [class.bg-gray-100]="!canEditIdentityCard"
+                    class="w-full p-1 border border-gray-300 rounded-md text-gray-700" />
+            </div>
+            <div>
+                <label class="block text-sm font-semibold text-sky-800">
+                    Số thẻ BHYT
+                    <span *ngIf="canEditInsuranceId" class="text-gray-500">(nếu có)</span>
+                    <span *ngIf="!canEditInsuranceId" class="text-gray-500">(Đã có thông tin)</span>
+                </label>
+                <input type="text" [(ngModel)]="formData.insuranceId" name="insuranceId"
+                    [readonly]="!canEditInsuranceId" [ngClass]="{
+                        'bg-gray-100 border-gray-300': !canEditInsuranceId,
+                        'border-sky-600': canEditInsuranceId
+                    }" class="w-full p-1 rounded-md text-gray-700 border" />
+            </div>
+            <div>
+                <label class="block text-sm font-semibold text-sky-800">Số điện thoại liên hệ <span
+                        class="text-red-800">(*)</span></label>
+                <input type="text" [(ngModel)]="formData.phoneNumber" name="phoneNumber"
+                    class="w-full p-1 border border-sky-600 rounded-md text-gray-700" />
+            </div>
+            <div>
+                <label class="block text-sm font-semibold text-sky-800">Mối quan hệ <span
+                        class="text-red-800">(*)</span></label>
+                <select [(ngModel)]="formData.relationship" name="relationship"
+                    class="border border-sky-600 p-2 rounded-lg w-full mt-1">
+                    <option value="">Chọn mối quan hệ</option>
+                    <option *ngFor="let relationship of relationships" [value]="relationship">
+                        {{ relationship }}
+                    </option>
+                </select>
+            </div>
+            <div class="sm:col-span-2">
+                <label class="block text-sm font-semibold text-sky-800">Địa chỉ</label>
+                <textarea [(ngModel)]="formData.address" name="address" rows="3"
+                    class="w-full p-1 border border-sky-600 rounded-md text-gray-700"></textarea>
+            </div>
+        </div>
+
+        <!-- Nút cập nhật -->
+        <div class="text-center pt-1 p-4 pb-6">
+            <button (click)="handleSubmit()" [disabled]="loading"
+                class="w-full h-12 bg-sky-700 text-white font-bold rounded-lg hover:bg-sky-600 transition duration-300 disabled:bg-gray-400">
+                <span *ngIf="!loading">
+                    Cập nhật hồ sơ &nbsp; <fa-icon [icon]="faCheck"></fa-icon>
+                </span>
+                <span *ngIf="loading">
+                    <div class="animate-spin rounded-full h-5 w-5 border-b-2 border-white inline-block mr-2"></div>
+                    Đang cập nhật...
+                </span>
+            </button>
+        </div>
+    </div>
+</div>

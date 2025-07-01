@@ -81,9 +81,9 @@
           <td class="border border-gray-400 p-2 text-left whitespace-nowrap">{{
             formatDate(appointment.appointmentDate) }}</td>
           <td class="border border-gray-400 p-2 text-justify  font-semibold text-indigo-900">{{
-            appointment.doctorServiceResponse.serviceResponse.serviceName }}</td>
+            appointment.serviceName || '...' }}</td>
           <td class="border border-gray-400 p-2 text-left whitespace-nowrap font-semibold text-cyan-900">{{
-            appointment.doctorScheduleResponse.doctorResponse.name }}</td>
+            appointment.doctorName || '...' }}</td>
           <td class="border border-gray-400 p-2 text-left whitespace-nowrap w-32">
             <span [ngClass]="getStatusClass(appointment.status)" class="px-3 py-0 rounded-sm font-medium mb-1"
               style="margin-left: 8px; white-space: nowrap; height: 32px; line-height: 32px; display: inline-block; min-width: 120px; text-align: left;">

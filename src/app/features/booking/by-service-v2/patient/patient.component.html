@@ -1,0 +1,135 @@
+<router-outlet #childOutlet="outlet"></router-outlet>
+
+<div *ngIf="!childOutlet.isActivated && isNotCreateRoute">
+  <!-- Nút Quay lại -->
+  <div class="text-center pb-2 p-4">
+    <button
+      (click)="goBack()"
+      class="w-full h-12 border-2 border-cyan-700 text-cyan-700 font-bold rounded-lg bg-white hover:bg-cyan-50 transition duration-300"
+    >
+      <fa-icon [icon]="faArrowLeft"></fa-icon> Quay lại
+    </button>
+  </div>
+
+  <!-- Tiêu đề -->
+  <div class="text-center pb-2 p-4">
+    <h1
+      class="text-2xl font-bold relative"
+      style="
+        background: linear-gradient(to right, #0078B7, #00A3E0);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      "
+    >
+      CHỌN HỒ SƠ
+    </h1>
+    <div class="mt-2 w-32 mx-auto h-1 bg-gradient-to-r from-cyan-600 to-blue-800 rounded-full"></div>
+  </div>
+
+  <!-- Thanh tìm kiếm -->
+  <div class="text-center pt-2">
+    <input
+      type="text"
+      [(ngModel)]="keyword"
+      (ngModelChange)="onSearchChange()"
+      placeholder="Nhập từ khóa tìm kiếm"
+      class="p-2 border border-cyan-700 rounded-md w-4/6"
+    />
+    <button
+      (click)="onSearchChange()"
+      class="ml-2 p-2 bg-gradient-to-r from-cyan-600 to-sky-700 text-white font-semibold rounded-md w-1/5"
+    >
+      <fa-icon [icon]="faMagnifyingGlass"></fa-icon> Tìm
+    </button>
+  </div>
+
+  <!-- Loading indicator -->
+  <div *ngIf="loading" class="flex items-center justify-center py-4 pt-6">
+    <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-sky-600"></div>
+    <span class="ml-2 text-sky-700 font-medium">Đang lấy thông tin...</span>
+  </div>
+
+  <!-- Nút tạo hồ sơ mới -->
+  <div *ngIf="!loading" class="text-center pb-2 p-4">
+    <a routerLink="create">
+      <button
+        class="p-2 bg-sky-600 text-white font-bold rounded-md w-full h-12"
+      >
+        Tạo hồ sơ mới <fa-icon [icon]="faPlus"></fa-icon>
+      </button>
+    </a>
+  </div>
+
+  <!-- Danh sách bệnh nhân -->
+  <div *ngIf="!loading" class="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 pt-2">
+    <div
+      *ngFor="let patient of patients"
+      class="bg-white rounded-lg shadow-md p-4 flex flex-col justify-between relative border border-slate-300"
+      style="min-height: 180px"
+    >
+      <div class="flex items-center gap-6 mb-4">
+        <img
+          [src]="getPatientImage(patient)"
+          alt="Ảnh bệnh nhân"
+          class="w-20 h-20 object-contain"
+        />
+        <div class="flex-1">
+          <h4
+            class="text-lg font-bold bg-clip-text text-transparent"
+            style="background-image: linear-gradient(to right, #0078B7, #004F8C)"
+          >
+            {{ patient.fullName.toUpperCase() }}
+          </h4>
+          <p class="text-sm text-gray-700 mt-1 text-justify">
+            <b>Mã HS:</b> {{ patient.id }}
+          </p>
+          <p class="text-sm text-gray-700 mt-1 text-justify">
+            <b>Giới tính:</b> {{ patient.gender }}
+          </p>
+          <p class="text-sm text-gray-700 mt-1 text-justify">
+            <b>Ngày sinh:</b> {{ patient.dateOfBirth | date: 'dd/MM/yyyy' }}
+          </p>
+          <p class="text-sm text-gray-700 mt-1 text-justify">
+            <b>Số căn cước:</b> {{ patient.identityCard }}
+          </p>
+          <p class="text-sm text-gray-700 mt-1 text-justify">
+            <b>Mối quan hệ:</b> {{ patient.relationship || 'Chưa cập nhật' }}
+          </p>
+        </div>
+      </div>
+      <div class="flex gap-2 justify-end">
+        <button
+          (click)="openModal(patient)"
+          class="w-20 h-10 border-2 border-cyan-700 text-cyan-700 font-semibold rounded-lg bg-white hover:bg-cyan-50 transition duration-300"
+        >
+          Chi tiết
+        </button>
+        <button
+          (click)="goToConfirm(patient)"
+          class="w-28 h-10 bg-gradient-to-r from-cyan-600 to-sky-700 text-white font-semibold rounded-lg shadow-lg hover:from-cyan-800 hover:to-blue-900 transition duration-300"
+        >
+          Chọn
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Nút phân trang -->
+  <div *ngIf="currentPage < totalPages" class="flex justify-center p-4 mb-4">
+    <button *ngIf="!loadingMore" (click)="goToNextPage()"
+      class="w-full h-12 bg-gradient-to-r from-cyan-600 to-sky-700 text-white font-bold rounded-lg shadow-lg hover:from-cyan-800 hover:to-blue-900 transition duration-300">
+      Xem thêm <fa-icon [icon]="faCaretDown"></fa-icon>
+    </button>
+    <div *ngIf="loadingMore" class="flex items-center justify-center py-2">
+      <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-sky-600"></div>
+      <span class="ml-2 text-sky-700 font-medium">Đang tải thêm...</span>
+    </div>
+  </div>
+
+  <!-- Modal chi tiết bệnh nhân -->
+  <app-detail-patient
+    *ngIf="isModalOpen"
+    [patient]="selectPatient"
+    (close)="closeModal()"
+  ></app-detail-patient>
+</div>

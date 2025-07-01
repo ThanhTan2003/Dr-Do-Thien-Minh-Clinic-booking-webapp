@@ -17,6 +17,11 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { FormatDatePipe } from '../../../../shared/pipes/format-date.pipe';
 import {BirthYearPipe} from '../../../../shared/pipes/birth-year.pipe';
+import { ActivatedRoute, Router } from '@angular/router';
+import { DoctorAppointmentUpdateComponent } from './update/doctor-appointment-update.component';
+
+// Import utility functions
+import { getStatusClassForList } from '../../../../shared/util/status.util';
 
 @Component({
   selector: 'app-doctor-appointment-list',
@@ -29,7 +34,9 @@ import {BirthYearPipe} from '../../../../shared/pipes/birth-year.pipe';
     PaginationComponent, 
     FontAwesomeModule, 
     FormatDatePipe,
-    BirthYearPipe]
+    BirthYearPipe,
+    DoctorAppointmentUpdateComponent
+  ]
 })
 export class DoctorAppointmentListComponent implements OnInit {
   appointments: Appointment[] = [];
@@ -48,7 +55,7 @@ export class DoctorAppointmentListComponent implements OnInit {
   statuses: string[] = [];
   
   // Page size options
-  pageSizeOptions: number[] = [10, 20, 50, 100];
+  pageSizeOptions: number[] = [5, 10, 20, 50, 100];
   
   // FontAwesome icons
   faCircleQuestion = faCircleQuestion;
@@ -58,11 +65,25 @@ export class DoctorAppointmentListComponent implements OnInit {
   faChevronRight = faChevronRight;
   faPenToSquare = faPenToSquare;
 
-  constructor(private appointmentService: AppointmentService) {}
+  showUpdateModal: boolean = false;
+  selectedAppointmentId: string | null = null;
+
+  constructor(
+    private appointmentService: AppointmentService,
+    private route: ActivatedRoute,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
-    this.loadStatuses();
-    this.loadAppointments();
+    this.route.queryParams.subscribe(params => {
+      this.selectedDate = params['date'] || new Date().toISOString().split('T')[0];
+      this.currentPage = +params['page'] || 1;
+      this.pageSize = +params['size'] || 10;
+      this.selectedStatus = params['status'] || '';
+      this.keyword = params['keyword'] || '';
+      this.loadStatuses();
+      this.loadAppointments();
+    });
   }
 
   loadStatuses(): void {
@@ -123,28 +144,34 @@ export class DoctorAppointmentListComponent implements OnInit {
 
   onDateChange(): void {
     this.currentPage = 1;
+    this.updateQueryParams();
     this.loadAppointments();
   }
 
   // Filter and search methods
   handleSearch(): void {
     this.currentPage = 1;
+    this.updateQueryParams();
     this.loadAppointments();
   }
 
   handleStatusChange(): void {
-    this.handleSearch();
+    this.currentPage = 1;
+    this.updateQueryParams();
+    this.loadAppointments();
   }
 
   // Pagination methods
   onPageChange(page: number): void {
     this.currentPage = page;
+    this.updateQueryParams();
     this.loadAppointments();
   }
 
   onPageSizeChange(size: number): void {
     this.pageSize = size;
     this.currentPage = 1;
+    this.updateQueryParams();
     this.loadAppointments();
   }
 
@@ -153,20 +180,35 @@ export class DoctorAppointmentListComponent implements OnInit {
     this.loadAppointments();
   }
 
+  updateQueryParams() {
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: {
+        date: this.selectedDate,
+        page: this.currentPage,
+        size: this.pageSize,
+        status: this.selectedStatus,
+        keyword: this.keyword
+      },
+      queryParamsHandling: 'merge'
+    });
+  }
+
+  // Sử dụng utility function thay vì local mapping
   getStatusClass(status: string): string {
-    switch (status) {
-      case 'Chờ phê duyệt':
-        return 'bg-yellow-100 text-yellow-800';
-      case 'Đã phê duyệt':
-        return 'bg-blue-100 text-blue-800';
-      case 'Chờ khám':
-        return 'bg-orange-100 text-orange-800';
-      case 'Đã khám':
-        return 'bg-green-100 text-green-800';
-      case 'Đã huỷ':
-        return 'bg-red-100 text-red-800';
-      default:
-        return 'bg-gray-100 text-gray-800';
+    return getStatusClassForList(status);
+  }
+
+  openUpdateModal(appointmentId: string) {
+    this.selectedAppointmentId = appointmentId;
+    this.showUpdateModal = true;
+  }
+
+  closeUpdateModal(updated: boolean) {
+    this.showUpdateModal = false;
+    this.selectedAppointmentId = null;
+    if (updated === true) {
+      this.loadAppointments();
     }
   }
 }

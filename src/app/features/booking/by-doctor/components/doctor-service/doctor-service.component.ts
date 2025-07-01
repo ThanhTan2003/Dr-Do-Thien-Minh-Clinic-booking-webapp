@@ -25,7 +25,7 @@ export class DoctorServiceComponent implements OnInit, OnDestroy {
   loading = false;
   doctorId: string | null = null;
   doctorServiceId: string | null = null;
-
+  loadingMore = false;
   isModalOpen = false;
   modalContent = { title: '', content: '' };
 
@@ -124,6 +124,7 @@ export class DoctorServiceComponent implements OnInit, OnDestroy {
   goToNextPage(): void {
     if (this.currentPage < this.totalPages) {
       this.currentPage++;
+      this.loadingMore = true;
       this.fetchServices();
     }
   }

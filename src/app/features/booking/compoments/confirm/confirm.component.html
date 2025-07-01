@@ -1,7 +1,18 @@
 <router-outlet #childOutlet="outlet"></router-outlet>
 
-<!-- Chỉ hiển thị khi chưa có child route active -->
-<div *ngIf="!childOutlet.isActivated">
+<!-- Modal loading khi tạo lịch hẹn -->
+<app-modal-loading *ngIf="loadingCreate" content="Đang đăng ký lịch hẹn"></app-modal-loading>
+
+<!-- <app-modal-loading *ngIf="loadingData && !loadingCreate" content="Đang xử lý thông tin"></app-modal-loading> -->
+
+<!-- Hiển thị loading khi lấy dữ liệu ban đầu -->
+<div *ngIf="loadingData && !loadingCreate" class="flex flex-col items-center justify-center py-12">
+  <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-sky-600"></div>
+  <span class="mt-4 text-sky-700 font-medium text-lg">Đang xử lý thông tin...</span>
+</div>
+
+<!-- Chỉ hiển thị khi chưa có child route active và không loading -->
+<div *ngIf="!childOutlet.isActivated && !loadingData && !loadingCreate">
   <!-- Nút Quay lại -->
   <div class="text-center pb-2 p-4">
     <button
@@ -27,84 +38,108 @@
     <div class="mt-2 w-32 mx-auto h-1 bg-gradient-to-r from-cyan-600 to-blue-800 rounded-full"></div>
   </div>
 
+  <div class="bg-yellow-50 p-4 border border-orange-300 rounded-md m-4 mt-2 mb-2">
+    <div class="text-sm text-orange-700 text-justify">
+      <fa-icon [icon]="faCircleInfo"></fa-icon> Xin vui lòng kiểm tra kỹ thông tin trước khi hoàn tất đặt lịch!
+    </div>
+  </div>
+
   <!-- Nội dung: Hồ sơ và Thông tin đặt khám -->
-  <!-- Nội dung: Hồ sơ và Thông tin đặt khám -->
-<div class="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4">
-  <!-- HỒ SƠ ĐẶT KHÁM -->
-  <div class="bg-white rounded-lg p-3 flex flex-col justify-between relative border border-sky-600">
-    <div class="text-xl font-bold text-sky-800 mb-2">HỒ SƠ ĐẶT KHÁM</div>
-    <hr class="border-sky-600 mb-2" />
-    <div class="grid grid-cols-1 gap-2">
-      <div class="grid [grid-template-columns:4fr_6fr] gap-2">
-        <p class="font-semibold">Mã hồ sơ:</p>
-        <p>{{ patient?.id || '...' }}</p>
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 pt-2">
+    <!-- HỒ SƠ ĐẶT KHÁM -->
+    <div class="bg-white rounded-lg overflow-hidden border border-sky-600 flex flex-col justify-between relative">
+      <!-- Tiêu đề có nền xanh và bo trên -->
+      <div class="text-xl font-bold text-white bg-sky-600 px-4 py-2">
+        HỒ SƠ ĐẶT KHÁM
       </div>
-      <div class="grid [grid-template-columns:4fr_6fr] gap-2">
-        <p class="font-semibold">Họ tên:</p>
-        <p>{{ patient?.fullName || '...' }}</p>
+    
+      <!-- Nội dung -->
+      <div class="grid grid-cols-1 gap-2 p-4">
+        <div class="grid [grid-template-columns:4fr_6fr] gap-2">
+          <p class="font-semibold">Mã hồ sơ:</p>
+          <p>{{ patient?.id || '...' }}</p>
+        </div>
+        <div class="grid [grid-template-columns:4fr_6fr] gap-2">
+          <p class="font-semibold">Họ tên:</p>
+          <p class="text-sky-800 font-semibold">{{ patient?.fullName || '...' }}</p>
+        </div>
+        <div class="grid [grid-template-columns:4fr_6fr] gap-2">
+          <p class="font-semibold">Giới tính:</p>
+          <p>{{ patient?.gender || '...' }}</p>
+        </div>
+        <div class="grid [grid-template-columns:4fr_6fr] gap-2">
+          <p class="font-semibold">Ngày sinh:</p>
+          <p>{{ formatDate(patient?.dateOfBirth || '') || '...' }}</p>
+        </div>
+        <div class="grid [grid-template-columns:4fr_6fr] gap-2">
+          <p class="font-semibold">Số điện thoại:</p>
+          <p>{{ formatPhone(patient?.phoneNumber || '') || '...' }}</p>
+        </div>
+        <div class="grid [grid-template-columns:4fr_6fr] gap-2">
+          <p class="font-semibold">Số căn cước:</p>
+          <p>{{ formatNationalId(patient?.identityCard || '') || '...' }}</p>
+        </div>
+        <div class="grid [grid-template-columns:4fr_6fr] gap-2">
+          <p class="font-semibold">Số thẻ BHYT:</p>
+          <p>{{ formatInsuranceId(patient?.insuranceId || '') || '...' }}</p>
+        </div>
+        <div class="grid [grid-template-columns:4fr_6fr] gap-2">
+          <p class="font-semibold">Địa chỉ:</p>
+          <p>{{ patient?.address || '...' }}</p>
+        </div>
       </div>
-      <div class="grid [grid-template-columns:4fr_6fr] gap-2">
-        <p class="font-semibold">Giới tính:</p>
-        <p>{{ patient?.gender || '...' }}</p>
-      </div>
-      <div class="grid [grid-template-columns:4fr_6fr] gap-2">
-        <p class="font-semibold">Ngày sinh:</p>
-        <p>{{ patient?.dateOfBirth | date:'dd/MM/yyyy':'en-GB' }}</p>
-      </div>
-      <div class="grid [grid-template-columns:4fr_6fr] gap-2">
-        <p class="font-semibold">Số điện thoại:</p>
-        <p>{{ patient?.phoneNumber || '...' }}</p>
-      </div>
-      <div class="grid [grid-template-columns:4fr_6fr] gap-2">
-        <p class="font-semibold">Số căn cước:</p>
-        <p>{{ patient?.identityCard || '...' }}</p>
-      </div>
-      <div class="grid [grid-template-columns:4fr_6fr] gap-2">
-        <p class="font-semibold">Số thẻ BHYT:</p>
-        <p>{{ patient?.insuranceId || '...' }}</p>
-      </div>
-      <div class="grid [grid-template-columns:4fr_6fr] gap-2">
-        <p class="font-semibold">Địa chỉ:</p>
-        <p>{{ patient?.address || '...' }}</p>
+    </div>
+    
+
+    <!-- THÔNG TIN ĐẶT KHÁM -->
+    <div class="bg-white rounded-lg overflow-hidden border border-sky-600 flex flex-col relative">
+      <div class="text-xl font-bold text-white bg-sky-600 mb-2 p-4 pt-2 pb-2">THÔNG TIN LỊCH HẸN</div>
+      <div class="grid grid-cols-1 gap-2 p-4 pt-0">
+        <div class="grid [grid-template-columns:4fr_6fr] gap-2">
+          <p class="font-semibold">Dịch vụ:</p>
+          <p class="text-green-800 font-semibold">{{ doctorService?.serviceResponse?.serviceName?.toUpperCase()  || '...' }}</p>
+        </div>
+        <div class="grid [grid-template-columns:4fr_6fr] gap-2">
+          <p class="font-semibold">Bác sĩ:</p>
+          <p class="text-sky-800 font-semibold">{{ doctorService?.doctorResponse?.name || '...' }}</p>
+        </div>
+        <div class="grid [grid-template-columns:4fr_6fr] gap-2">
+          <p class="font-semibold">Ngày khám:</p>
+          <p>{{ formatDate(appointmentDate || '') || '...' }}</p>
+        </div>
+        <div class="grid [grid-template-columns:4fr_6fr] gap-2">
+          <p class="font-semibold">Khung giờ:</p>
+          <p>{{ doctorSchedule?.timeFrameResponse?.fullName || '...' }}</p>
+        </div>
+        <!-- <div class="grid [grid-template-columns:4fr_6fr] gap-2">
+          <p class="font-semibold">Phòng khám:</p>
+          <p>{{ doctorSchedule?.roomName || '...' }}</p>
+        </div> -->
+        <div class="grid [grid-template-columns:4fr_6fr] gap-2">
+          <p class="font-semibold">Phí khám bệnh:</p>
+          <p class="text-orange-700">{{ doctorService?.serviceResponse?.price || '...' }}</p>
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- THÔNG TIN ĐẶT KHÁM -->
-  <div class="bg-white rounded-lg shadow-md p-3 flex flex-col justify-between relative border border-sky-600">
-    <div class="text-xl font-bold text-sky-800 mb-2">THÔNG TIN ĐẶT KHÁM</div>
-    <hr class="border-sky-600 mb-2" />
-    <div class="grid grid-cols-1 gap-2">
-      <div class="grid [grid-template-columns:4fr_6fr] gap-2">
-        <p class="font-semibold">Dịch vụ:</p>
-        <p>{{ doctorService?.serviceResponse?.serviceName || '...' }}</p>
-      </div>
-      <div class="grid [grid-template-columns:4fr_6fr] gap-2">
-        <p class="font-semibold">Bác sĩ:</p>
-        <p>{{ doctorService?.doctorResponse?.name || '...' }}</p>
-      </div>
-      <div class="grid [grid-template-columns:4fr_6fr] gap-2">
-        <p class="font-semibold">Ngày khám:</p>
-        <p>{{ (appointmentDate || '...') | date:'dd/MM/yyyy':'en-GB' }}</p>
-      </div>
-      <div class="grid [grid-template-columns:4fr_6fr] gap-2">
-        <p class="font-semibold">Giờ khám:</p>
-        <p>{{ doctorSchedule?.timeFrameResponse?.fullName || '...' }}</p>
-      </div>
-      <div class="grid [grid-template-columns:4fr_6fr] gap-2">
-        <p class="font-semibold">Phòng khám:</p>
-        <p>{{ doctorSchedule?.roomName || '...' }}</p>
-      </div>
-      <div class="grid [grid-template-columns:4fr_6fr] gap-2">
-        <p class="font-semibold">Phí khám bệnh:</p>
-        <p>{{ doctorService?.serviceResponse?.price || '...' }}</p>
-      </div>
+  <!-- Thông báo lưu ý -->
+  <div class="bg-sky-50 p-4 border border-sky-300 rounded-md m-4 mt-0 mb-2">
+    <div class="text-sm text-gray-600 text-justify">
+      <b><fa-icon [icon]="faCircleInfo"></fa-icon> Lưu ý về lịch hẹn khám:</b>
+      <ul class="list-disc pl-5 mt-2 space-y-1">
+        <li>Lịch hẹn chỉ có hiệu lực sau khi được phòng khám xác nhận.</li>
+        <li>Nếu bạn cần huỷ hoặc thay đổi lịch hẹn, vui lòng thông báo trước ít nhất 2 giờ.</li>
+        <li>Phí khám bệnh không bao gồm tiền thuốc và các khoản phụ thu khác.</li>
+        <li>Trong trường hợp bác sĩ bận đột xuất, phòng khám sẽ chủ động liên hệ với bạn để sắp xếp lại lịch.</li>
+        <li>Khi đến khám, vui lòng mang theo thẻ căn cước để xác nhận thông tin.</li>
+        <li>Vui lòng đến đúng giờ theo khung giờ hẹn để được ưu tiên làm thủ tục khám.</li>
+      </ul>
     </div>
   </div>
-</div>
 
   <!-- Nút XÁC NHẬN ĐẶT LỊCH -->
-  <div class="text-center pt-1 p-4 pb-6">
+  <div class="text-center pt-1 p-4 pb-6 mt-4 mb-4">
     <button
       (click)="openConfirm()"
       class="w-full h-12 bg-sky-700 text-white font-bold rounded-lg hover:bg-sky-600 transition duration-300"
@@ -114,13 +149,13 @@
   </div>
 
   <!-- Modal Confirm -->
-<app-modal-confirm
-*ngIf="isConfirmModalOpen"
-title="HOÀN TẤT ĐẶT LỊCH"
-content="Bạn xác nhận muốn đặt lịch khám theo thông tin trên? Nhấn 'Đồng ý' để hoàn tất."
-(confirm)="handleConfirm()"
-(cancel)="isConfirmModalOpen = false"
-></app-modal-confirm>
+  <app-modal-confirm
+    *ngIf="isConfirmModalOpen"
+    title="HOÀN TẤT ĐẶT LỊCH"
+    content="Bạn xác nhận muốn đặt lịch khám theo thông tin trên? Nhấn 'Đồng ý' để hoàn tất."
+    (confirm)="handleConfirm()"
+    (cancel)="isConfirmModalOpen = false"
+  ></app-modal-confirm>
 </div>
 
 

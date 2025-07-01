@@ -31,6 +31,7 @@ export class SelectDateComponent implements OnInit, OnChanges {
   selectedDate: Date | null = null;
   timeSlots: { id: string; session: string; name: string }[] = [];
   isModalOpen = false;
+  loadingTimeSlots = false;
 
   faChevronLeft = faChevronLeft;
   faChevronRight = faChevronRight;
@@ -144,6 +145,9 @@ export class SelectDateComponent implements OnInit, OnChanges {
   fetchTimeSlots(formattedDate: string): void {
     if (!this.doctorId) return;
 
+    this.loadingTimeSlots = true;
+    this.isModalOpen = true;
+
     this.scheduleService.getScheduleByDoctorAndDate(this.doctorId, formattedDate).subscribe({
       next: (data) => {
         this.timeSlots = data.map((slot) => ({
@@ -151,10 +155,11 @@ export class SelectDateComponent implements OnInit, OnChanges {
           session: slot.timeFrameResponse.session,
           name: slot.timeFrameResponse.name,
         }));
-        this.isModalOpen = true;
+        this.loadingTimeSlots = false;
       },
       error: (err) => {
         console.error('Error fetching time slots:', err);
+        this.loadingTimeSlots = false;
       },
     });
   }

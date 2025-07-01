@@ -21,6 +21,11 @@ export class ServiceCategoryService {
       `${this.API_URL}/search?keyword=${keyword}&page=${page}&size=${size}`
     );
   }
+  searchByCustomer(keyword = '', page = 1, size = 10): Observable<PageResponse<ServiceCategory>> {
+    return this.http.get<PageResponse<ServiceCategory>>(
+      `${this.API_URL}/customer/search?keyword=${keyword}&page=${page}&size=${size}`
+    );
+  }
 
   /**
    * Lấy danh mục dịch vụ theo ID

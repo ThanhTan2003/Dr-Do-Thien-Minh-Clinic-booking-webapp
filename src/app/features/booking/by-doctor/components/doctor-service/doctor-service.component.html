@@ -43,6 +43,12 @@
     </button>
   </div>
 
+  <!-- Loading indicator -->
+  <div *ngIf="loading" class="flex items-center justify-center py-4 pt-6">
+    <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-sky-600"></div>
+    <span class="ml-2 text-sky-700 font-medium">Đang lấy thông tin...</span>
+  </div>
+
   <!-- Danh sách dịch vụ -->
   <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4">
     <div
@@ -63,10 +69,10 @@
         <div class="flex-1">
           <h4 class="text-lg font-bold text-sky-800">{{ service.serviceResponse.serviceName.toUpperCase() }}</h4>
           <p class="text-sm text-amber-800">
-            <strong>Phí dịch vụ:</strong> {{ service.serviceFee || 'Chưa cập nhật' }}
+            <strong>Phí khám bệnh:</strong> {{ service.serviceFee || 'Chưa cập nhật' }}
           </p>
           <p class="text-sm text-gray-700 mt-1">
-            <strong>Danh mục:</strong> {{ service.serviceResponse.serviceCategoryResponse?.categoryName || '...' }}
+            <strong>Chuyên môn:</strong> {{ service.serviceResponse.serviceCategoryResponse?.categoryName || '...' }}
           </p>
           <!-- Nút hành động -->
           <div class="flex gap-2 justify-end mt-3">
@@ -90,12 +96,14 @@
 
   <!-- Nút phân trang -->
   <div *ngIf="currentPage < totalPages" class="flex justify-center p-4 mb-4">
-    <button
-      (click)="goToNextPage()"
-      class="w-full h-12 bg-gradient-to-r from-cyan-600 to-sky-700 text-white font-bold rounded-lg shadow-lg hover:from-cyan-800 hover:to-blue-900 transition duration-300"
-    >
+    <button *ngIf="!loadingMore" (click)="goToNextPage()"
+      class="w-full h-12 bg-gradient-to-r from-cyan-600 to-sky-700 text-white font-bold rounded-lg shadow-lg hover:from-cyan-800 hover:to-blue-900 transition duration-300">
       Xem thêm <fa-icon [icon]="faCaretDown"></fa-icon>
     </button>
+    <div *ngIf="loadingMore" class="flex items-center justify-center py-2">
+      <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-sky-600"></div>
+      <span class="ml-2 text-sky-700 font-medium">Đang tải thông tin...</span>
+    </div>
   </div>
 
   <!-- Modal hiển thị chi tiết -->

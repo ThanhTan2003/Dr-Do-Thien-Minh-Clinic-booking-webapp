@@ -30,6 +30,7 @@ export class PatientAppointmentComponent implements OnInit {
   showErrorModal: boolean = false;
   errorTitle: string = '';
   errorMessage: string = '';
+  loadingData: boolean = true;
 
   // Icons
   faCaretDown = faCaretDown;
@@ -45,6 +46,7 @@ export class PatientAppointmentComponent implements OnInit {
 
   ngOnInit() {
     this.patientId = this.route.snapshot.params['patientId'];
+    this.loadingData = true;
     this.fetchAppointments();
     this.fetchStatuses();
     window.scrollTo(0, 0);
@@ -52,7 +54,7 @@ export class PatientAppointmentComponent implements OnInit {
 
   fetchAppointments() {
     this.appointmentService
-      .getByPatientId(
+      .getByPatientIdByCustomer(
         this.patientId,
         this.selectStatus,
         this.keyword,
@@ -67,8 +69,12 @@ export class PatientAppointmentComponent implements OnInit {
           } else {
             this.appointments = [...this.appointments, ...(data.data || [])];
           }
+          this.loadingData = false;
         },
-        error: (error: any) => console.error('Error fetching data:', error)
+        error: (error: any) => {
+          console.error('Error fetching data:', error);
+          this.loadingData = false;
+        }
       });
   }
 
@@ -88,6 +94,7 @@ export class PatientAppointmentComponent implements OnInit {
     this.timeoutRef = setTimeout(() => {
       this.isSearch = !this.isSearch;
       this.currentPage = 1;
+      this.loadingData = true;
       this.fetchAppointments();
     }, 500);
   }
@@ -112,6 +119,7 @@ export class PatientAppointmentComponent implements OnInit {
   onStatusChange(event: any) {
     this.selectStatus = event.target.value;
     this.currentPage = 1;
+    this.loadingData = true;
     this.fetchAppointments();
   }
 
@@ -125,7 +133,7 @@ export class PatientAppointmentComponent implements OnInit {
   }
 
   onCancelAppointment(appointment: Appointment) {
-    this.errorTitle = 'Không hủy lịch';
+    this.errorTitle = 'Không thể hủy lịch';
     this.errorMessage = 'Phòng khám hiện chưa cho phép thực hiện hủy lịch hẹn trên ứng dụng. Bạn vui lòng liên hệ phòng khám qua Zalo OA để được hỗ trợ. Trân trọng!';
     this.showErrorModal = true;
   }

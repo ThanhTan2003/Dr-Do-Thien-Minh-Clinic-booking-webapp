@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { 
   faMagnifyingGlass, 
@@ -17,6 +17,7 @@ import { Appointment } from '../../../../../../models/responses/appointment/appo
 import { PageResponse } from '../../../../../../models/responses/page-response.model';
 import { PaginationComponent } from '../../../../../shared/components/pagination/pagination.component';
 import { PageSizeSelectorComponent } from '../../../../../shared/components/page-size-selector/page-size-selector.component';
+import { DoctorAppointmentUpdateComponent } from '../../../appointment/update/doctor-appointment-update.component';
 
 @Component({
   selector: 'app-appointment-daily',
@@ -27,7 +28,8 @@ import { PageSizeSelectorComponent } from '../../../../../shared/components/page
     FormsModule,
     FontAwesomeModule,
     PaginationComponent,
-    PageSizeSelectorComponent
+    PageSizeSelectorComponent,
+    DoctorAppointmentUpdateComponent
   ]
 })
 export class AppointmentDailyComponent implements OnInit {
@@ -43,6 +45,8 @@ export class AppointmentDailyComponent implements OnInit {
   totalPages: number = 1;
   totalElements: number = 0;
   loading: boolean = false;
+  showUpdateModal: boolean = false;
+  selectedAppointmentId: string | null = null;
 
   faMagnifyingGlass = faMagnifyingGlass;
   faRotate = faRotate;
@@ -54,21 +58,28 @@ export class AppointmentDailyComponent implements OnInit {
 
   statusColorMap: { [key: string]: string } = {
     "Chờ xác nhận": "bg-orange-50 text-orange-600 border border-orange-600",
-    "Chờ khám": "bg-green-50 text-green-600 border border-green-600",
+    "Chờ khám": "bg-blue-50 text-blue-600 border border-blue-600",
     "Đã huỷ": "bg-red-50 text-red-600 border border-red-600",
-    "Đã khám": "bg-blue-50 text-blue-600 border border-blue-600"
+    "Đã khám": "bg-green-50 text-green-600 border border-green-600"
   };
 
   constructor(
     private route: ActivatedRoute,
-    private appointmentService: AppointmentService
+    private appointmentService: AppointmentService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
     this.doctorId = this.route.parent?.snapshot.paramMap?.get('doctorId') || '';
-    this.selectedDate = this.formatDateForInput(new Date());
-    this.loadStatuses();
-    this.loadAppointments();
+    this.route.queryParams.subscribe(params => {
+      this.selectedDate = params['date'] || this.formatDateForInput(new Date());
+      this.currentPage = +params['page'] || 1;
+      this.pageSize = +params['size'] || 10;
+      this.selectedStatus = params['status'] || '';
+      this.keyword = params['keyword'] || '';
+      this.loadStatuses();
+      this.loadAppointments();
+    });
   }
 
   loadStatuses(): void {
@@ -108,25 +119,41 @@ export class AppointmentDailyComponent implements OnInit {
 
   handleSearch(): void {
     this.currentPage = 1;
+    this.updateQueryParams();
     this.loadAppointments();
   }
 
-  refreshList(): void {
-    this.keyword = '';
-    this.selectedStatus = '';
+  handleStatusChange(): void {
     this.currentPage = 1;
+    this.updateQueryParams();
     this.loadAppointments();
   }
 
   onPageChange(page: number): void {
     this.currentPage = page;
+    this.updateQueryParams();
     this.loadAppointments(page);
   }
 
   onPageSizeChange(newSize: number): void {
     this.pageSize = newSize;
     this.currentPage = 1;
+    this.updateQueryParams();
     this.loadAppointments();
+  }
+
+  updateQueryParams() {
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: {
+        date: this.selectedDate,
+        page: this.currentPage,
+        size: this.pageSize,
+        status: this.selectedStatus,
+        keyword: this.keyword
+      },
+      queryParamsHandling: 'merge'
+    });
   }
 
   // Date navigation functions
@@ -154,6 +181,7 @@ export class AppointmentDailyComponent implements OnInit {
 
   onDateChange(): void {
     this.currentPage = 1;
+    this.updateQueryParams();
     this.loadAppointments();
   }
 
@@ -181,5 +209,18 @@ export class AppointmentDailyComponent implements OnInit {
   // Hàm trả về màu sắc, nếu không có trong danh sách thì trả về màu xám
   getStatusClass(status: string): string {
     return this.statusColorMap[status] || 'bg-gray-50 text-gray-600';  // Màu xám cho trường hợp không xác định
+  }
+
+  openUpdateModal(appointmentId: string) {
+    this.selectedAppointmentId = appointmentId;
+    this.showUpdateModal = true;
+  }
+
+  closeUpdateModal(updated: boolean) {
+    this.showUpdateModal = false;
+    this.selectedAppointmentId = null;
+    if (updated === true) {
+      this.loadAppointments();
+    }
   }
 }

@@ -1,11 +1,11 @@
 import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule, NgIf, NgFor } from '@angular/common';
-import { Router, RouterOutlet, ActivatedRoute, RouterLink } from '@angular/router';
+import { Router, RouterOutlet, ActivatedRoute, RouterLink, RouterEvent, NavigationEnd } from '@angular/router';
 import { PatientService } from '../../../shared/services/patient/patient.service';
 import { Patient } from '../../../models/responses/patient/patient.model';
-import { DetailPatientComponent } from './detail-patient.component';
+import { DetailPatientComponent } from './detail/detail-patient.component';
 import { FormsModule } from '@angular/forms';
-import { Subject, debounceTime, distinctUntilChanged, takeUntil } from 'rxjs';
+import { Subject, debounceTime, distinctUntilChanged, takeUntil, filter } from 'rxjs';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faMagnifyingGlass, faCaretDown, faArrowLeft, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { Location } from '@angular/common';
@@ -40,6 +40,8 @@ export class PatientComponent implements OnInit, OnDestroy {
 
   private searchSubject = new Subject<string>();
   private destroy$ = new Subject<void>();
+
+  loadingMore = false;
 
   constructor(
     private patientService: PatientService,
@@ -77,8 +79,20 @@ export class PatientComponent implements OnInit, OnDestroy {
       this.fetchPatients();
       this.cdr.detectChanges();
     });
+    
+    // Subscribe to router events to reload data when returning from create/update
+    this.router.events.pipe(
+      filter((event): event is NavigationEnd => event instanceof NavigationEnd),
+      takeUntil(this.destroy$)
+    ).subscribe((event: NavigationEnd) => {
+      // Check if we're returning to the patient list (not going to create/update)
+      const url = event.url;
+      if (url.includes('/patient') && !url.includes('/create') && !url.includes('/update')) {
+        this.fetchPatients();
+      }
+    });
+    
     this.setupSearchDebounce();
-    window.scrollTo(0, 0); // Cuộn lên đầu trang khi component được mount
   }
 
   ngOnDestroy(): void {
@@ -103,7 +117,7 @@ export class PatientComponent implements OnInit, OnDestroy {
   fetchPatients(): void {
     this.loading = true;
     this.patientService
-      .search(this.keyword, this.currentPage, this.pageSize)
+      .searchPatientsByCustomer(this.keyword, this.currentPage, this.pageSize)
       .subscribe({
         next: (res) => {
           this.totalPages = res.totalPages || 1;
@@ -138,9 +152,27 @@ export class PatientComponent implements OnInit, OnDestroy {
   }
 
   goToNextPage(): void {
-    if (this.currentPage < this.totalPages) {
+    if (this.currentPage < this.totalPages && !this.loadingMore) {
       this.currentPage++;
-      this.fetchPatients();
+      this.loadingMore = true;
+      this.patientService
+        .searchPatientsByCustomer(this.keyword, this.currentPage, this.pageSize)
+        .subscribe({
+          next: (res) => {
+            this.totalPages = res.totalPages || 1;
+            this.patients = [...this.patients, ...res.data];
+            this.cdr.detectChanges();
+          },
+          error: (err) => {
+            console.error('Error fetching patients:', err);
+            this.loadingMore = false;
+            this.cdr.detectChanges();
+          },
+          complete: () => {
+            this.loadingMore = false;
+            this.cdr.detectChanges();
+          },
+        });
     }
   }
 

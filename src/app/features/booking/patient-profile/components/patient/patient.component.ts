@@ -1,15 +1,16 @@
 import { Component, OnInit, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router, RouterOutlet, ActivatedRoute, RouterLink } from '@angular/router';
+import { Router, RouterOutlet, ActivatedRoute, RouterLink, NavigationEnd } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { Subject, debounceTime, distinctUntilChanged, takeUntil } from 'rxjs';
+import { Subject, debounceTime, distinctUntilChanged, takeUntil, filter } from 'rxjs';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { faMagnifyingGlass, faCaretDown, faPlus } from '@fortawesome/free-solid-svg-icons';
-import { DetailPatientComponent } from '../../../compoments/patient/detail-patient.component';
+import { faMagnifyingGlass, faCaretDown, faPlus, faHome } from '@fortawesome/free-solid-svg-icons';
+import { DetailPatientComponent } from '../../../compoments/patient/detail/detail-patient.component';
 import { ModalErrorComponent } from '../../../../shared/components/modal-error.component';
 import { PatientService } from '../../../../shared/services/patient/patient.service';
 import { Patient } from '../../../../models/responses/patient/patient.model';
 import { PageResponse } from '../../../../models/responses/page-response.model';
+import {formatDate, formatPhone, formatInsuranceId, formatNationalId} from '../../../../shared/util/format.util';
 
 @Component({
   selector: 'app-patient',
@@ -22,9 +23,10 @@ export class PatientProfileComponent implements OnInit, OnDestroy {
   selectPatient: Patient | null = null;
   totalPages = 1;
   currentPage = 1;
-  pageSize = 5;
+  pageSize = 10;
   keyword = '';
   loading = false;
+  loadingMore = false;
   isModalOpen = false;
   isErrorModalOpen = false;
   errorTitle = '';
@@ -33,6 +35,7 @@ export class PatientProfileComponent implements OnInit, OnDestroy {
   faMagnifyingGlass = faMagnifyingGlass;
   faCaretDown = faCaretDown;
   faPlus = faPlus;
+  faHome = faHome;
 
   private searchSubject = new Subject<string>();
   private destroy$ = new Subject<void>();
@@ -47,14 +50,17 @@ export class PatientProfileComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.setupSearchDebounce();
     this.fetchPatients();
-    
-    // Subscribe to route changes
-    this.route.params.pipe(takeUntil(this.destroy$)).subscribe(() => {
-      this.fetchPatients();
+    // Chỉ reload khi quay lại từ create/update
+    this.router.events.pipe(
+      filter((event): event is NavigationEnd => event instanceof NavigationEnd),
+      takeUntil(this.destroy$)
+    ).subscribe((event: NavigationEnd) => {
+      const url = event.url;
+      if (url.includes('/patient-profile') && !url.includes('/create') && !url.includes('/update')) {
+        this.fetchPatients();
+      }
     });
-
-    // Scroll to top
-    window.scrollTo(0, 0);
+    // Không scrollTo(0,0) khi phân trang
   }
 
   ngOnDestroy(): void {
@@ -77,20 +83,16 @@ export class PatientProfileComponent implements OnInit, OnDestroy {
 
   fetchPatients(): void {
     this.loading = true;
-    this.patientService.search(this.keyword, this.currentPage, this.pageSize).subscribe({
-      next: (res: PageResponse<Patient>) => {
+    this.patientService.searchPatientsByCustomer(this.keyword, 1, this.pageSize).subscribe({
+      next: (res) => {
         this.totalPages = res.totalPages || 1;
-        this.patients = this.currentPage === 1 ? res.data : [...this.patients, ...res.data];
-        this.cdr.detectChanges();
+        this.patients = res.data;
       },
       error: (err) => {
-        console.error('Error fetching patients:', err);
         this.loading = false;
-        this.cdr.detectChanges();
       },
       complete: () => {
         this.loading = false;
-        this.cdr.detectChanges();
       },
     });
   }
@@ -128,13 +130,40 @@ export class PatientProfileComponent implements OnInit, OnDestroy {
   }
 
   goToNextPage(): void {
-    if (this.currentPage < this.totalPages) {
+    if (this.currentPage < this.totalPages && !this.loadingMore) {
       this.currentPage++;
-      this.fetchPatients();
+      this.loadingMore = true;
+      this.patientService
+        .searchPatientsByCustomer(this.keyword, this.currentPage, this.pageSize)
+        .subscribe({
+          next: (res) => {
+            this.totalPages = res.totalPages || 1;
+            this.patients = [...this.patients, ...res.data];
+          },
+          error: (err) => {
+            this.loadingMore = false;
+          },
+          complete: () => {
+            this.loadingMore = false;
+          },
+        });
     }
   }
 
-  formatDate(date: string): string {
-    return new Date(date).toLocaleDateString('en-GB');
+  goToHome(): void {
+    this.router.navigate(['/booking']);
+  }
+
+  formatDate(value: string | Date): string {
+    return formatDate(value);
+  }
+  formatPhone(value: string): string {
+    return formatPhone(value);
+  }
+  formatInsuranceId(value: string): string {
+    return formatInsuranceId(value);
+  }
+  formatNationalId(value: string): string {
+    return formatNationalId(value);
   }
 } 

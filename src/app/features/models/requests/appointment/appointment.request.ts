@@ -5,6 +5,5 @@ export interface AppointmentRequest {
     appointmentDate: string; // yyyy-MM-dd
     patientMessage?: string;
     patientName?: string;
-    note?: String;
   }
   

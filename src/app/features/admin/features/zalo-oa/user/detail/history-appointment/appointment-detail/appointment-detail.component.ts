@@ -28,9 +28,9 @@ export class AppointmentDetailComponent implements OnInit {
   // Mảng trạng thái và màu sắc tương ứng
   statusColorMap: { [key: string]: string } = {
     "Chờ xác nhận": "text-orange-700",
-    "Chờ khám": "text-green-700",
+    "Chờ khám": "text-blue-700",
     "Đã huỷ": "text-red-700",
-    "Đã khám": "text-blue-700 border"
+    "Đã khám": "text-green-700 border"
   };
 
   // Hàm trả về màu sắc, nếu không có trong danh sách thì trả về màu xám

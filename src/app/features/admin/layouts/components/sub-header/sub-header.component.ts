@@ -1,7 +1,8 @@
-import { Component, Input, Output, EventEmitter, OnInit, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, OnChanges, SimpleChanges, OnDestroy } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
-import { Router } from '@angular/router';
+import { Router, NavigationEnd } from '@angular/router';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { Subscription } from 'rxjs';
 
 interface MenuItem {
   id: string;
@@ -17,17 +18,23 @@ interface MenuItem {
   imports: [CommonModule, FontAwesomeModule],
   templateUrl: './sub-header.component.html'
 })
-export class SubHeaderComponent implements OnInit, OnChanges {
+export class SubHeaderComponent implements OnInit, OnChanges, OnDestroy {
   @Input() menuItems: MenuItem[] = [];
   @Input() parentPath: string = '';
   @Output() menuSelect = new EventEmitter<MenuItem>();
 
   selectedSubMenuId: string = '';
+  private routerSub?: Subscription;
 
   constructor(private router: Router, private location: Location) {}
 
   ngOnInit() {
     this.setActiveSubMenu();
+    this.routerSub = this.router.events.subscribe(event => {
+      if (event instanceof NavigationEnd) {
+        this.setActiveSubMenu();
+      }
+    });
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -36,9 +43,16 @@ export class SubHeaderComponent implements OnInit, OnChanges {
     }
   }
 
+  ngOnDestroy() {
+    this.routerSub?.unsubscribe();
+  }
+
   setActiveSubMenu() {
     const segments = this.location.path().split('/');
-    const subPath = segments[3] || '';
+    let subPath = segments[3] || '';
+    if (subPath.includes('?')) {
+      subPath = subPath.split('?')[0];
+    }
     const active = this.menuItems.find(item => item.path === subPath);
     this.selectedSubMenuId = active?.id || '';
   }

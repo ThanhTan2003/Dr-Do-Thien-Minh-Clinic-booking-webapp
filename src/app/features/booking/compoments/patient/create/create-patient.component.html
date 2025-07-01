@@ -1,0 +1,155 @@
+<div>
+  <!-- Modal thông báo thành công -->
+  <app-modal-success
+    *ngIf="isModalOpen"
+    [title]="modalContent.title"
+    [content]="modalContent.content"
+    (close)="handleModalClose()"
+  ></app-modal-success>
+
+  <!-- Nút Quay lại -->
+  <div class="text-center pb-2 p-4">
+    <button
+      (click)="goBack()"
+      class="w-full h-12 border-2 border-cyan-700 text-cyan-700 font-bold rounded-lg bg-white hover:bg-cyan-50 transition duration-300"
+    >
+      <fa-icon [icon]="faArrowLeft"></fa-icon> Quay lại
+    </button>
+  </div>
+
+  <!-- Tiêu đề -->
+  <div class="text-center pb-2 p-4">
+    <h1
+      class="text-2xl font-bold relative"
+      style="
+        background: linear-gradient(to right, #0078B7, #00A3E0);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      "
+    >
+      TẠO HỒ SƠ MỚI
+    </h1>
+    <div class="mt-2 w-32 mx-auto h-1 bg-gradient-to-r from-cyan-600 to-blue-800 rounded-full"></div>
+  </div>
+
+  <!-- Thông báo lưu ý -->
+  <div class="bg-yellow-50 p-4 border border-yellow-300 rounded-md m-4 mb-2">
+    <div class="text-sm text-gray-600 text-justify">
+      <b><fa-icon [icon]="faCircleInfo"></fa-icon> Lưu ý:</b> Hồ sơ chỉ được nhập một lần và không thể thay đổi. Đây sẽ là hồ sơ theo suốt quá trình khám chữa bệnh tại phòng khám. Bạn vui lòng cung cấp thông tin chính xác.
+    </div>
+  </div>
+
+  <!-- Form nhập thông tin -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4">
+    <div>
+      <label class="block text-sm font-semibold text-sky-800">Họ tên <span class="text-red-800">(*)</span></label>
+      <input
+        type="text"
+        [(ngModel)]="formData.fullName"
+        name="fullName"
+        class="w-full p-1 border border-gray-300 rounded-md text-gray-700"
+      />
+    </div>
+    <div>
+      <label class="block text-sm font-semibold text-sky-800">Giới tính <span class="text-red-800">(*)</span></label>
+      <select
+        [(ngModel)]="formData.gender"
+        name="gender"
+        class="border p-2 rounded-lg w-full mt-1"
+      >
+        <option value="Nam">Nam</option>
+        <option value="Nữ">Nữ</option>
+      </select>
+    </div>
+    <div>
+      <label class="block text-sm font-semibold text-sky-800">Ngày sinh <span class="text-red-800">(*)</span></label>
+      <input
+        type="text"
+        [(ngModel)]="displayDateOfBirth"
+        (input)="onDateInput($event)"
+        (blur)="onDateBlur()"
+        name="displayDateOfBirth"
+        placeholder="ngày/tháng/năm"
+        maxlength="10"
+        class="w-full p-1 border border-gray-300 rounded-md text-gray-700"
+        [class.border-red-500]="dateError"
+      />
+      <div *ngIf="dateError" class="text-red-600 text-sm mt-1">
+        {{ dateError }}
+      </div>
+    </div>
+    <div>
+      <label class="block text-sm font-semibold text-sky-800">Số điện thoại liên hệ <span class="text-red-800">(*)</span></label>
+      <input
+        type="text"
+        [(ngModel)]="formData.phoneNumber"
+        name="phoneNumber"
+        class="w-full p-1 border border-gray-300 rounded-md text-gray-700"
+      />
+    </div>
+    <div>
+      <label class="block text-sm font-semibold text-sky-800">Số căn cước <span class="text-red-800">(*)</span></label>
+      <input
+        type="text"
+        [(ngModel)]="formData.identityCard"
+        name="identityCard"
+        class="w-full p-1 border border-gray-300 rounded-md text-gray-700"
+      />
+    </div>
+    <div>
+      <label class="block text-sm font-semibold text-sky-800">Mối quan hệ <span class="text-red-800">(*)</span></label>
+      <select
+        [(ngModel)]="formData.relationship"
+        name="relationship"
+        class="border p-2 rounded-lg w-full mt-1"
+      >
+        <option value="">Chọn mối quan hệ</option>
+        <option *ngFor="let relationship of relationships" [value]="relationship">
+          {{ relationship }}
+        </option>
+      </select>
+    </div>
+    <div>
+      <label class="block text-sm font-semibold text-sky-800">Số thẻ BHYT (nếu có)</label>
+      <input
+        type="text"
+        [(ngModel)]="formData.insuranceId"
+        name="insuranceId"
+        class="w-full p-1 border border-gray-300 rounded-md text-gray-700"
+      />
+    </div>
+    <div>
+      <label class="block text-sm font-semibold text-sky-800">Địa chỉ</label>
+      <textarea
+        [(ngModel)]="formData.address"
+        name="address"
+        rows="2"
+        class="w-full p-1 border border-gray-300 rounded-md text-gray-700"
+      ></textarea>
+    </div>
+  </div>
+
+  <!-- Checkbox điều khoản -->
+  <div class="p-4 pt-1 text-sm text-sky-900">
+    <label class="flex items-center">
+      <input
+        type="checkbox"
+        [(ngModel)]="acceptTerms"
+        name="acceptTerms"
+      />
+      <div class="ml-2 text-justify">
+        Tôi cam đoan những thông tin trên là thật và chịu trách nhiệm hoàn toàn về các thông tin đã cung cấp.
+      </div>
+    </label>
+  </div>
+
+  <!-- Nút tạo hồ sơ -->
+  <div class="text-center pt-1 p-4 pb-6">
+    <button
+      (click)="handleSubmit()"
+      class="w-full h-12 bg-sky-700 text-white font-bold rounded-lg hover:bg-sky-600 transition duration-300"
+    >
+      Tạo hồ sơ mới <fa-icon [icon]="faPlus"></fa-icon>
+    </button>
+  </div>
+</div>

@@ -1,6 +1,6 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Patient } from '../../../models/responses/patient/patient.model';
+import { Patient } from '../../../../models/responses/patient/patient.model';
 import { FormsModule } from '@angular/forms';
 
 @Component({

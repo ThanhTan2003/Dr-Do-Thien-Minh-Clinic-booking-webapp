@@ -3,6 +3,7 @@ import { Observable } from 'rxjs';
 import { HttpService } from '../../../../core/services/http.service';
 import { Patient } from '../../../models/responses/patient/patient.model';
 import { PatientRequest } from '../../../models/requests/patient/patient.request';
+import { PatientUpdateByCustomerRequest } from '../../../models/requests/patient/patient-update-by-customer.request';
 import { PageResponse } from '../../../models/responses/page-response.model';
 
 @Injectable({
@@ -26,12 +27,15 @@ export class PatientService {
   getById(id: string): Observable<Patient> {
     return this.http.get<Patient>(`${this.API_URL}/${id}`);
   }
+  getByIdByCustomer(id: string): Observable<Patient> {
+    return this.http.get<Patient>(`${this.API_URL}/customer/${id}`);
+  }
 
   /**
    * Tạo mới bệnh nhân
    */
-  create(request: PatientRequest): Observable<Patient> {
-    return this.http.post<Patient>(this.API_URL, request);
+  createByCustomer(request: PatientRequest): Observable<Patient> {
+    return this.http.post<Patient>(`${this.API_URL}/customer`, request);
   }
 
   /**
@@ -47,6 +51,10 @@ export class PatientService {
   update(id: string, request: PatientRequest): Observable<Patient> {
     return this.http.put<Patient>(`${this.API_URL}/${id}`, request);
   }
+  updateByIdByCustomer(id: string, request: PatientUpdateByCustomerRequest): Observable<Patient> {
+    return this.http.put<Patient>(`${this.API_URL}/customer/${id}`, request);
+  }
+
 
   /**
    * Xoá bệnh nhân
@@ -61,6 +69,11 @@ export class PatientService {
   search(keyword = '', page = 1, size = 10): Observable<PageResponse<Patient>> {
     return this.http.get<PageResponse<Patient>>(
       `${this.API_URL}/search?keyword=${keyword}&page=${page}&size=${size}`
+    );
+  }
+  searchPatientsByCustomer(keyword = '', page = 1, size = 10): Observable<PageResponse<Patient>> {
+    return this.http.get<PageResponse<Patient>>(
+      `${this.API_URL}/customer/search?keyword=${keyword}&page=${page}&size=${size}`
     );
   }
 

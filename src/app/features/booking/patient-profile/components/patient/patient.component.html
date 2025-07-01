@@ -1,6 +1,16 @@
 <router-outlet #childOutlet="outlet"></router-outlet>
 
 <div *ngIf="!childOutlet.isActivated">
+
+  <div class="text-center pb-2 p-4">
+    <button
+      (click)="goToHome()"
+      class="w-full h-12 border-2 border-cyan-700 text-cyan-700 font-bold rounded-lg bg-white hover:bg-cyan-50 transition duration-300"
+    >
+      <fa-icon [icon]="faHome"></fa-icon> &nbsp; Về trang chủ
+    </button>
+  </div>
+
   <!-- Tiêu đề -->
   <div class="text-center pb-2 p-4">
     <h1
@@ -29,7 +39,13 @@
     </button>
   </div>
 
-  <div class="text-center pb-2 p-4">
+  <!-- Loading indicator -->
+  <div *ngIf="loading" class="flex items-center justify-center py-4 pt-6">
+    <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-sky-600"></div>
+    <span class="ml-2 text-sky-700 font-medium">Đang lấy thông tin...</span>
+  </div>
+
+  <div *ngIf="!loading" class="text-center pb-2 p-4">
     <a routerLink="create">
       <button
         class="p-2 bg-sky-600 text-white font-bold rounded-md w-full h-12"
@@ -40,10 +56,10 @@
   </div>
 
   <!-- Danh sách bệnh nhân -->
-  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 pt-2">
+  <div *ngIf="!loading" class="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 pt-2">
     <div
       *ngFor="let patient of patients"
-      class="bg-white rounded-lg shadow-md p-4 flex flex-col justify-between relative border border-slate-300"
+      class="bg-white rounded-lg shadow-md p-4 flex flex-col justify-between relative border border-sky-700"
       style="min-height: 180px;"
     >
       <div class="flex items-center gap-6 mb-4">
@@ -71,6 +87,9 @@
           <p class="text-sm text-gray-700 mt-1 text-justify">
             <b>Số căn cước: </b>{{patient.identityCard}}
           </p>
+          <p class="text-sm text-gray-700 mt-1 text-justify">
+            <b>Mối quan hệ: </b>{{patient.relationship || 'Chưa cập nhật'}}
+          </p>
         </div>
       </div>
 
@@ -82,12 +101,13 @@
         >
           Xóa
         </button>
-        <button
-          (click)="showErrorModal('update')"
-          class="w-20 h-10 border-2 border-green-700 text-green-700 font-semibold rounded-lg bg-white hover:bg-cyan-50 transition duration-300"
-        >
-          Cập nhật
-        </button>
+        <a [routerLink]="[patient.id, 'update']">
+          <button
+            class="w-20 h-10 border-2 border-green-700 text-green-700 font-semibold rounded-lg bg-white hover:bg-cyan-50 transition duration-300"
+          >
+            Cập nhật
+          </button>
+        </a>
         <button
           (click)="openModal(patient)"
           class="w-20 h-10 border-2 border-cyan-700 text-cyan-700 font-semibold rounded-lg bg-white hover:bg-cyan-50 transition duration-300"
@@ -105,12 +125,14 @@
 
   <!-- Pagination -->
   <div *ngIf="currentPage < totalPages" class="flex justify-center p-4 mb-4">
-    <button
-      (click)="goToNextPage()"
-      class="w-full h-12 bg-gradient-to-r from-cyan-600 to-sky-700 text-white font-bold rounded-lg shadow-lg hover:from-cyan-800 hover:to-blue-900 transition duration-300"
-    >
+    <button *ngIf="!loadingMore" (click)="goToNextPage()"
+      class="w-full h-12 bg-gradient-to-r from-cyan-600 to-sky-700 text-white font-bold rounded-lg shadow-lg hover:from-cyan-800 hover:to-blue-900 transition duration-300">
       Xem thêm &nbsp; <fa-icon [icon]="faCaretDown"></fa-icon>
     </button>
+    <div *ngIf="loadingMore" class="flex items-center justify-center py-2">
+      <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-sky-600"></div>
+      <span class="ml-2 text-sky-700 font-medium">Đang tải thêm...</span>
+    </div>
   </div>
 </div>
 

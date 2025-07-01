@@ -1,6 +1,12 @@
 <router-outlet #childOutlet="outlet"></router-outlet>
 
-<div *ngIf="!childOutlet.isActivated">
+<!-- Hiển thị loading khi lấy dữ liệu ban đầu -->
+<div *ngIf="loadingData" class="flex flex-col items-center justify-center py-12">
+  <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-sky-600"></div>
+  <span class="mt-4 text-sky-700 font-medium text-lg">Đang tải danh sách lịch hẹn...</span>
+</div>
+
+<div *ngIf="!childOutlet.isActivated && !loadingData">
   <div class="text-center pb-2 p-4">
     <button
       (click)="goBack()"
@@ -24,77 +30,111 @@
     <div class="mt-2 w-32 mx-auto h-1 bg-gradient-to-r from-cyan-600 to-blue-800 rounded-full"></div>
   </div>
 
-  <div class="text-center pt-2">
-    <input
-      type="text"
-      placeholder="Mã lịch hẹn, bác sĩ, dịch vụ..."
-      [(ngModel)]="keyword"
-      (input)="handleSearchChange($event)"
-      class="p-2 border border-cyan-700 rounded-md w-4/6"
-    />
-    <button
-      (click)="fetchAppointments()"
-      class="ml-2 p-2 bg-gradient-to-r from-cyan-600 to-sky-700 text-white font-semibold rounded-md w-1/5"
-    >
-      <fa-icon [icon]="faMagnifyingGlass"></fa-icon> Tìm
-    </button>
+  <div class="p-4 pt-0">
+    <div class="bg-white rounded-lg border border-sky-600 p-4">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-sm font-semibold text-sky-800 mb-2">Tìm kiếm</label>
+          <div class="flex">
+            <input
+              type="text"
+              placeholder="Mã lịch hẹn, bác sĩ, dịch vụ..."
+              [(ngModel)]="keyword"
+              (input)="handleSearchChange($event)"
+              class="flex-1 p-3 border border-sky-500 rounded-l-md focus:outline-none focus:ring-2 focus:ring-sky-500"
+            />
+            <button
+              (click)="fetchAppointments()"
+              class="px-4 bg-sky-600 text-white font-semibold rounded-r-md hover:bg-sky-700 transition duration-300"
+            >
+              <fa-icon [icon]="faMagnifyingGlass"></fa-icon>
+            </button>
+          </div>
+        </div>
 
-    <div class="p-4">
-      <select
-        [(ngModel)]="selectStatus"
-        (change)="onStatusChange($event)"
-        class="border border-cyan-700 rounded-md p-2 text-sm w-full"
-      >
-        <option value="">-- Tất cả trạng thái --</option>
-        <option *ngFor="let status of statuses" [value]="status">{{ status }}</option>
-      </select>
+        <div>
+          <label class="block text-sm font-semibold text-sky-800 mb-2">Trạng thái</label>
+          <select
+            [(ngModel)]="selectStatus"
+            (change)="onStatusChange($event)"
+            class="w-full p-3 border border-sky-500 rounded-md focus:outline-none focus:ring-2 focus:ring-sky-500"
+          >
+            <option value="">-- Tất cả trạng thái --</option>
+            <option *ngFor="let status of statuses" [value]="status">{{ status }}</option>
+          </select>
+        </div>
+      </div>
     </div>
   </div>
 
-  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 pt-2">
-    <div
-      *ngFor="let appointment of appointments"
-      class="bg-white rounded-lg p-3 flex flex-col justify-between relative border border-sky-600 shadow-md"
-    >
-      <div class="text-1xl font-bold text-sky-800 mb-2">
-        {{ appointment?.doctorServiceResponse?.serviceResponse?.serviceName?.toUpperCase() || "..." }}
-      </div>
-      <hr class="border-sky-600 mb-2" />
-      <div class="grid grid-cols-[4fr,6fr] gap-2">
-        <p><strong>Mã lịch hẹn: </strong></p>
-        <p>{{ appointment?.id || "..." }}</p>
+  <div class="p-4 pt-0">
+    <div class="grid grid-cols-1 gap-4">
+      <div
+        *ngFor="let appointment of appointments"
+        class="bg-white rounded-lg overflow-hidden border border-sky-600 shadow-md hover:shadow-lg transition duration-300"
+      >
+        <!-- <div class="bg-sky-600 text-white px-4 py-3">
+          <h3 class="text-lg font-bold">
+            {{ appointment?.doctorServiceResponse?.serviceResponse?.serviceName?.toUpperCase() || "..." }}
+          </h3>
+        </div> -->
 
-        <p><strong>Bác sĩ: </strong></p>
-        <p>{{ appointment?.doctorServiceResponse?.doctorResponse?.name || "..." }}</p>
+        <div class="p-4">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="space-y-3">
+              <div class="flex justify-between items-center">
+                <span class="font-semibold text-sky-800">Mã lịch hẹn:</span>
+                <span class="text-gray-700">{{ appointment?.id || "..." }}</span>
+              </div>
+              
+              <div class="flex justify-between items-center">
+                <span class="font-semibold text-sky-800">Dịch vụ:</span>
+                <span class="text-cyan-800 font-semibold">{{ appointment?.doctorServiceResponse?.serviceResponse?.serviceName?.toUpperCase() || "..." }}</span>
+              </div>
+              
+              <div class="flex justify-between items-center">
+                <span class="font-semibold text-sky-800">Ngày khám:</span>
+                <span class="text-gray-700">{{ appointment?.appointmentDateName || "..." }}</span>
+              </div>
+            </div>
 
-        <p><strong>Ngày khám: </strong></p>
-        <p>{{ appointment?.appointmentDateName || "..." }}</p>
+            <div class="space-y-3">
+              <div class="flex justify-between items-center">
+                <span class="font-semibold text-sky-800">Giờ khám:</span>
+                <span class="text-gray-700">{{ appointment?.doctorScheduleResponse?.timeFrameResponse?.fullName || "..." }}</span>
+              </div>
+              
+              <div class="flex justify-between items-center">
+                <span class="font-semibold text-sky-800">Trạng thái:</span>
+                <span [class]="'rounded-full font-bold ' + getStatusColorClass(appointment?.status ?? '')">
+                  {{ appointment?.status || "..." }}
+                </span>
+              </div>
+              
+              <!-- <div class="flex justify-between items-center">
+                <span class="font-semibold text-sky-800">Phí khám:</span>
+                <span class="text-orange-600 font-semibold">{{ appointment?.doctorServiceResponse?.serviceResponse?.price || "..." }}</span>
+              </div> -->
+            </div>
+          </div>
 
-        <p><strong>Giờ khám: </strong></p>
-        <p>{{ appointment?.doctorScheduleResponse?.timeFrameResponse?.fullName || "..." }}</p>
+          <div class="flex gap-3 justify-end pt-4 border-t border-gray-200 mt-4">
+            <button
+              *ngIf="appointment?.status !== 'Đã khám'"
+              (click)="onCancelAppointment(appointment)"
+              class="px-4 py-2 border-2 border-amber-600 text-amber-700 font-semibold rounded-lg bg-white hover:bg-amber-50 transition duration-300"
+            >
+              Hủy lịch
+            </button>
 
-        <p><strong>Trạng thái:</strong></p>
-        <div class="flex items-center">
-          <span [class]="'inline-block font-bold text-sm py-1 rounded ' + getStatusColorClass(appointment?.status ?? '')">
-            {{ appointment?.status || "..." }}
-          </span>
+            <a
+              [routerLink]="[appointment.id]"
+              class="px-4 py-2 bg-sky-600 text-white font-semibold rounded-lg hover:bg-sky-700 transition duration-300 inline-flex items-center"
+            >
+              Chi tiết
+            </a>
+          </div>
         </div>
-      </div>
-
-      <div class="flex gap-2 justify-end pt-2">
-        <button
-          (click)="onCancelAppointment(appointment)"
-          class="w-32 h-10 border-2 border-amber-800 text-amber-700 font-semibold rounded-lg bg-white hover:bg-rose-50 transition duration-300"
-        >
-          Hủy lịch
-        </button>
-
-        <a
-          [routerLink]="[appointment.id]"
-          class="w-32 h-10 bg-gradient-to-r from-cyan-600 to-sky-700 text-white font-semibold rounded-lg shadow-lg hover:from-cyan-800 hover:to-blue-900 transition duration-300 inline-flex items-center justify-center"
-        >
-          Chi tiết
-        </a>
       </div>
     </div>
   </div>
@@ -102,7 +142,7 @@
   <div *ngIf="currentPage < totalPages" class="flex justify-center p-4 mb-4">
     <button
       (click)="loadMore()"
-      class="w-full h-12 bg-gradient-to-r from-cyan-600 to-sky-700 text-white font-bold rounded-lg shadow-lg hover:from-cyan-800 hover:to-blue-900 transition duration-300"
+      class="w-full max-w-md h-12 bg-sky-600 text-white font-bold rounded-lg hover:bg-sky-700 transition duration-300 flex items-center justify-center"
     >
       Xem thêm &nbsp; <fa-icon [icon]="faCaretDown"></fa-icon>
     </button>

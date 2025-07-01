@@ -4,6 +4,8 @@ import { Appointment } from '../../../models/responses/appointment/appointment.m
 import { AppointmentRequest } from '../../../models/requests/appointment/appointment.request';
 import { PageResponse } from '../../../models/responses/page-response.model';
 import { HttpService } from '../../../../core/services/http.service';
+import { ExamResultRequest } from '../../../models/requests/appointment/exam-result.request';
+import { ServiceAppointmentRequest } from '../../../models/requests/appointment/service-appointment.request';
 
 @Injectable({
   providedIn: 'root'
@@ -21,11 +23,22 @@ export class AppointmentService {
     return this.http.post<Appointment>(this.API_URL, request);
   }
 
+  createByCustomer(request: AppointmentRequest): Observable<Appointment> {
+    return this.http.post<Appointment>(`${this.API_URL}/customer`, request);
+  }
+
+  createBookingServiceByCustomer(request: ServiceAppointmentRequest): Observable<Appointment> {
+    return this.http.post<Appointment>(`${this.API_URL}/customer/booking-service`, request);
+  }
+
   /**
    * Lấy lịch hẹn theo ID
-   */
+  */
   getById(id: string): Observable<Appointment> {
     return this.http.get<Appointment>(`${this.API_URL}/${id}`);
+  }
+  getByIdByCustomer(id: string): Observable<Appointment> {
+    return this.http.get<Appointment>(`${this.API_URL}/customer/${id}`);
   }
 
   /**
@@ -52,6 +65,11 @@ export class AppointmentService {
   getByPatientId(patientId: string, status = '', keyword = '', page = 1, size = 10): Observable<PageResponse<Appointment>> {
     return this.http.get<PageResponse<Appointment>>(
       `${this.API_URL}/patient/${patientId}?status=${status}&keyword=${keyword}&page=${page}&size=${size}`
+    );
+  }
+  getByPatientIdByCustomer(patientId: string, status = '', keyword = '', page = 1, size = 10): Observable<PageResponse<Appointment>> {
+    return this.http.get<PageResponse<Appointment>>(
+      `${this.API_URL}/customer/patient/${patientId}?status=${status}&keyword=${keyword}&page=${page}&size=${size}`
     );
   }
 
@@ -188,5 +206,15 @@ export class AppointmentService {
     return this.http.get<PageResponse<Appointment>>(
       `${this.API_URL}/history/patient/${patientId}?serviceId=${serviceId}&numberOfMonths=${numberOfMonths}&page=${page}&size=${size}`
     );
+  }
+
+  /**
+   * Cập nhật kết quả khám cho lịch hẹn
+   */
+  updateExamResult(
+    appointmentId: string,
+    request: ExamResultRequest
+  ): Observable<void> {
+    return this.http.put<void>(`${this.API_URL}/${appointmentId}/exam-result`, request);
   }
 }

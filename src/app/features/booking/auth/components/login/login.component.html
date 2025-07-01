@@ -1,0 +1,56 @@
+<div class="min-h-screen flex flex-col bg-white">
+  <!-- Header -->
+  <div class="flex flex-col items-center pt-4">
+    <img src="/login/logo-PKDKDQ.png" alt="Logo Phòng khám" class="h-20 mb-2" />
+    <div class="text-sky-700 text-center text-lg md:text-xl font-semibold">
+      Phòng Khám Đa Khoa Dân Quý
+    </div>
+  </div>
+
+  <!-- Nội dung chính có chiều cao giới hạn -->
+  <div class="flex-1 overflow-y-auto px-4 pt-4 pb-2 max-h-[calc(100vh-200px)]">
+    <h1 class="text-2xl md:text-3xl font-bold text-blue-900 text-center leading-tight">
+      ĐẶT LỊCH KHÁM BỆNH<br />TRỰC TUYẾN
+    </h1>
+    <p class="text-gray-600 text-center my-4 max-w-sm mx-auto">
+      Vui lòng đăng nhập để tiếp tục
+    </p>
+
+    <!-- Nút đăng nhập -->
+    <div class="flex justify-center">
+      <button
+        (click)="onLoginZalo()"
+        class="w-full max-w-sm p-2 m-4 ml-10 mr-10 bg-gradient-to-r from-cyan-600 to-blue-800 hover:bg-sky-700 text-white text-lg font-semibold rounded-xl shadow-md flex items-center justify-center gap-2"
+      >
+        <img src="/login/logo-zalo-white.png" alt="Zalo" class="h-10 w-10" />
+        Đăng nhập qua Zalo
+      </button>
+    </div>
+
+    <!-- Lỗi -->
+    <div *ngIf="error" class="text-red-600 mt-4 text-center max-w-sm mx-auto">
+      {{ error }}
+    </div>
+
+    <!-- Hình nền -->
+    <div class="mt-10 pointer-events-none select-none flex justify-center">
+      <img src="/login/bg-medical.png" alt="Medical BG" class="w-72" />
+    </div>
+  </div>
+
+  <!-- Footer luôn hiển thị đầy đủ -->
+  <footer class="bg-sky-50 px-6 py-4 rounded-t-3xl shadow-inner text-center text-sm text-gray-700">
+    <div class="flex flex-col md:flex-row justify-center items-center gap-4 mb-2">
+      <div class="flex items-center">
+        <fa-icon [icon]="faPhone" class="text-sky-600 mr-2"></fa-icon>
+        <span><strong>Số điện thoại:</strong> 02733.886.886</span>
+      </div>
+      <div class="flex items-center">
+        
+        <span><strong><fa-icon [icon]="faMapMarkerAlt" class="text-sky-600 mr-2"></fa-icon> Địa chỉ:</strong> Số 245, Phan Thanh Giản, Phường Mỹ Tho, tỉnh Đồng Tháp (Cầu Quay dãy vựa rau củ đi vào, gần quán ốc Ngọc).</span>
+      </div>
+    </div>
+  </footer>
+
+  <app-modal-loading *ngIf="loading" content="Đang đăng nhập..."></app-modal-loading>
+</div>

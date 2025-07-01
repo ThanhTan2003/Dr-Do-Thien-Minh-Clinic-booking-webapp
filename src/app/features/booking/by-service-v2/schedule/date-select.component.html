@@ -1,0 +1,111 @@
+<div>
+    <!-- Tiêu đề -->
+    <div class="text-center pb-2 p-4">
+      <h1
+        class="text-2xl font-bold relative"
+        style="
+          background: linear-gradient(to right, #0078B7, #00A3E0);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+        "
+      >
+        CHỌN NGÀY KHÁM
+      </h1>
+      <div class="mt-2 w-32 mx-auto h-1 bg-gradient-to-r from-cyan-600 to-blue-800 rounded-full"></div>
+    </div>
+  
+    <!-- Thông báo -->
+    <div class="bg-white p-2 border border-amber-500 rounded-md m-4">
+      <div class="text-sm text-amber-700 text-justify">
+        <fa-icon [icon]="faCircleInfo"></fa-icon> <b> Phòng Khám Đa Khoa Dân Quý</b> hỗ trợ đặt lịch khám trước hẹn từ <b>1</b> đến <b>30</b> ngày.
+      </div>
+    </div>
+  
+    <!-- Trạng thái ngày -->
+    <div class="flex justify-center space-x-4 mt-4">
+      <div class="flex items-center">
+        <div class="w-6 h-6 bg-red-300 rounded-lg mr-2"></div>
+        <span class="text-gray-700">Hôm nay</span>
+      </div>
+      <div class="flex items-center">
+        <div class="w-6 h-6 bg-sky-200 rounded-lg mr-2"></div>
+        <span class="text-gray-700">Còn trống</span>
+      </div>
+      <div class="flex items-center">
+        <div class="w-6 h-6 bg-gray-200 rounded-lg mr-2"></div>
+        <span class="text-gray-700">Kín lịch</span>
+      </div>
+    </div>
+  
+    <!-- Lịch tháng -->
+    <div class="w-full p-4">
+      <div class="border border-sky-300 rounded-t-md bg-white">
+        <div class="flex justify-between items-center mb-4 bg-sky-600 p-4">
+          <button
+            (click)="prevMonth()"
+            [disabled]="currentMonth === today.getMonth() && currentYear === today.getFullYear()"
+            class="text-white hover:bg-cyan-700 p-2 rounded-full"
+          >
+            <fa-icon [icon]="faChevronLeft" size="lg"></fa-icon>
+          </button>
+          <h2 class="text-lg font-bold text-white">THÁNG {{ currentMonth + 1 }} - {{ currentYear }}</h2>
+          <button
+            (click)="nextMonth()"
+            class="text-white hover:bg-cyan-700 p-2 rounded-full"
+          >
+            <fa-icon [icon]="faChevronRight" size="lg"></fa-icon>
+          </button>
+        </div>
+        <div class="grid grid-cols-7 gap-2 text-center p-4">
+          <div *ngFor="let day of ['CN', 'Hai', 'Ba', 'Tư', 'Năm', 'Sáu', 'Bảy']" class="text-cyan-800 font-bold">
+            {{ day }}
+          </div>
+          <div *ngFor="let date of daysInMonth; let i = index">
+            <button
+              *ngIf="date"
+              [disabled]="!isSelectable(date.getDate(), date.getMonth(), date.getFullYear())"
+              class="p-2 rounded-lg w-full"
+              [ngClass]="{
+                'bg-red-300 text-white': date.getDate() === today.getDate() && date.getMonth() === today.getMonth() && date.getFullYear() === today.getFullYear(),
+                'bg-sky-100 text-cyan-700 hover:bg-sky-200 font-semibold':
+                  (selectedDate && selectedDate.toISOString().split('T')[0] === date.toISOString().split('T')[0]) ||
+                  isSelectable(date.getDate(), date.getMonth(), date.getFullYear()),
+                'bg-gray-100 text-gray-400': !isSelectable(date.getDate(), date.getMonth(), date.getFullYear())
+              }"
+              (click)="handleDateSelection(date)"
+            >
+              {{ date.getDate() }}
+            </button>
+            <div *ngIf="!date" class="p-2"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+    <!-- Thông báo CSKH -->
+    <div class="bg-yellow-50 p-4 border border-yellow-300 rounded-md m-4 mt-2">
+      <div class="text-center text-sm text-gray-600">
+        Trong trường hợp không chọn được khung giờ, vui lòng gọi đến bộ phận CSKH để được hỗ trợ.
+      </div>
+      <div class="mt-2 text-center">
+        <a href="tel:02733907909">
+          <button
+            class="px-4 py-2 border-2 border-cyan-700 text-cyan-700 font-bold rounded-lg hover:bg-cyan-50"
+          >
+            <fa-icon [icon]="faPhone"></fa-icon> 0273 3907 909
+          </button>
+        </a>
+      </div>
+    </div>
+  
+    <!-- Modal khung giờ -->
+    <app-select-time
+      *ngIf="isModalOpen"
+      [selectedDate]="selectedDate"
+      [timeSlots]="timeSlots"
+      [serviceId]="serviceId"
+      [loading]="loadingTimeSlots"
+      (timeSlotSelection)="handleTimeSlotSelection($event)"
+      (close)="closeModal()"
+    ></app-select-time>
+  </div>
