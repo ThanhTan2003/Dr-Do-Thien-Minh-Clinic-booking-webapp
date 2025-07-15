@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faCheckCircle, faFileMedical, faHome } from '@fortawesome/free-solid-svg-icons';
 import { formatDate, formatPhone, formatInsuranceId, formatNationalId } from '../../../shared/util/format.util';
-import { getStatusClassForBadge, getStatusClassForList } from '../../../shared/util/status.util';
+import { getStatusClassForForm } from '../../../shared/util/status.util';
 
 @Component({
   selector: 'app-booking-success',
@@ -46,11 +46,7 @@ export class BookingSuccessComponent {
     return formatNationalId(value);
   }
 
-  getStatusClassForBadge(status: string): string {
-    return getStatusClassForBadge(status);
-  }
-
-  getStatusClassForList(status: string): string {
-    return getStatusClassForList(status);
+  getStatusClassForForm(status: string): string {
+    return getStatusClassForForm(status);
   }
 }

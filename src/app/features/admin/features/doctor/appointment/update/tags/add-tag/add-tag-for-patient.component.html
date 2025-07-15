@@ -1,0 +1,88 @@
+<div class="fixed inset-0 flex items-center justify-center bg-black/80 z-50">
+    <div class="bg-white rounded-xl shadow-xl w-1/2 max-h-[90vh] flex flex-col">
+        <!-- Header -->
+        <div class="bg-sky-600 text-white p-2 rounded-t-xl flex justify-between items-center">
+            <h2 class="text-lg font-bold pl-2">
+                <fa-icon [icon]="faPlus"></fa-icon>&nbsp; THÊM NHÓM ĐỐI TƯỢNG MỚI
+            </h2>
+            <button
+                (click)="goBack()"
+                class="text-white bg-transparent hover:bg-red-500 rounded-full p-1 flex items-center justify-center"
+                style="width: 30px; height: 30px;">
+                ✕
+            </button>
+        </div>
+
+        <!-- Content -->
+        <div class="p-6 overflow-y-auto flex-grow">
+            <!-- Search and Refresh -->
+            <div class="flex justify-between items-center mb-4">
+                <div class="flex items-center">
+                    <button class="bg-white text-sky-600 py-2 px-4 rounded border border-sky-600 font-bold hover:bg-sky-100"
+                        (click)="loadAvailableTags()">
+                        <fa-icon [icon]="faRotate"></fa-icon>
+                    </button>
+                    <app-page-size-selector
+                        class="ml-4"
+                        [pageSize]="pageSize"
+                        [options]="pageSizeOptions"
+                        (pageSizeChange)="onPageSizeChange($event)">
+                    </app-page-size-selector>
+                </div>
+                <div>
+                    <input type="text" placeholder="Nhập từ khóa tìm kiếm" class="border p-2 rounded w-52 border-blue-300 text-gray-700"
+                        [(ngModel)]="keyword" (keyup.enter)="handleSearch()" />
+                    <button type="button" class="bg-sky-700 text-white py-2 px-4 rounded hover:bg-sky-800 ml-2" (click)="handleSearch()">
+                        <fa-icon [icon]="faMagnifyingGlass"></fa-icon>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Table -->
+            <div class="overflow-x-auto">
+                <table class="w-full border-collapse border border-gray-200 shadow-lg rounded-md">
+                    <thead class="sticky top-0 bg-sky-600">
+                        <tr class="text-white">
+                            <th class="border p-2 text-center w-16">STT</th>
+                            <th class="border p-2 text-left">Tên nhóm</th>
+                            <th class="border p-2 text-center w-24"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngIf="loading">
+                            <td colspan="3" class="text-center p-4 border-gray-400">
+                                <div class="flex justify-center items-center">
+                                    <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-sky-600"></div>
+                                    <span class="ml-2">Đang tải dữ liệu...</span>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr *ngIf="!loading && availableTags.length === 0">
+                            <td colspan="3" class="text-center p-4 border-gray-400">Không có dữ liệu</td>
+                        </tr>
+                        <tr *ngFor="let tag of availableTags; let i = index">
+                            <td class="border border-gray-400 p-2 text-center">{{ (currentPage - 1) * pageSize + i + 1 }}</td>
+                            <td class="border border-gray-400 p-2 text-left">{{ tag }}</td>
+                            <td class="border border-gray-400 p-2 text-center whitespace-nowrap">
+                                <button class="bg-white text-sky-600 px-3 py-1 rounded border border-sky-600 hover:bg-sky-100"
+                                    (click)="confirmAddTag(tag)">
+                                    Thêm <fa-icon [icon]="faPlus"></fa-icon>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <app-pagination [totalElements]="totalElements" [currentPage]="currentPage" [totalPages]="totalPages"
+                (pageChange)="onPageChange($event)"></app-pagination>
+        </div>
+    </div>
+</div>
+
+<!-- Modal xác nhận thêm -->
+<app-admin-modal-confirm *ngIf="showConfirmAdd"
+    [title]="'Xác nhận thêm nhóm đối tượng'"
+    [content]="'Bạn có chắc chắn muốn thêm nhóm đối tượng ' + (tagToAdd || '') + ' không?'"
+    (confirm)="addTag()"
+    (cancel)="closeConfirmAdd()">
+</app-admin-modal-confirm> 

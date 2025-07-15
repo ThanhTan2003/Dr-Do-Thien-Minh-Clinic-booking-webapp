@@ -1,12 +1,12 @@
 <div class="flex justify-between items-center">
   <div class="flex justify-start">
-    <!-- <button type="button" class="bg-sky-700 text-white py-2 px-4 rounded hover:bg-sky-800 font-semibold"
+    <button type="button" class="bg-sky-700 text-white py-2 px-4 rounded hover:bg-sky-800 font-semibold"
       (click)="openAddModal()">
       Thêm mới &nbsp;<fa-icon [icon]="faPlus"></fa-icon>
-    </button> -->
-    <button class="bg-white text-sky-700 py-2 px-4 rounded border border-sky-700 font-bold hover:bg-sky-100"
+    </button>
+    <button class="bg-white text-sky-700 py-2 px-4 rounded border border-sky-700 font-bold hover:bg-sky-100 ml-2"
       title="Làm mới danh sách" (click)="loadTags()">
-      Tải lại danh sách &nbsp;<fa-icon [icon]="faRotate"></fa-icon>
+      <fa-icon [icon]="faRotate"></fa-icon>
     </button>
     <app-page-size-selector class="ml-4" [pageSize]="pageSize" [options]="pageSizeOptions"
       (pageSizeChange)="onPageSizeChange($event)">
@@ -27,7 +27,7 @@
       <thead>
         <tr class="bg-sky-600 text-white">
           <th class="border p-2 text-center w-16">STT</th>
-          <th class="border p-2 text-left">Tên nhóm</th>
+          <th class="border p-2 text-left">Tên nhóm</th>
           <th class="border p-2 text-center w-24"></th>
         </tr>
       </thead>
@@ -45,11 +45,11 @@
         </tr>
         <tr *ngFor="let tag of tags; let i = index">
           <td class="border border-gray-400 p-2 text-center">{{ (currentPage - 1) * pageSize + i + 1 }}</td>
-          <td class="border border-gray-400 p-2 text-left">{{ tag.name }}</td>
+          <td class="border border-gray-400 p-2 text-left">{{ tag }}</td>
           <td class="border border-gray-400 p-2 text-center whitespace-nowrap">
-            <button class="bg-white text-orange-700 px-3 py-1 rounded border border-orange-700 hover:bg-orange-100"
+            <button class="bg-white text-orange-700 px-3 py-1 rounded border border-orange-700 hover:bg-orange-100 pl-6 pr-6"
               (click)="openDeleteModal(tag)">
-              Xóa <fa-icon [icon]="faXmark"></fa-icon>
+              Xóa <fa-icon [icon]="faXmark"></fa-icon>
             </button>
           </td>
         </tr>
@@ -59,13 +59,3 @@
   <app-pagination [totalElements]="totalElements" [currentPage]="currentPage" [totalPages]="totalPages"
     (pageChange)="onPageChange($event)"></app-pagination>
 </div>
-
-<!-- Modal thêm tag -->
-<app-add-tag-for-user *ngIf="showAddModal" [userId]="userId" (tagAdded)="onTagAdded()">
-</app-add-tag-for-user>
-
-<!-- Modal xác nhận xóa -->
-<app-admin-modal-confirm-delete *ngIf="showConfirmDelete" [title]="'Xác nhận xóa tag'"
-  [content]="'Bạn có chắc chắn muốn xóa tag ' + (tagToDelete?.name || '') + ' không?'" (confirm)="deleteTag()"
-  (cancel)="closeConfirmDelete()">
-</app-admin-modal-confirm-delete>

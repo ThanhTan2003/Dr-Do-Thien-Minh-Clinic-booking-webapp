@@ -74,6 +74,56 @@
         </div>
     </div>
 
+
+    <!-- Statistics Section -->
+    <div class="grid grid-cols-5 gap-4 mb-4">
+        <!-- Tổng lịch hẹn (màu riêng không dùng getStatusClass) -->
+        <div class="flex items-center bg-slate-100 border border-slate-600 rounded-lg p-4 pt-2 pb-2 shadow-sm">
+            <fa-icon [icon]="faCalendarCheck" class="text-slate-600 text-3xl mr-3"></fa-icon>
+            <div>
+                <div class="text-sm text-slate-700 font-medium">Tổng lịch hẹn</div>
+                <div class="text-2xl font-bold text-slate-900">{{statistics.totalAppointments}}</div>
+            </div>
+        </div>
+
+        <!-- Chờ xác nhận -->
+        <div class="flex items-center rounded-lg p-4 pt-2 pb-2 shadow-sm border"
+            [ngClass]="getStatusClass('Chờ xác nhận')">
+            <fa-icon [icon]="faClock" class="text-3xl mr-3"></fa-icon>
+            <div>
+                <div class="text-sm font-medium">Chờ xác nhận</div>
+                <div class="text-2xl font-bold">{{statistics.pendingConfirmationCount}}</div>
+            </div>
+        </div>
+
+        <!-- Chờ khám -->
+        <div class="flex items-center rounded-lg p-4 pt-2 pb-2 shadow-sm border" [ngClass]="getStatusClass('Chờ khám')">
+            <fa-icon [icon]="faStethoscope" class="text-3xl mr-3"></fa-icon>
+            <div>
+                <div class="text-sm font-medium">Chờ khám</div>
+                <div class="text-2xl font-bold">{{statistics.waitingForExamCount}}</div>
+            </div>
+        </div>
+
+        <!-- Đã khám -->
+        <div class="flex items-center rounded-lg p-4 pt-2 pb-2 shadow-sm border" [ngClass]="getStatusClass('Đã khám')">
+            <fa-icon [icon]="faCheckCircle" class="text-3xl mr-3"></fa-icon>
+            <div>
+                <div class="text-sm font-medium">Đã khám</div>
+                <div class="text-2xl font-bold">{{statistics.examinedCount}}</div>
+            </div>
+        </div>
+
+        <!-- Đã huỷ -->
+        <div class="flex items-center rounded-lg p-4 pt-2 pb-2 shadow-sm border" [ngClass]="getStatusClass('Đã huỷ')">
+            <fa-icon [icon]="faTimesCircle" class="text-3xl mr-3"></fa-icon>
+            <div>
+                <div class="text-sm font-medium">Đã huỷ</div>
+                <div class="text-2xl font-bold">{{statistics.cancelledCount}}</div>
+            </div>
+        </div>
+    </div>
+
     <!-- Data Table -->
     <div class="overflow-x-auto">
         <table class="w-full border-collapse border border-gray-200 shadow-lg rounded-md">
@@ -111,8 +161,15 @@
                         {{ (currentPage - 1) * pageSize + i + 1 }}
                     </td>
                     <td class="border border-gray-400 p-2 text-left whitespace-nowrap text-amber-800 font-semibold">
-                        {{ appointment.doctorScheduleResponse.timeFrameResponse.name }}
+                        {{
+                        appointment.doctorScheduleResponse?.timeFrameResponse?.name
+                        ? appointment.doctorScheduleResponse.timeFrameResponse.name
+                        : appointment.serviceAppointmentResponse?.timeFrameResponse?.name
+                        ? appointment.serviceAppointmentResponse.timeFrameResponse.name
+                        : '...'
+                        }}
                     </td>
+
                     <td class="border border-gray-400 p-2 text-left whitespace-nowrap">
                         {{ appointment.id }}
                     </td>
@@ -126,16 +183,31 @@
                     </td>
 
                     <td class="border border-gray-400 p-2 text-left whitespace-nowrap text-purple-900 font-semibold">
-                        {{ appointment.doctorServiceResponse.doctorResponse.name }}
+                        <!-- Kiểm tra điều kiện để hiển thị bác sĩ hoặc nút "Chỉ định Bác sĩ" -->
+                        <ng-container *ngIf="appointment.doctorName; else showAssignButton">
+                            {{ appointment.doctorName }}
+                        </ng-container>
+
+                        <!-- Nút "Chỉ định Bác sĩ" khi không có tên bác sĩ và có dịch vụ khám -->
+                        <ng-template #showAssignButton>
+                            <ng-container
+                                *ngIf="appointment.doctorScheduleResponse == null && appointment.serviceAppointmentResponse">
+                                <button
+                                    class="bg-emerald-500 text-white px-3 py-1 rounded border border-emerald-600 hover:bg-emerald-600 hover:text-white font-medium">
+                                    Chọn bác sĩ &nbsp;<fa-icon [icon]="faChalkboardTeacher"></fa-icon>
+                                </button>
+                            </ng-container>
+                        </ng-template>
                     </td>
+
 
                     <td class="border border-gray-400 p-2 text-left text-cyan-900 font-semibold">
-                        {{ appointment.doctorServiceResponse.serviceResponse.serviceName }}
+                        {{ appointment.serviceName || '...' }}
                     </td>
 
-                    <td class="border border-gray-400 p-2 text-left whitespace-nowrap w-32">
+                    <td class="border border-gray-400 p-1 text-left whitespace-nowrap w-32">
                         <span [ngClass]="getStatusClass(appointment.status)"
-                            class="px-3 py-0 rounded-sm font-medium mb-1"
+                            class="px-3 py-0 rounded-sm font-medium mb-1 mt-1"
                             style="margin-left: 8px; white-space: nowrap; height: 32px; line-height: 32px; display: inline-block; min-width: 120px; text-align: left;">
                             {{ appointment.status }}
                         </span>
@@ -143,7 +215,7 @@
                     <td class="border border-gray-400 p-1 text-center justify-center whitespace-nowrap">
                         <div class="flex justify-center space-x-2">
                             <button
-                                class="bg-white text-sky-700 px-3 py-1 rounded border border-sky-700 hover:bg-sky-800 hover:text-white font-semibold"
+                                class="bg-white text-sky-700 px-3 py-1 mb-1 mt-1 rounded border border-sky-700 hover:bg-sky-800 hover:text-white font-semibold"
                                 (click)="openUpdateModal(appointment.id)">
                                 Xử lý &nbsp;<fa-icon [icon]="faPenToSquare"></fa-icon>
                             </button>
@@ -160,4 +232,5 @@
     </div>
 </div>
 
-<app-doctor-appointment-update *ngIf="showUpdateModal" [appointmentId]="selectedAppointmentId!" (close)="closeUpdateModal($event)"></app-doctor-appointment-update>
+<app-doctor-appointment-update *ngIf="showUpdateModal" [appointmentId]="selectedAppointmentId!"
+    (close)="closeUpdateModal($event)"></app-doctor-appointment-update>

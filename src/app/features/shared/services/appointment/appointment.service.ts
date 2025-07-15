@@ -6,6 +6,7 @@ import { PageResponse } from '../../../models/responses/page-response.model';
 import { HttpService } from '../../../../core/services/http.service';
 import { ExamResultRequest } from '../../../models/requests/appointment/exam-result.request';
 import { ServiceAppointmentRequest } from '../../../models/requests/appointment/service-appointment.request';
+import { AppointmentResultResponse } from '../../../models/responses/appointment/appointment-result.response';
 
 @Injectable({
   providedIn: 'root'
@@ -217,4 +218,19 @@ export class AppointmentService {
   ): Observable<void> {
     return this.http.put<void>(`${this.API_URL}/${appointmentId}/exam-result`, request);
   }
+
+  /**
+ * Lấy lịch sử kết quả khám của bệnh nhân theo dịch vụ
+ */
+getResultByPatientAndService(patientId: string, serviceId: string, date: string | null = null, page: number = 1, size: number = 10): Observable<PageResponse<AppointmentResultResponse>> {
+  let url = `${this.API_URL}/result/${patientId}/${serviceId}?page=${page}&size=${size}`;
+  
+  if (date) {
+    url += `&date=${date}`;
+  }
+
+  return this.http.get<PageResponse<AppointmentResultResponse>>(url);
+}
+
+
 }

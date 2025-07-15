@@ -4,5 +4,7 @@ export interface ServiceCategory {
     image: string;
     description: string;
     quantity: number;
+    numberOfDoctors: number;
+    numberOfExaminations: number;
   }
   

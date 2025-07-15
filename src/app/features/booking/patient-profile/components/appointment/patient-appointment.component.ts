@@ -8,6 +8,7 @@ import { AppointmentService } from '../../../../shared/services/appointment/appo
 import { Appointment } from '../../../../models/responses/appointment/appointment.model';
 import { PageResponse } from '../../../../models/responses/page-response.model';
 import { ModalErrorComponent } from '../../../../shared/components/modal-error.component';
+import { getStatusClassForForm } from '../../../../shared/util/status.util';
 
 @Component({
   selector: 'app-patient-appointment',
@@ -99,21 +100,8 @@ export class PatientAppointmentComponent implements OnInit {
     }, 500);
   }
 
-  getStatusColorClass(status: string): string {
-    switch (status) {
-      case 'Chờ xác nhận':
-        return 'text-yellow-600';
-      case 'Đã xác nhận':
-        return 'text-green-600';
-      case 'Đã huỷ':
-        return 'text-red-600';
-      case 'Chờ khám':
-        return 'text-gray-600';
-      case 'Đã khám':
-        return 'text-blue-600';
-      default:
-        return 'text-gray-600';
-    }
+  getStatusClassForForm(status: string): string {
+    return getStatusClassForForm(status);
   }
 
   onStatusChange(event: any) {

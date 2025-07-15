@@ -9,5 +9,6 @@ export interface Service {
   status: boolean;
   image: string;
   numberOfDoctors: number;
+  numberOfExaminations: number;
   serviceCategoryResponse: ServiceCategory;
 }

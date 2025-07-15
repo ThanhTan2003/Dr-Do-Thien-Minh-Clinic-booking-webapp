@@ -39,7 +39,7 @@ export class PatientAppointmentDetailComponent implements OnInit {
   formatNationalId(value: string): string {
     return formatNationalId(value);
   }
-  getStatusClass(status: string): string {
+  getStatusClassForForm(status: string): string {
     return getStatusClassForForm(status);
   }
 

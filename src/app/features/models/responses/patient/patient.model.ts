@@ -11,6 +11,9 @@ export interface Patient {
     image: string;
     yearOfBirth: string;
     relationship: string;
+
+    numberOfPatient: number;
+    numberOfExaminations: number;
     tags: string[];
   }
   

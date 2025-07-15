@@ -3,7 +3,15 @@
     <!-- Header -->
     <div class="bg-sky-600 text-white p-2 rounded-t-xl flex justify-between items-center">
       <h2 class="text-lg font-bold pl-2">
-        <fa-icon [icon]="faPenToSquare"></fa-icon> &nbsp;XỬ LÝ LỊCH HẸN
+        <ng-container *ngIf="!isDetail; else showDetail">
+          <!-- Khi isDetail là false, hiển thị Xử lý lịch hẹn với icon -->
+          <fa-icon [icon]="faPenToSquare"></fa-icon> &nbsp; XỬ LÝ LỊCH HẸN
+        </ng-container>
+
+        <!-- Khi isDetail là true, hiển thị Chi tiết lịch hẹn -->
+        <ng-template #showDetail>
+          <fa-icon [icon]="faInfoCircle"></fa-icon> &nbsp; CHI TIẾT LỊCH HẸN
+        </ng-template>
       </h2>
       <button (click)="closeModal()"
         class="text-white bg-transparent hover:bg-red-500 rounded-full p-1 flex items-center justify-center"
@@ -17,342 +25,291 @@
         <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-sky-600"></div>
         <span class="ml-2">Đang tải dữ liệu...</span>
       </div>
-      <div *ngIf="error" class="text-red-600 font-semibold mb-2">{{ error }}</div>
       <form *ngIf="!loading && appointment" (ngSubmit)="$event.preventDefault()">
 
         <h2 class="text-lg font-bold text-sky-700">
-          <fa-icon [icon]="faCalendarCheck"></fa-icon> &nbsp;CHI TIẾT LỊCH KHÁM
+          <fa-icon [icon]="faCalendarCheck"></fa-icon> &nbsp;CHI TIẾT LỊCH KHÁM
         </h2>
         <hr class="my-2 border-sky-700">
         <div *ngIf="!loading && appointment" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
 
-          <div class="mb-0 md:col-span-2 lg:col-span-4">
-            <label class="block text-sm font-semibold text-sky-800">Dịch vụ đặt khám</label>
-            <textarea rows="1" class="mt-1 p-1 pl-2 bg-gray-50 border border-gray-200 rounded-md w-full font-semibold text-amber-800"
-              readonly>{{ appointment.doctorServiceResponse.serviceResponse.serviceName }}</textarea>
+          <div class="mb-0 md:col-span-2 lg:col-span-2">
+            <label class="block text-sm font-semibold text-sky-800">Dịch vụ đặt khám</label>
+            <textarea rows="1"
+              class="mt-1 p-1 pl-2 bg-gray-50 border border-gray-200 rounded-md w-full font-semibold text-amber-800 focus:outline-none focus:ring-2 focus:ring-sky-500"
+              readonly>{{ appointment?.serviceName || '...' }}</textarea>
+          </div>
+          <div class="mb-0 md:col-span-2 lg:col-span-2">
+            <div *ngIf="isDoctor || isDetail; else editablePrice">
+              <label class="block text-sm font-semibold text-sky-800">Phí khám bệnh</label>
+              <textarea rows="1"
+                class="mt-1 p-1 pl-2 bg-gray-50 border border-gray-200 rounded-md w-full font-semibold text-emerald-800 focus:outline-none focus:ring-2 focus:ring-sky-500"
+                [(ngModel)]="result.price" name="price" readonly>
+              </textarea>
+            </div>
+
+            <!-- If isDoctor is false, display the editable price -->
+            <ng-template #editablePrice>
+              <label class="block text-sm font-semibold text-sky-800">Phí khám bệnh <span
+                  class="text-orange-700">(có thể điều chỉnh)</span></label>
+              <textarea rows="1"
+                class="mt-1 p-1 pl-2 bg-white border border-emerald-500 rounded-md w-full font-semibold text-emerald-800 focus:outline-none focus:ring-2 focus:ring-sky-500"
+                [(ngModel)]="result.price" name="price">
+              </textarea>
+            </ng-template>
+
           </div>
           <!-- Thông tin cơ bản -->
           <div class="mb-0">
             <label class="block text-sm font-semibold text-sky-800">Mã lịch hẹn</label>
             <input type="text" [value]="appointment.id" readonly
-              class="mt-1 p-1 pl-2 bg-gray-50 border border-gray-200 rounded-md w-full" />
+              class="mt-1 p-1 pl-2 bg-gray-50 border border-gray-200 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-sky-500" />
           </div>
 
           <div class="mb-0">
-            <label class="block text-sm font-semibold text-sky-800">Bác sĩ</label>
-            <input type="text" [value]="appointment.doctorScheduleResponse.doctorResponse.name" readonly
-              class="mt-1 p-1 pl-2 bg-gray-50 border border-gray-200 rounded-md w-full text-amber-800" />
+            <label class="block text-sm font-semibold text-sky-800">Bác sĩ</label>
+            <input type="text" [value]="appointment.doctorName" readonly
+              class="mt-1 p-1 pl-2 bg-gray-50 border border-gray-200 rounded-md w-full text-amber-800 focus:outline-none focus:ring-2 focus:ring-sky-500" />
           </div>
 
           <div class="mb-0">
-            <label class="block text-sm font-semibold text-sky-800">Ngày khám</label>
+            <label class="block text-sm font-semibold text-sky-800">Ngày khám</label>
             <input type="text" [value]="appointment.appointmentDateName" readonly
-              class="mt-1 p-1 pl-2 bg-gray-50 border border-gray-200 rounded-md w-full" />
+              class="mt-1 p-1 pl-2 bg-gray-50 border border-gray-200 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-sky-500" />
           </div>
 
           <div class="mb-0">
-            <label class="block text-sm font-semibold text-sky-800">Khung giờ khám</label>
-            <input type="text" [value]="appointment.doctorScheduleResponse.timeFrameResponse.fullName" readonly
-              class="mt-1 p-1 pl-2 bg-gray-50 border border-gray-200 rounded-md w-full" />
+            <label class="block text-sm font-semibold text-sky-800">Khung giờ khám</label>
+            <input type="text" [value]="appointment.doctorScheduleResponse?.timeFrameResponse?.fullName || 
+                appointment.serviceAppointmentResponse?.timeFrameResponse?.fullName || '...'" readonly
+              class="mt-1 p-1 pl-2 bg-gray-50 border border-gray-200 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-sky-500" />
+
           </div>
 
           <div class="mb-0">
-            <label class="block text-sm font-semibold text-sky-800">Thời gian đặt</label>
+            <label class="block text-sm font-semibold text-sky-800">Thời gian đặt</label>
             <input type="text" [value]="appointment.bookingTime | formatDateTime" readonly
-              class="mt-1 p-1 pl-2 bg-gray-50 border border-gray-200 rounded-md w-full" />
+              class="mt-1 p-1 pl-2 bg-gray-50 border border-gray-200 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-sky-500" />
           </div>
 
           <div class="mb-0">
             <label class="block text-sm font-semibold text-sky-800">Trạng thái</label>
             <input [ngClass]="getStatusClass(appointment.status)" type="text" [value]="appointment.status" readonly
-              class="mt-1 p-1 pl-2 bg-gray-50 border border-gray-200 rounded-md w-full font-semibold" />
+              class="mt-1 p-1 pl-2 bg-gray-50 border border-gray-200 rounded-md w-full font-semibold focus:outline-none focus:ring-2 focus:ring-sky-500" />
           </div>
 
           <div class="mb-0 md:col-span-2 lg:col-span-2">
-            <label class="block text-sm font-semibold text-sky-800">Lời nhắn của bệnh nhân</label>
-            <textarea rows="1" class="mt-1 p-1 pl-2 bg-gray-50 border border-gray-200 rounded-md w-full text-indigo-900"
+            <label class="block text-sm font-semibold text-sky-800">Lời nhắn của bệnh nhân</label>
+            <textarea rows="1"
+              class="mt-1 p-1 pl-2 bg-gray-50 border border-gray-200 rounded-md w-full text-indigo-900 focus:outline-none focus:ring-2 focus:ring-sky-500"
               readonly>{{ appointment.patientMessage || '' }}</textarea>
           </div>
         </div>
 
 
-        <h2 class="text-lg font-bold text-sky-700  pt-4"><fa-icon [icon]="faIdCard"></fa-icon> &nbsp;HỒ SƠ BỆNH NHÂN</h2>
+        <h2 class="text-lg font-bold text-sky-700  pt-4"><fa-icon [icon]="faIdCard"></fa-icon> &nbsp;HỒ SƠ BỆNH NHÂN
+        </h2>
         <hr class="my-2 border-sky-700">
         <div *ngIf="!loading && appointment" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
           <!-- Thông tin cơ bản -->
           <div class="mb-0">
-            <label class="block text-sm font-semibold text-sky-800">Mã hồ sơ</label>
+            <label class="block text-sm font-semibold text-sky-800">Mã hồ sơ</label>
             <input type="text" [value]="appointment.patientResponse.id" readonly
-              class="mt-1 p-1 pl-2 bg-gray-50 border border-gray-200 rounded-md w-full" />
+              class="mt-1 p-1 pl-2 bg-gray-50 border border-gray-200 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-sky-500" />
           </div>
 
           <div class="mb-0">
-            <label class="block text-sm font-semibold text-sky-800">Họ tên</label>
+            <label class="block text-sm font-semibold text-sky-800">Họ tên</label>
             <input type="text" [value]="appointment.patientResponse.fullName" readonly
-              class="mt-1 p-1 pl-2 bg-gray-50 border border-gray-200 rounded-md w-full text-amber-800" />
+              class="mt-1 p-1 pl-2 bg-gray-50 border border-gray-200 rounded-md w-full text-amber-800 focus:outline-none focus:ring-2 focus:ring-sky-500" />
           </div>
 
           <div class="mb-0">
-            <label class="block text-sm font-semibold text-sky-800">Giới tính</label>
+            <label class="block text-sm font-semibold text-sky-800">Giới tính</label>
             <input type="text" [value]="appointment.patientResponse.gender" readonly
-              class="mt-1 p-1 pl-2 bg-gray-50 border border-gray-200 rounded-md w-full" />
+              class="mt-1 p-1 pl-2 bg-gray-50 border border-gray-200 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-sky-500" />
           </div>
 
           <div class="mb-0">
             <label class="block text-sm font-semibold text-sky-800">Ngày sinh</label>
             <input type="text" [value]="appointment.patientResponse.dateOfBirth | formatDate" readonly
-              class="mt-1 p-1 pl-2 bg-gray-50 border border-gray-200 rounded-md w-full" />
+              class="mt-1 p-1 pl-2 bg-gray-50 border border-gray-200 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-sky-500" />
           </div>
 
           <div class="mb-0">
-            <label class="block text-sm font-semibold text-sky-800">Mối quan hệ</label>
+            <label class="block text-sm font-semibold text-sky-800">Mối quan hệ</label>
             <input type="text" [value]="appointment.patientResponse.relationship" readonly
-              class="mt-1 p-1 pl-2 bg-gray-50 border border-gray-200 rounded-md w-full" />
+              class="mt-1 p-1 pl-2 bg-gray-50 border border-gray-200 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-sky-500" />
           </div>
 
           <div class="mb-0">
-            <label class="block text-sm font-semibold text-sky-800">Số căn cước</label>
+            <label class="block text-sm font-semibold text-sky-800">Số căn cước</label>
             <input type="text" [value]="appointment.patientResponse.identityCard" readonly
-              class="mt-1 p-1 pl-2 bg-gray-50 border border-gray-200 rounded-md w-full" />
+              class="mt-1 p-1 pl-2 bg-gray-50 border border-gray-200 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-sky-500" />
           </div>
 
           <div class="mb-0">
-            <label class="block text-sm font-semibold text-sky-800">Số thẻ BHYT</label>
+            <label class="block text-sm font-semibold text-sky-800">Số thẻ BHYT</label>
             <input type="text" [value]="appointment.patientResponse.insuranceId" readonly
-              class="mt-1 p-1 pl-2 bg-gray-50 border border-gray-200 rounded-md w-full" />
+              class="mt-1 p-1 pl-2 bg-gray-50 border border-gray-200 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-sky-500" />
           </div>
 
           <div class="mb-0">
-            <label class="block text-sm font-semibold text-sky-800">Số điện thoại</label>
+            <label class="block text-sm font-semibold text-sky-800">Số điện thoại</label>
             <input type="text" [value]="appointment.patientResponse.phoneNumber | formatPhone" readonly
-              class="mt-1 p-1 pl-2 bg-gray-50 border border-gray-200 rounded-md w-full" />
+              class="mt-1 p-1 pl-2 bg-gray-50 border border-gray-200 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-sky-500" />
           </div>
 
           <div class="mb-0 md:col-span-2 lg:col-span-2">
-            <label class="block text-sm font-semibold text-sky-800">Địa chỉ</label>
-            <textarea rows="1" class="mt-1 p-1 pl-2 bg-gray-50 border border-gray-200 rounded-md w-full"
+            <label class="block text-sm font-semibold text-sky-800">Địa chỉ</label>
+            <textarea rows="1"
+              class="mt-1 p-1 pl-2 bg-gray-50 border border-gray-200 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-sky-500"
               readonly>{{ appointment.patientResponse.address || '' }}</textarea>
           </div>
 
           <div class="mb-0 md:col-span-2 lg:col-span-2">
-            <label class="block text-sm font-semibold text-sky-800">Nhóm đối tượng</label>
-            <textarea rows="1" class="mt-1 p-1 pl-2 bg-gray-50 border border-gray-200 rounded-md w-full"
-              readonly>{{ appointment.patientResponse.address || '' }}</textarea>
+            <label class="block text-sm font-semibold text-sky-800">Nhóm đối tượng</label>
+            <div *ngIf="appointment.patientResponse.tags.length > 0" class="flex flex-wrap justify-start mt-1">
+              <span *ngFor="let tag of appointment.patientResponse.tags"
+                class="bg-blue-50 text-sky-600 border px-3 py-1 rounded-sm font-medium"
+                style="margin-right: 8px; white-space: nowrap">
+                {{tag}}
+              </span>
+            </div>
           </div>
         </div>
 
-        <h2 class="text-lg font-bold text-sky-700 pt-4">
-          <fa-icon [icon]="faCalendarCheck"></fa-icon> &nbsp; GHI CHÚ
-        </h2>
-        <hr class="my-2 border-sky-700">
-        <div>
-          <!-- Data Table -->
-          <div class="overflow-x-auto">
-            <table class="w-full border-collapse border border-gray-200 shadow-lg rounded-md">
-              <thead>
-                <tr class="bg-sky-600 text-white">
-                  <th class="border p-2 text-center whitespace-nowrap">STT</th>
-                  <th class="border p-2 text-justify whitespace-nowrap">Ngày thêm</th>
-                  <th class="border p-2 text-justify whitespace-nowrap">Nội dung</th>
-                  <th class="border p-2 text-justify whitespace-nowrap"></th>
-                </tr>
-              </thead>
-              <tbody class="border border-gray-400">
-                <tr *ngIf="loading">
-                  <td colspan="9" class="text-center p-4 border-gray-400">
-                    <div class="flex justify-center items-center">
-                      <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-sky-600"></div>
-                      <span class="ml-2">Đang tải dữ liệu...</span>
-                    </div>
-                  </td>
-                </tr>
+        <!-- Tab Navigation -->
+        <nav class="mb-6 mt-6" *ngIf="!isDetail">
+          <div class="flex gap-2 border-b-2 border-sky-700">
+            <button *ngFor="let tab of tabs" class="py-2 px-4 font-bold border-b-2 transition-colors duration-200
+               hover:text-sky-900" [ngClass]="{
+              'border-b-cyan-700 text-white bg-cyan-800 hover:bg-cyan-900 hover:text-white': isActiveTab(tab.id),
+              'border border-transparent text-cyan-700 hover:border hover:border-cyan-700 hover:bg-cyan-50': !isActiveTab(tab.id)
+              }" (click)="setActiveTab(tab.id)">
+              <fa-icon *ngIf="tab.icon" [icon]="tab.icon" class="mr-1"></fa-icon>
+              {{ tab.label }}
+            </button>
+          </div>
+        </nav>
 
-                <tr class="align-top">
-                  <td class="border border-gray-400 p-2 text-center">1</td>
-                  <td class="border border-gray-400 p-2 text-left whitespace-nowrap text-amber-800 font-semibold">
-                    01/06/2025</td>
-                  <td class="border border-gray-400 p-2 text-justify">
-                    Bệnh nhân có phản ứng dị ứng với nhóm thuốc kháng sinh penicillin. Cần theo dõi sát và thông báo khi
-                    có dấu hiệu bất thường như phát ban hoặc khó thở.
-                  </td>
-                  <td class="border border-gray-400 p-2 text-center whitespace-nowrap">
-                    <button class="bg-white text-orange-700 px-3 py-1 rounded border border-orange-700 hover:bg-orange-100"
-                    >
-                      Xóa <fa-icon [icon]="faXmark"></fa-icon>
-                    </button>
-                  </td>
-                </tr>
+        <!-- Tab Content -->
+        <div class="min-h-[300px]" *ngIf="!isDetail">
+          <!-- NHÓM ĐỐI TƯỢNG Tab -->
+          <div *ngIf="isActiveTab('tags')">
+            <app-update-tags [patientId]="appointment?.patientId || ''" 
+              (openAddTagModal)="onOpenAddTagModal()"
+              (openDeleteTagModal)="onOpenDeleteTagModal($event)">
+            </app-update-tags>
+          </div>
 
-                <tr class="align-top">
-                  <td class="border border-gray-400 p-2 text-center">2</td>
-                  <td class="border border-gray-400 p-2 text-left whitespace-nowrap text-amber-800 font-semibold">
-                    01/05/2025</td>
-                  <td class="border border-gray-400 p-2 text-justify">
-                    Ghi nhận bệnh nhân có tiền sử dị ứng với paracetamol. Không tự ý dùng thuốc nếu không có chỉ định
-                    của bác sĩ chuyên khoa.
-                  </td>
-                  <td class="border border-gray-400 p-2 text-center whitespace-nowrap">
-                    <button class="bg-white text-orange-700 px-3 py-1 rounded border border-orange-700 hover:bg-orange-100"
-                    >
-                      Xóa <fa-icon [icon]="faXmark"></fa-icon>
-                    </button>
-                  </td>
-                </tr>
+          <!-- GHI CHÚ Tab -->
+          <div *ngIf="isActiveTab('notes')">
+            <app-update-notes [patientId]="appointment?.patientId || ''"
+              (openAddNoteModal)="onOpenAddNoteModal()"
+              (openDeleteNoteModal)="onOpenDeleteNoteModal($event)">
+            </app-update-notes>
+          </div>
 
-                <tr class="align-top">
-                  <td class="border border-gray-400 p-2 text-center">3</td>
-                  <td class="border border-gray-400 p-2 text-left whitespace-nowrap text-amber-800 font-semibold">
-                    15/04/2025</td>
-                  <td class="border border-gray-400 p-2 text-justify">
-                    Ghi chú về việc bệnh nhân từng có phản ứng phụ khi sử dụng thuốc giảm đau nhóm NSAIDs. Cần thay thế
-                    bằng thuốc khác nếu cần thiết.
-                  </td>
-                  <td class="border border-gray-400 p-2 text-center whitespace-nowrap">
-                    <button class="bg-white text-orange-700 px-3 py-1 rounded border border-orange-700 hover:bg-orange-100"
-                    >
-                      Xóa <fa-icon [icon]="faXmark"></fa-icon>
-                    </button>
-                  </td>
-                </tr>
-
-                <tr class="align-top">
-                  <td class="border border-gray-400 p-2 text-center">4</td>
-                  <td class="border border-gray-400 p-2 text-left whitespace-nowrap text-amber-800 font-semibold">
-                    28/03/2025</td>
-                  <td class="border border-gray-400 p-2 text-justify">
-                    Bệnh nhân có dấu hiệu tăng huyết áp nhẹ, cần theo dõi thường xuyên và tái khám đúng lịch. Đã tư vấn
-                    chi tiết về chế độ ăn và nghỉ ngơi.
-                  </td>
-                  <td class="border border-gray-400 p-2 text-center whitespace-nowrap">
-                    <button class="bg-white text-orange-700 px-3 py-1 rounded border border-orange-700 hover:bg-orange-100"
-                    >
-                      Xóa <fa-icon [icon]="faXmark"></fa-icon>
-                    </button>
-                  </td>
-                </tr>
-
-              </tbody>
-            </table>
+          <!-- LỊCH SỬ KHÁM Tab -->
+          <div *ngIf="isActiveTab('history')">
+            <app-update-history [patientId]="appointment?.patientId || ''"
+              [serviceId]="appointment?.serviceId || ''"
+              [appointmentDate]="appointment?.appointmentDate || ''"></app-update-history>
           </div>
         </div>
 
-        <h2 class="text-lg font-bold text-sky-700 pt-4">
-          <fa-icon [icon]="faCalendarCheck"></fa-icon> &nbsp; LỊCH SỬ KHÁM
-        </h2>
-        <hr class="my-2 border-sky-700">
-        <div>
-          <!-- Data Table -->
-          <div class="overflow-x-auto">
-            <table class="w-full border-collapse border border-gray-200 shadow-lg rounded-md">
-              <thead>
-                <tr class="bg-sky-600 text-white">
-                  <th class="border p-2 text-center whitespace-nowrap">STT</th>
-                  <th class="border p-2 text-justify whitespace-nowrap">Ngày khám</th>
-                  <th class="border p-2 text-justify whitespace-nowrap">Ghi chú sau khám</th>
-                  <th class="border p-2 text-justify whitespace-nowrap">Lời nhắn cho bệnh nhân</th>
-                </tr>
-              </thead>
-              <tbody class="border border-gray-400">
-                <tr *ngIf="loading">
-                  <td colspan="9" class="text-center p-4 border-gray-400">
-                    <div class="flex justify-center items-center">
-                      <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-sky-600"></div>
-                      <span class="ml-2">Đang tải dữ liệu...</span>
-                    </div>
-                  </td>
-                </tr>
 
-                <tr class="align-top">
-                  <td class="border border-gray-400 p-2 text-center">1</td>
-                  <td class="border border-gray-400 p-2 text-left whitespace-nowrap text-amber-800 font-semibold">01/06/2025</td>
-                  <td class="border border-gray-400 p-2 text-justify">
-                    Bệnh nhân có phản ứng dị ứng với nhóm thuốc kháng sinh penicillin. Cần theo dõi sát và thông báo khi có dấu hiệu bất thường như phát ban hoặc khó thở.
-                  </td>
-                  <td class="border border-gray-400 p-2 text-justify">
-                    Bệnh nhân cần duy trì chế độ nghỉ ngơi hợp lý, đảm bảo ngủ đủ 7–8 tiếng mỗi ngày. Nên hạn chế thực phẩm nhiều đường và tăng cường uống nước lọc, tránh nước có gas.
-                  </td>
-                </tr>
-                
-                <tr class="align-top">
-                  <td class="border border-gray-400 p-2 text-center">2</td>
-                  <td class="border border-gray-400 p-2 text-left whitespace-nowrap text-amber-800 font-semibold">01/05/2025</td>
-                  <td class="border border-gray-400 p-2 text-justify">
-                    Ghi nhận bệnh nhân có tiền sử dị ứng với paracetamol. Không tự ý dùng thuốc nếu không có chỉ định của bác sĩ chuyên khoa.
-                  </td>
-                  <td class="border border-gray-400 p-2 text-justify">
-                    Khuyến cáo bệnh nhân tăng cường bổ sung rau xanh và trái cây tươi trong khẩu phần ăn hàng ngày. Tránh thức khuya, căng thẳng và uống ít nhất 2 lít nước mỗi ngày.
-                  </td>
-                </tr>
-                
-                <tr class="align-top">
-                  <td class="border border-gray-400 p-2 text-center">3</td>
-                  <td class="border border-gray-400 p-2 text-left whitespace-nowrap text-amber-800 font-semibold">15/04/2025</td>
-                  <td class="border border-gray-400 p-2 text-justify">
-                    Ghi chú về việc bệnh nhân từng có phản ứng phụ khi sử dụng thuốc giảm đau nhóm NSAIDs. Cần thay thế bằng thuốc khác nếu cần thiết.
-                  </td>
-                  <td class="border border-gray-400 p-2 text-justify">
-                    Bệnh nhân nên tập thể dục nhẹ nhàng mỗi ngày, ưu tiên các bài tập thư giãn như đi bộ hoặc yoga. Hạn chế thức ăn chiên xào, nhiều dầu mỡ để tránh rối loạn tiêu hóa.
-                  </td>
-                </tr>
-                
-                <tr class="align-top">
-                  <td class="border border-gray-400 p-2 text-center">4</td>
-                  <td class="border border-gray-400 p-2 text-left whitespace-nowrap text-amber-800 font-semibold">28/03/2025</td>
-                  <td class="border border-gray-400 p-2 text-justify">
-                    Bệnh nhân có dấu hiệu tăng huyết áp nhẹ, cần theo dõi thường xuyên và tái khám đúng lịch. Đã tư vấn chi tiết về chế độ ăn và nghỉ ngơi.
-                  </td>
-                  <td class="border border-gray-400 p-2 text-justify">
-                    Đề nghị bệnh nhân theo dõi huyết áp tại nhà vào mỗi sáng và ghi lại kết quả. Nếu huyết áp vượt quá ngưỡng 140/90 mmHg, cần đến khám ngay để được điều chỉnh thuốc.
-                  </td>
-                </tr>             
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        <h2 class="text-lg font-bold text-green-700 pt-4"><fa-icon [icon]="faCalendarCheck"></fa-icon> &nbsp; KẾT QUẢ
-          SAU KHÁM</h2>
+        <h2 class="text-lg font-bold text-green-700 pt-4"><fa-icon [icon]="faCalendarCheck"></fa-icon> &nbsp; KẾT QUẢ
+          SAU KHÁM</h2>
         <hr class="my-2 border-green-700">
         <div *ngIf="!loading && appointment" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
 
-
+          <div class="md:col-span-2 lg:col-span-2">
+            <label class="block text-sm font-semibold text-green-800">Kết quả khám</label>
+            <textarea rows="1"
+              class="mt-1 p-1 pl-2 border border-green-500 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-green-500"
+              [(ngModel)]="result.result" name="result"></textarea>
+          </div>
           <div class="md:col-span-2 lg:col-span-2">
             <label class="block text-sm font-semibold text-green-800">Lời nhắn của bác sĩ</label>
-            <textarea rows="1" class="mt-1 p-1 pl-2 border border-green-500 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-green-500"
+            <textarea rows="1"
+              class="mt-1 p-1 pl-2 border border-green-500 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-green-500"
               [(ngModel)]="result.doctorMessage" name="doctorMessage"></textarea>
           </div>
           <div class="md:col-span-2 lg:col-span-2">
             <label class="block text-sm font-semibold text-green-800">Ghi chú</label>
-            <textarea rows="1" class="mt-1 p-1 pl-2 border border-green-500 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-green-500" [(ngModel)]="result.note"
-              name="note"></textarea>
+            <textarea rows="1"
+              class="mt-1 p-1 pl-2 border border-green-500 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-green-500"
+              [(ngModel)]="result.note" name="note"></textarea>
           </div>
 
           <div class="mb-0">
             <label class="block text-sm font-semibold text-green-800">Trạng thái</label>
-            <select class="mt-1 p-1 pl-2 border border-green-500 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-green-500" [(ngModel)]="result.status"
-              name="status">
+            <select
+              class="mt-1 p-1 pl-2 border border-green-500 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-green-500"
+              [(ngModel)]="result.status" name="status">
               <option *ngFor="let s of statuses" [value]="s">{{ s }}</option>
             </select>
           </div>
           <div class="mb-0">
-            <label class="block text-sm font-semibold text-green-800">Ngày tái khám (nếu có)</label>
-            <input type="date" class="mt-1 p-1 pl-2 border border-green-500 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-green-500"
+            <label class="block text-sm font-semibold text-green-800">Ngày tái khám (nếu có)</label>
+            <input type="date"
+              class="mt-1 p-1 pl-2 border border-green-500 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-green-500"
               [(ngModel)]="result.reExaminationDate" name="reExaminationDate" />
           </div>
         </div>
 
         <div class="flex justify-end gap-2 mt-4">
-          <button type="button" (click)="closeModal()"
-            class="px-4 py-2 rounded bg-gray-200 text-gray-700 font-bold hover:bg-gray-300">Hủy</button>
-          <button type="button" (click)="openConfirm()"
-            class="px-4 py-2 rounded bg-sky-700 text-white font-bold hover:bg-sky-800" [disabled]="confirmLoading">Cập
-            nhật</button>
+          <!-- Nếu isDetail là false, hiển thị nút "Hủy" và "Cập nhật" -->
+          <ng-container *ngIf="!isDetail; else showCloseButton">
+            <button type="button" (click)="closeModal()"
+              class="px-4 py-2 rounded bg-white text-sky-700 border border-sky-700 font-bold hover:bg-sky-100">
+              Hủy
+            </button>
+            <button type="button" (click)="openConfirm()"
+              class="px-4 py-2 rounded bg-sky-700 text-white font-bold hover:bg-sky-800" [disabled]="confirmLoading">
+              Cập nhật
+            </button>
+          </ng-container>
+        
+          <!-- Nếu isDetail là true, hiển thị nút "Đóng" -->
+          <ng-template #showCloseButton>
+            <button type="button" (click)="closeModal()"
+              class="px-4 py-2 rounded bg-white text-sky-700 border border-sky-700 font-bold hover:bg-sky-100">
+              Đóng
+            </button>
+          </ng-template>
         </div>
+        
       </form>
-      <app-admin-modal-confirm *ngIf="showConfirm" [title]="'Xác nhận cập nhật kết quả khám?'"
-        [content]="'Bạn có chắc chắn muốn cập nhật kết quả khám?'" (confirm)="onConfirmUpdate(true)"
-        (cancel)="onConfirmUpdate(false)">
-      </app-admin-modal-confirm>
+
     </div>
   </div>
 </div>
+
+<!-- Modal xác nhận cập nhật kết quả khám -->
+<app-admin-modal-confirm *ngIf="showConfirm" [title]="'Xác nhận cập nhật kết quả khám?'"
+  [content]="'Bạn có chắc chắn muốn cập nhật kết quả khám?'" (confirm)="onConfirmUpdate(true)"
+  (cancel)="onConfirmUpdate(false)">
+</app-admin-modal-confirm>
+
+<!-- Modal thêm tag -->
+<app-add-tag-for-patient *ngIf="showAddTagModal" [patientId]="appointment?.patientId || ''" (tagAdded)="onTagAdded()">
+</app-add-tag-for-patient>
+
+<!-- Modal thêm ghi chú -->
+<app-add-note *ngIf="showAddNoteModal" [patientId]="appointment?.patientId || ''" (noteAdded)="onNoteAdded()">
+</app-add-note>
+
+<!-- Modal xác nhận xóa tag -->
+<app-admin-modal-confirm-delete *ngIf="showConfirmDeleteTag" [title]="'Xác nhận xóa nhóm đối tượng'"
+  [content]="'Bạn có chắc chắn muốn xóa nhóm đối tượng ' + (tagToDelete || '') + ' không?'" (confirm)="deleteTag()"
+  (cancel)="closeConfirmDeleteTag()">
+</app-admin-modal-confirm-delete>
+
+<!-- Modal xác nhận xóa ghi chú -->
+<app-admin-modal-confirm-delete *ngIf="showConfirmDeleteNote" [title]="'Xác nhận xóa ghi chú'"
+  [content]="'Bạn có chắc chắn muốn xóa ghi chú này không?'" (confirm)="deleteNote()"
+  (cancel)="closeConfirmDeleteNote()">
+</app-admin-modal-confirm-delete>

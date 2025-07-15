@@ -1,4 +1,4 @@
-<div class="flex justify-between items-center">
+<div class="flex justify-between items-center mb-4">
   <div class="flex justify-start">
     <button class="bg-white text-sky-700 py-2 px-4 rounded border border-sky-700 font-bold hover:bg-sky-100"
       title="Làm mới danh sách" (click)="refreshList()">
@@ -43,6 +43,54 @@
     <button type="button" class="bg-sky-700 text-white py-2 px-4 rounded hover:bg-sky-800" (click)="handleSearch()">
       <fa-icon [icon]="faMagnifyingGlass"></fa-icon>
     </button>
+  </div>
+</div>
+
+<!-- Statistics Section -->
+<div class="grid grid-cols-5 gap-4 mb-4">
+  <!-- Tổng lịch hẹn (màu riêng không dùng getStatusClass) -->
+  <div class="flex items-center bg-slate-100 border border-slate-600 rounded-lg p-4 pt-2 pb-2 shadow-sm">
+    <fa-icon [icon]="faCalendarCheck" class="text-slate-600 text-3xl mr-3"></fa-icon>
+    <div>
+      <div class="text-sm text-slate-700 font-medium">Tổng lịch hẹn</div>
+      <div class="text-2xl font-bold text-slate-900">{{statistics.totalAppointments}}</div>
+    </div>
+  </div>
+
+  <!-- Chờ xác nhận -->
+  <div class="flex items-center rounded-lg p-4 pt-2 pb-2 shadow-sm border" [ngClass]="getStatusClass('Chờ xác nhận')">
+    <fa-icon [icon]="faClock" class="text-3xl mr-3"></fa-icon>
+    <div>
+      <div class="text-sm font-medium">Chờ xác nhận</div>
+      <div class="text-2xl font-bold">{{statistics.pendingConfirmationCount}}</div>
+    </div>
+  </div>
+
+  <!-- Chờ khám -->
+  <div class="flex items-center rounded-lg p-4 pt-2 pb-2 shadow-sm border" [ngClass]="getStatusClass('Chờ khám')">
+    <fa-icon [icon]="faStethoscope" class="text-3xl mr-3"></fa-icon>
+    <div>
+      <div class="text-sm font-medium">Chờ khám</div>
+      <div class="text-2xl font-bold">{{statistics.waitingForExamCount}}</div>
+    </div>
+  </div>
+
+  <!-- Đã khám -->
+  <div class="flex items-center rounded-lg p-4 pt-2 pb-2 shadow-sm border" [ngClass]="getStatusClass('Đã khám')">
+    <fa-icon [icon]="faCheckCircle" class="text-3xl mr-3"></fa-icon>
+    <div>
+      <div class="text-sm font-medium">Đã khám</div>
+      <div class="text-2xl font-bold">{{statistics.examinedCount}}</div>
+    </div>
+  </div>
+
+  <!-- Đã huỷ -->
+  <div class="flex items-center rounded-lg p-4 pt-2 pb-2 shadow-sm border" [ngClass]="getStatusClass('Đã huỷ')">
+    <fa-icon [icon]="faTimesCircle" class="text-3xl mr-3"></fa-icon>
+    <div>
+      <div class="text-sm font-medium">Đã huỷ</div>
+      <div class="text-2xl font-bold">{{statistics.cancelledCount}}</div>
+    </div>
   </div>
 </div>
 <div class="md:col-span-2 text-justify mt-2">

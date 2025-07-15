@@ -33,7 +33,7 @@
                 <div class="mb-0">
                     <label class="block text-sm font-semibold text-sky-800">Họ tên</label>
                     <input type="text" [value]="appointment.patientResponse.fullName" readonly
-                        class="mt-1 p-1 pl-2 bg-gray-50 border border-gray-200 rounded-md w-full" />
+                        class="mt-1 p-1 pl-2 bg-gray-50 border border-gray-200 rounded-md w-full font-semibold text-indigo-800" />
                 </div>
 
                 <div class="mb-0">
@@ -86,14 +86,18 @@
                 </div>
             </div>
 
-            <h2 class="text-lg font-bold text-sky-700 pt-4"><fa-icon [icon]="faCalendarCheck"></fa-icon> &nbsp;THÔNG TIN ĐẶT LỊCH KHÁM</h2>
+            <h2 class="text-lg font-bold text-sky-700 pt-4"><fa-icon [icon]="faCalendarCheck"></fa-icon> &nbsp;THÔNG TIN
+                ĐẶT LỊCH KHÁM</h2>
             <hr class="my-2 border-sky-700">
             <div *ngIf="!loading && appointment" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
 
                 <div class="mb-0 md:col-span-2 lg:col-span-4">
                     <label class="block text-sm font-semibold text-sky-800">Dịch vụ đặt khám</label>
-                    <textarea rows="1" class="mt-1 p-1 pl-2 bg-gray-50 border border-gray-200 rounded-md w-full"
-                        readonly>{{ appointment.doctorServiceResponse.serviceResponse.serviceName }}</textarea>
+                    <div
+                        *ngIf="appointment?.doctorServiceResponse?.serviceResponse?.serviceName || appointment?.serviceAppointmentResponse?.serviceResponse?.serviceName">
+                        <textarea rows="1" class="mt-1 p-1 pl-2 bg-gray-50 border border-gray-200 rounded-md w-full font-semibold text-indigo-800"
+                            readonly>{{ appointment?.doctorServiceResponse?.serviceResponse?.serviceName || appointment?.serviceAppointmentResponse?.serviceResponse?.serviceName || '' }}</textarea>
+                    </div>
                 </div>
                 <!-- Thông tin cơ bản -->
                 <div class="mb-0">
@@ -104,8 +108,8 @@
 
                 <div class="mb-0">
                     <label class="block text-sm font-semibold text-sky-800">Bác sĩ</label>
-                    <input type="text" [value]="appointment.doctorScheduleResponse.doctorResponse.name" readonly
-                        class="mt-1 p-1 pl-2 bg-gray-50 border border-gray-200 rounded-md w-full" />
+                    <input type="text" [value]="appointment?.doctorScheduleResponse?.doctorResponse?.name || ''"
+                        readonly class="mt-1 p-1 pl-2 bg-gray-50 border border-gray-200 rounded-md w-full font-semibold text-indigo-800" />
                 </div>
 
                 <div class="mb-0">
@@ -116,8 +120,12 @@
 
                 <div class="mb-0">
                     <label class="block text-sm font-semibold text-sky-800">Khung giờ khám</label>
-                    <input type="text" [value]="appointment.doctorScheduleResponse.timeFrameResponse.fullName" readonly
-                        class="mt-1 p-1 pl-2 bg-gray-50 border border-gray-200 rounded-md w-full" />
+                    <div
+                        *ngIf="appointment?.doctorScheduleResponse?.timeFrameResponse || appointment?.serviceAppointmentResponse?.timeFrameResponse">
+                        <input type="text"
+                            [value]="appointment?.doctorScheduleResponse?.timeFrameResponse?.fullName || appointment?.serviceAppointmentResponse?.timeFrameResponse?.fullName || ''"
+                            readonly class="mt-1 p-1 pl-2 bg-gray-50 border border-gray-200 rounded-md w-full" />
+                    </div>
                 </div>
 
                 <div class="mb-0">
@@ -128,33 +136,45 @@
 
                 <div class="mb-0">
                     <label class="block text-sm font-semibold text-sky-800">Trạng thái</label>
-                    <input [ngClass]="getStatusClass(appointment.status)" type="text" [value]="appointment.status" readonly
-                        class="mt-1 p-1 pl-2 bg-gray-50 border border-gray-200 rounded-md w-full" />
+                    <input [ngClass]="getStatusClass(appointment.status)" type="text" [value]="appointment.status"
+                        readonly class="mt-1 p-1 pl-2 bg-gray-50 border border-gray-200 rounded-md w-full font-semibold" />
                 </div>
 
-                <div class="mb-0 md:col-span-2 lg:col-span-2">
+                <div class="mb-0 md:col-span-2 lg:col-span-2" *ngIf="appointment.patientMessage">
                     <label class="block text-sm font-semibold text-sky-800">Lời nhắn của bệnh nhân</label>
-                    <textarea rows="1" class="mt-1 p-1 pl-2 bg-gray-50 border border-gray-200 rounded-md w-full"
-                        readonly>{{ appointment.patientMessage || '' }}</textarea>
+                    <textarea rows="3" class="mt-1 p-1 pl-2 bg-gray-50 border border-gray-200 rounded-md w-full" readonly>{{ appointment.patientMessage || '' }}</textarea>
                 </div>
+                
             </div>
 
             <div *ngIf="appointment?.doctorMessage || appointment?.note">
-                <h2 class="text-lg font-bold text-sky-700 pt-4">THÔNG TIN SAU KHÁM</h2>
-            <hr class="my-2 border-sky-700">
-            <div *ngIf="!loading && appointment" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
-                <div class="mb-0 md:col-span-2 lg:col-span-2">
-                    <label class="block text-sm font-semibold text-sky-800">Lời nhắn của bác sĩ</label>
-                    <textarea rows="1" class="mt-1 p-1 pl-2 bg-gray-50 border border-gray-200 rounded-md w-full"
-                        readonly>{{ appointment.doctorMessage || '' }}</textarea>
-                </div>
+                <h2 class="text-lg font-bold text-green-700 pt-4"><fa-icon [icon]="faCalendarCheck"></fa-icon> &nbsp;THÔNG TIN SAU KHÁM</h2>
+                <hr class="my-2 border-green-700">
+                <div *ngIf="!loading && appointment" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
+                    <div class="mb-0 md:col-span-2 lg:col-span-2" *ngIf="appointment.result">
+                        <label class="block text-sm font-semibold text-green-800">Kết quả khám</label>
+                        <textarea rows="3" class="mt-1 p-1 pl-2 bg-gray-50 border border-gray-200 rounded-md w-full" readonly>{{ appointment.result || '' }}</textarea>
+                    </div>
+                    
+                    <div class="mb-0 md:col-span-2 lg:col-span-2" *ngIf="appointment.doctorMessage">
+                        <label class="block text-sm font-semibold text-green-800">Lời nhắn của bác sĩ</label>
+                        <textarea rows="3" class="mt-1 p-1 pl-2 bg-gray-50 border border-gray-200 rounded-md w-full" readonly>{{ appointment.doctorMessage || '' }}</textarea>
+                    </div>
+                    
+                    <div class="mb-0 md:col-span-2 lg:col-span-2" *ngIf="appointment.note">
+                        <label class="block text-sm font-semibold text-green-800">Ghi chú</label>
+                        <textarea rows="3" class="mt-1 p-1 pl-2 bg-gray-50 border border-gray-200 rounded-md w-full" readonly>{{ appointment.note || '' }}</textarea>
+                    </div>
+                    
+                    <div class="mb-0 md:col-span-2 lg:col-span-1" *ngIf="appointment?.reExaminationDate">
+                        <label class="block text-sm font-semibold text-green-800">Hẹn ngày tái khám</label>
+                        <input class="mt-1 p-1 pl-2 bg-gray-50 border border-gray-200 rounded-md w-full" type="text"
+                            [value]="appointment?.reExaminationDate ? formatDate(appointment.reExaminationDate) : ''" readonly />
+                    </div>
+                    
 
-                <div class="mb-0 md:col-span-2 lg:col-span-2">
-                    <label class="block text-sm font-semibold text-sky-800">Ghi chú</label>
-                    <textarea rows="1" class="mt-1 p-1 pl-2 bg-gray-50 border border-gray-200 rounded-md w-full"
-                        readonly>{{ appointment.note || '' }}</textarea>
+                    
                 </div>
-            </div>
             </div>
         </div>
     </div>

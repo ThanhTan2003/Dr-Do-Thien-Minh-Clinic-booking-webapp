@@ -15,7 +15,7 @@ import { AdminModalConfirmComponent } from '../../../../shared/components/modal-
 import { AdminModalConfirmDeleteComponent } from '../../../../shared/components/modal-confirm-delete/admin-modal-confirm-delete.component';
 import { AdminModalSuccessComponent } from '../../../../shared/components/modal-success/admin-modal-success.component';
 import { 
-  faX, faPen, faUserNurse
+  faX, faPen, faUserNurse, faPenToSquare
 } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
@@ -48,6 +48,7 @@ export class EditDoctorInfoComponent implements OnInit, OnDestroy {
   faX = faX;
   faPen = faPen;
   faUserNurse = faUserNurse;
+  faPenToSquare =faPenToSquare;
 
   constructor(
     private doctorService: DoctorService,
@@ -94,18 +95,18 @@ export class EditDoctorInfoComponent implements OnInit, OnDestroy {
   }
 
   getDoctorImage(doctor: Doctor): string {
-    return (
-      doctor.gender === 'Nam'
-        ? '/images/default-male-doctor.jpg'
-        : '/images/default-female-doctor.jpg'
-    );
-
     // return (
-    //   doctor.image ||
-    //   (doctor.gender === 'Nam'
+    //   doctor.gender === 'Nam'
     //     ? '/images/default-male-doctor.jpg'
-    //     : '/images/default-female-doctor.jpg')
+    //     : '/images/default-female-doctor.jpg'
     // );
+
+    return (
+      doctor.image ||
+      (doctor.gender === 'Nam'
+        ? '/images/default-male-doctor.jpg'
+        : '/images/default-female-doctor.jpg')
+    );
   }
 
   onUpdate(): void {

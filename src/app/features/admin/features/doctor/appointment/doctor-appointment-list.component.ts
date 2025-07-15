@@ -3,9 +3,12 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AppointmentService } from '../../../../shared/services/appointment/appointment.service';
 import { Appointment } from '../../../../models/responses/appointment/appointment.model';
+import { AppointmentStatisticsService } from '../../../../shared/services/appointment/appointment-statistics.service';
+import { AppointmentStatusCount } from '../../../../models/responses/appointment/appointment-status-count.model';
 import { PageResponse } from '../../../../models/responses/page-response.model';
 import { PageSizeSelectorComponent } from '../../../shared/components/page-size-selector/page-size-selector.component';
 import { PaginationComponent } from '../../../shared/components/pagination/pagination.component';
+
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { 
   faCircleQuestion,
@@ -13,7 +16,8 @@ import {
   faRotate,
   faChevronLeft,
   faChevronRight,
-  faPenToSquare
+  faPenToSquare,
+  faCalendarCheck, faClock, faStethoscope, faCheckCircle, faTimesCircle, faUserMd, faChalkboardTeacher
 } from '@fortawesome/free-solid-svg-icons';
 import { FormatDatePipe } from '../../../../shared/pipes/format-date.pipe';
 import {BirthYearPipe} from '../../../../shared/pipes/birth-year.pipe';
@@ -40,6 +44,14 @@ import { getStatusClassForList } from '../../../../shared/util/status.util';
 })
 export class DoctorAppointmentListComponent implements OnInit {
   appointments: Appointment[] = [];
+  statistics: AppointmentStatusCount = {
+    totalAppointments: 0,
+    pendingConfirmationCount: 0,
+    waitingForExamCount: 0,
+    examinedCount: 0,
+    cancelledCount: 0
+  };
+
   currentPage: number = 1;
   pageSize: number = 10;
   totalElements: number = 0;
@@ -65,11 +77,20 @@ export class DoctorAppointmentListComponent implements OnInit {
   faChevronRight = faChevronRight;
   faPenToSquare = faPenToSquare;
 
+  faCalendarCheck = faCalendarCheck;
+  faClock = faClock;
+  faStethoscope = faStethoscope;
+  faCheckCircle = faCheckCircle;
+  faTimesCircle = faTimesCircle;
+  faUserMd = faUserMd;
+  faChalkboardTeacher = faChalkboardTeacher;
+
   showUpdateModal: boolean = false;
   selectedAppointmentId: string | null = null;
 
   constructor(
     private appointmentService: AppointmentService,
+    private appointmentStatisticsService: AppointmentStatisticsService,
     private route: ActivatedRoute,
     private router: Router
   ) {}
@@ -83,6 +104,7 @@ export class DoctorAppointmentListComponent implements OnInit {
       this.keyword = params['keyword'] || '';
       this.loadStatuses();
       this.loadAppointments();
+      this.loadStatistics();
     });
   }
 
@@ -119,6 +141,14 @@ export class DoctorAppointmentListComponent implements OnInit {
     });
   }
 
+  loadStatistics(): void {
+    this.appointmentStatisticsService.getStatisticsByDate(this.selectedDate).subscribe({
+      next: (statistics: AppointmentStatusCount) => {
+        this.statistics = statistics;
+      }
+    });
+  }
+
   // Date navigation methods
   goToPreviousDay(): void {
     const currentDate = new Date(this.selectedDate);
@@ -126,6 +156,7 @@ export class DoctorAppointmentListComponent implements OnInit {
     this.selectedDate = currentDate.toISOString().split('T')[0];
     this.currentPage = 1;
     this.loadAppointments();
+    this.loadStatistics();
   }
 
   goToNextDay(): void {
@@ -134,18 +165,21 @@ export class DoctorAppointmentListComponent implements OnInit {
     this.selectedDate = currentDate.toISOString().split('T')[0];
     this.currentPage = 1;
     this.loadAppointments();
+    this.loadStatistics();
   }
 
   goToToday(): void {
     this.selectedDate = new Date().toISOString().split('T')[0];
     this.currentPage = 1;
     this.loadAppointments();
+    this.loadStatistics();
   }
 
   onDateChange(): void {
     this.currentPage = 1;
     this.updateQueryParams();
     this.loadAppointments();
+    this.loadStatistics();
   }
 
   // Filter and search methods
@@ -153,6 +187,7 @@ export class DoctorAppointmentListComponent implements OnInit {
     this.currentPage = 1;
     this.updateQueryParams();
     this.loadAppointments();
+    this.loadStatistics();
   }
 
   handleStatusChange(): void {
@@ -178,6 +213,7 @@ export class DoctorAppointmentListComponent implements OnInit {
   // Utility methods
   refreshList(): void {
     this.loadAppointments();
+    this.loadStatistics();
   }
 
   updateQueryParams() {
@@ -209,6 +245,7 @@ export class DoctorAppointmentListComponent implements OnInit {
     this.selectedAppointmentId = null;
     if (updated === true) {
       this.loadAppointments();
+      this.loadStatistics();
     }
   }
 }

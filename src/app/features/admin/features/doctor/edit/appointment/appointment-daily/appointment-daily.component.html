@@ -153,4 +153,4 @@
     </div>
 </div>
 
-<app-doctor-appointment-update *ngIf="showUpdateModal" [appointmentId]="selectedAppointmentId!" (close)="closeUpdateModal($event)"></app-doctor-appointment-update>
+<app-doctor-appointment-update *ngIf="showUpdateModal" [appointmentId]="selectedAppointmentId!" [isDoctor]="true" (close)="closeUpdateModal($event)"></app-doctor-appointment-update>

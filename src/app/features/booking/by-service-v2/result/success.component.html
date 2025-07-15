@@ -93,7 +93,7 @@
         </div>
         <div class="grid [grid-template-columns:4fr_6fr] gap-2">
           <p class="font-semibold">Trạng thái:</p>
-          <span [class]="'px-3 py-1 rounded-full text-sm font-bold ' + getStatusClassForList(appointment?.status || '')">
+          <span [class]="'px-3 py-1 rounded-full text-sm font-bold ' + getStatusClassForForm(appointment?.status || '')">
             {{ appointment?.status || 'Chờ xác nhận' }}
           </span>
         </div>

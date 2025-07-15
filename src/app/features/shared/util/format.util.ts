@@ -53,3 +53,9 @@ export function formatNationalId(nationalId: string): string {
     }
     return nationalId;
 }
+
+export function formatNumber(value: number | string): string {
+    if (value === undefined || value === null) return '';
+    const number = typeof value === 'string' ? parseFloat(value) : value;
+    return number.toLocaleString('vi-VN');
+}

@@ -1,0 +1,49 @@
+<div class="flex justify-between items-center">
+  <div class="flex justify-start">
+    <button class="bg-white text-sky-700 py-2 px-4 rounded border border-sky-700 font-bold hover:bg-sky-100 ml-2"
+      title="Làm mới danh sách" (click)="refreshData()">
+      <fa-icon [icon]="faRotate"></fa-icon>
+    </button>
+    <app-page-size-selector class="ml-4" [pageSize]="pageSize" [options]="pageSizeOptions"
+      (pageSizeChange)="onPageSizeChange($event)">
+    </app-page-size-selector>
+  </div>
+</div>
+<div class="md:col-span-2 text-justify mt-2">
+  <div class="overflow-x-auto">
+    <table class="w-full border-collapse border border-gray-200 shadow-lg rounded-md">
+      <thead>
+        <tr class="bg-sky-600 text-white">
+          <th class="border p-2 text-center w-16">STT</th>
+          <th class="border p-2 text-left">Ngày khám</th>
+          <th class="border p-2 text-left">Kết quả khám</th>
+          <th class="border p-2 text-left">Lời nhắn cho bệnh nhân</th>
+          <th class="border p-2 text-left">Ghi chú sau khám</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngIf="loading">
+          <td colspan="5" class="text-center p-4 border-gray-400">
+            <div class="flex justify-center items-center">
+              <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-sky-600"></div>
+              <span class="ml-2">Đang tải dữ liệu...</span>
+            </div>
+          </td>
+        </tr>
+        <tr *ngIf="!loading && appointmentResults.length === 0">
+          <td colspan="5" class="text-center p-4 border-gray-400">Không có dữ liệu</td>
+        </tr>
+        <tr *ngFor="let result of appointmentResults; let i = index">
+          <td class="border border-gray-400 p-2 text-center">{{ (currentPage - 1) * pageSize + i + 1 }}</td>
+          <td class="border border-gray-400 p-2 text-left whitespace-nowrap text-amber-800 font-semibold">
+            {{ result.appointmentDate | date:'dd/MM/yyyy' }}</td>
+          <td class="border border-gray-400 p-2 text-justify">{{ result.result || '...' }}</td>
+          <td class="border border-gray-400 p-2 text-justify">{{ result.doctorMessage || '...' }}</td>
+          <td class="border border-gray-400 p-2 text-justify">{{ result.note || '...' }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <app-pagination [totalElements]="totalElements" [currentPage]="currentPage" [totalPages]="totalPages"
+    (pageChange)="onPageChange($event)"></app-pagination>
+</div>

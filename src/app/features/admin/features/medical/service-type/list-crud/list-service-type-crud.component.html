@@ -82,7 +82,7 @@
           <tr class="bg-sky-600 text-white">
             <th class="border p-2 text-center">STT</th>
             <th class="border p-2 text-left  whitespace-nowrap">Tên chuyên môn</th>
-            <th class="border p-2 text-left">Mô tả</th>
+            <!-- <th class="border p-2 text-left">Mô tả</th> -->
             <th class="border p-2 text-center whitespace-nowrap">Số dịch vụ</th>
             <th class="border p-2 text-center whitespace-nowrap">Số bác sĩ khám</th>
             <th class="border p-2 text-center whitespace-nowrap">Số lượt khám</th>
@@ -104,12 +104,12 @@
           <tr *ngFor="let category of categories; let i = index">
             <td class="border border-gray-400 p-2 text-center">{{ (currentPage - 1) * pageSize + i + 1 }}</td>
             <td class="border border-gray-400 p-2 text-left font-semibold text-sky-900">{{ category.categoryName }}</td>
-            <td class="border border-gray-400 p-2 text-justify">{{ category.description }}</td>
+            <!-- <td class="border border-gray-400 p-2 text-justify">{{ category.description }}</td> -->
             <td class="border border-gray-400 p-2 text-center font-semibold text-emerald-800">{{ category.quantity }}</td>
             <td class="border border-gray-400 p-2 text-center font-semibold text-purple-800">999</td>
             <td class="border border-gray-400 p-2 text-center font-semibold text-purple-800">999</td>
             <td class="border border-gray-400 p-2 text-center justify-center whitespace-nowrap">
-              <div class="flex gap-2">
+              <div class="text-centergap-2">
                 <button 
                   class="bg-white text-sky-600 px-3 py-1 rounded border border-sky-600 hover:bg-sky-700 hover:text-white font-semibold"
                   (click)="updateCategory(category)"
@@ -117,7 +117,7 @@
                   Cập nhật &nbsp;<fa-icon [icon]="faPenToSquare"></fa-icon>
                 </button>
                 <button 
-                  class="bg-white text-red-600 px-3 py-1 rounded border border-red-600 hover:bg-red-700 hover:text-white font-semibold"
+                  class="bg-white text-red-600 px-3 py-1 ml-4 rounded border border-red-600 hover:bg-red-700 hover:text-white font-semibold"
                   (click)="deleteCategory(category)"
                 >
                   Xóa &nbsp;<fa-icon [icon]="faTrash"></fa-icon>

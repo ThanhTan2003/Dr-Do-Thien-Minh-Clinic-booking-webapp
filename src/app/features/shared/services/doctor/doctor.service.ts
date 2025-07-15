@@ -42,6 +42,20 @@ export class DoctorService {
   }
 
   /**
+ * Cập nhật avatar bác sĩ
+ */
+updateAvatar(id: string, file: File): Observable<Doctor> {
+  const formData = new FormData();
+  formData.append('file', file, file.name);
+
+  return this.http.put<Doctor>(
+    `${this.API_URL}/${id}/avatar`,
+    formData
+  );
+}
+
+
+  /**
    * Tìm bác sĩ theo trạng thái hoạt động
    */
   searchByStatus(status: boolean, page = 1, size = 10): Observable<PageResponse<Doctor>> {

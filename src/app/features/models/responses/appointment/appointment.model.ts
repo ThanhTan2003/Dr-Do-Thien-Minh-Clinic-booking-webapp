@@ -7,6 +7,7 @@ export interface Appointment {
   id: string;
   zaloUid: string;
   patientId: string;
+  serviceId: string;
   doctorServiceId: string;
   doctorScheduleId: string;
   bookingTime: string;

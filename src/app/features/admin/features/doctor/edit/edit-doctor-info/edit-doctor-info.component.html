@@ -7,9 +7,13 @@
     <!-- Nội dung -->
     <div class="flex flex-row gap-6 pt-4 pb-4 items-start pr-2" *ngIf="doctor">
         <!-- Ảnh đại diện -->
-        <div class="flex-shrink-0 flex justify-center w-1/5">
+        <div class="flex-shrink-0 flex justify-center w-1/5 relative group">
             <img [src]="getDoctorImage(doctor)" alt="Avatar"
-                class="w-48 h-60 rounded-md object-cover" />
+                class="w-48 h-60 rounded-md object-cover transition duration-300 group-hover:brightness-75" />
+            <button title="Thay đổi ảnh đại diện"
+                class="font-semibold absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 hidden group-hover:block bg-sky-500 text-white px-4 py-2 rounded-md flex items-center space-x-2 hover:bg-sky-600 transition duration-300">
+                <span>Thay đổi</span>
+            </button>
         </div>
 
         <!-- Thông tin -->
@@ -19,7 +23,7 @@
                 <div>
                     <div class="flex mb-2 items-center">
                         <span class="font-bold min-w-[120px]">Mã Bác sĩ:</span>
-                        <input type="text" [(ngModel)]="doctor.id" disabled 
+                        <input type="text" [(ngModel)]="doctor.id" disabled
                             class="ml-2 p-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 w-full" />
                     </div>
                     <div class="flex mb-2 items-center">
@@ -29,7 +33,7 @@
                     </div>
                     <div class="flex mb-2 items-center">
                         <span class="font-bold min-w-[120px]">Trạng thái:</span>
-                        <select [(ngModel)]="doctor.status" 
+                        <select [(ngModel)]="doctor.status"
                             class="ml-2 p-1 border border-sky-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 w-full">
                             <option *ngFor="let status of doctorStatuses" [value]="status.status">
                                 {{status.description}}
@@ -92,7 +96,7 @@
         <!-- Bên phải: Hai nút, căn phải -->
         <div class="w-1/2 flex items-center justify-end">
             <div class="flex gap-3">
-                <button (click)="onUpdate()" 
+                <button (click)="onUpdate()"
                     class="bg-sky-700 text-white font-semibold px-4 py-2 rounded-md hover:bg-sky-800 transition">
                     Cập nhật thông tin &nbsp;<fa-icon [icon]="faPen"></fa-icon>
                 </button>

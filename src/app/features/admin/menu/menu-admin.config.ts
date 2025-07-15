@@ -12,7 +12,8 @@ import {
     faCommentDots,
     faUsers,
     faBell,
-    faLayerGroup
+    faLayerGroup,
+    faCalendarAlt
 } from '@fortawesome/free-solid-svg-icons';
   
 export const AdminMenuItems = [
@@ -21,6 +22,13 @@ export const AdminMenuItems = [
       label: 'Trang chủ',
       icon: faHouse,
       path: 'trang-chu'
+    },
+
+    {
+      id: 'LichHenMoi',
+      label: 'Lịch hẹn mới',
+      icon: faCalendarAlt,
+      path: 'lich-hen-moi'
     },
 
     {
@@ -49,7 +57,7 @@ export const AdminMenuItems = [
         
       ]
     },
-
+  
     {
       id: 'BenhNhan',
       label: 'Bệnh nhân',

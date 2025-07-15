@@ -3,13 +3,17 @@ import { ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { faMagnifyingGlass, faXmark, faCircleInfo, faRotate, faCircleQuestion } from '@fortawesome/free-solid-svg-icons';
+import { faMagnifyingGlass, faXmark, faCircleInfo, faRotate, faCircleQuestion,
+  faCalendarCheck, faClock, faStethoscope, faCheckCircle, faTimesCircle
+ } from '@fortawesome/free-solid-svg-icons';
 import { AppointmentService } from '../../../../../../shared/services/appointment/appointment.service';
 import { Appointment } from '../../../../../../models/responses/appointment/appointment.model';
 import { PageResponse } from '../../../../../../models/responses/page-response.model';
 import { PaginationComponent } from '../../../../../shared/components/pagination/pagination.component';
 import { PageSizeSelectorComponent } from '../../../../../shared/components/page-size-selector/page-size-selector.component';
 import { AppointmentDetailComponent } from './appointment-detail/appointment-detail.component';
+import { AppointmentStatisticsService } from '../../../../../../shared/services/appointment/appointment-statistics.service';
+import { AppointmentStatusCount } from '../../../../../../models/responses/appointment/appointment-status-count.model';
 
 @Component({
   selector: 'app-history-appointment',
@@ -28,6 +32,13 @@ export class HistoryAppointmentComponent implements OnInit {
   userId: string = '';
 
   appointments: Appointment[] = [];
+  statistics: AppointmentStatusCount = {
+    totalAppointments: 0,
+    pendingConfirmationCount: 0,
+    waitingForExamCount: 0,
+    examinedCount: 0,
+    cancelledCount: 0
+  };
   statuses: string[] = [];
   selectedStatus: string = '';
   keyword: string = '';
@@ -47,6 +58,12 @@ export class HistoryAppointmentComponent implements OnInit {
   faCircleInfo = faCircleInfo;
   faRotate = faRotate;
   faCircleQuestion = faCircleQuestion;
+
+  faCalendarCheck = faCalendarCheck;
+  faClock = faClock;
+  faStethoscope = faStethoscope;
+  faCheckCircle = faCheckCircle;
+  faTimesCircle = faTimesCircle;
   
   // Mảng trạng thái và màu sắc tương ứng
   statusColorMap: { [key: string]: string } = {
@@ -63,12 +80,22 @@ export class HistoryAppointmentComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
-    private appointmentService: AppointmentService) {}
+    private appointmentService: AppointmentService,
+    private appointmentStatisticsService: AppointmentStatisticsService) {}
 
   ngOnInit(): void {
     this.userId = this.route.parent?.snapshot.paramMap.get('userId') || '';
     this.loadStatuses();
     this.loadAppointments();
+    this.loadStatistics();
+  }
+
+  loadStatistics(): void {
+    this.appointmentStatisticsService.getStatisticsByZaloUid(this.userId).subscribe({
+      next: (statistics: AppointmentStatusCount) => {
+        this.statistics = statistics;
+      }
+    });
   }
 
   loadStatuses(): void {
