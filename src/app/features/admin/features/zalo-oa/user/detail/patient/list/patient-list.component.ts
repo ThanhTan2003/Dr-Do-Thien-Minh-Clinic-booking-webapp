@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faMagnifyingGlass, faXmark, faCircleInfo, faRotate, faCircleQuestion } from '@fortawesome/free-solid-svg-icons';
 import { PatientService } from '../../../../../../../shared/services/patient/patient.service';
@@ -15,18 +15,18 @@ import { PatientDetailComponent } from '../detail/patient-detail.component';
 import { CreatePatientComponent } from '../create/create-patient.component';
 
 @Component({
-  selector: 'app-patient-list',
-  templateUrl: './patient-list.component.html',
-  standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule,
-    FontAwesomeModule,
-    PaginationComponent,
-    PageSizeSelectorComponent,
-    PatientDetailComponent,
-    CreatePatientComponent
-  ]
+    selector: 'app-patient-list',
+    templateUrl: './patient-list.component.html',
+    standalone: true,
+    imports: [
+        CommonModule,
+        FormsModule,
+        FontAwesomeModule,
+        PaginationComponent,
+        PageSizeSelectorComponent,
+        PatientDetailComponent,
+        CreatePatientComponent
+    ]
 })
 export class PatientListComponent implements OnInit {
     userId: string = '';
@@ -55,14 +55,39 @@ export class PatientListComponent implements OnInit {
         private route: ActivatedRoute,
         private patientService: PatientService,
         private patientTagService: PatientTagService,
-        private toastr: ToastrService
-    ) {}
+        private toastr: ToastrService,
+        private router: Router
+    ) { }
 
     ngOnInit(): void {
         this.userId = this.route.snapshot.parent?.paramMap.get('userId') || '';
+        
+        this.route.queryParams.subscribe(params => {
+          // Chỉ cập nhật các giá trị nếu chúng thực sự thay đổi
+          const newPage = +params['page'] || 1;
+          const newSize = +params['size'] || 10;
+          const newKeyword = params['keyword'] || '';
+          const newTag = params['tag'] || '';
+          
+          // Kiểm tra xem có cần cập nhật không
+          if (newPage !== this.currentPage || 
+              newSize !== this.pageSize || 
+              newKeyword !== this.keyword ||
+              newTag !== this.selectedTag) {
+            
+            this.currentPage = newPage;
+            this.pageSize = newSize;
+            this.keyword = newKeyword;
+            this.selectedTag = newTag;
+            
+            this.loadTags();
+            this.loadPatients();
+          }
+        });
+        
         this.loadTags();
         this.loadPatients();
-    }
+      }
 
     loadTags(): void {
         this.patientTagService.getTagsByZaloUid(this.userId).subscribe({
@@ -100,10 +125,49 @@ export class PatientListComponent implements OnInit {
         });
     }
 
+    updateQueryParams() {
+        const queryParams: any = {
+          page: this.currentPage,
+          size: this.pageSize,
+          keyword: this.keyword
+        };
+        
+        // Chỉ thêm tag nếu có giá trị
+        if (this.selectedTag && this.selectedTag.trim() !== '') {
+          queryParams.tag = this.selectedTag;
+        }
+        
+        this.router.navigate([], {
+          relativeTo: this.route,
+          queryParams: queryParams,
+          replaceUrl: true
+        });
+      }
+
     handleSearch(): void {
         this.currentPage = 1;
+        this.updateQueryParams();
         this.loadPatients();
-    }
+      }
+      
+      handleTagChange(): void {
+        this.currentPage = 1;
+        this.updateQueryParams();
+        this.loadPatients();
+      }
+      
+      onPageChange(page: number): void {
+        this.currentPage = page;
+        this.updateQueryParams();
+        this.loadPatients(page);
+      }
+      
+      onPageSizeChange(newSize: number): void {
+        this.pageSize = newSize;
+        this.currentPage = 1;
+        this.updateQueryParams();
+        this.loadPatients();
+      }
 
     refreshList(): void {
         this.keyword = '';
@@ -112,16 +176,6 @@ export class PatientListComponent implements OnInit {
         this.loadPatients();
     }
 
-    onPageChange(page: number): void {
-        this.currentPage = page;
-        this.loadPatients(page);
-    }
-
-    onPageSizeChange(newSize: number): void {
-        this.pageSize = newSize;
-        this.currentPage = 1;
-        this.loadPatients();
-    }
 
     showPatientDetail(patient: Patient): void {
         this.selectedPatient = patient;

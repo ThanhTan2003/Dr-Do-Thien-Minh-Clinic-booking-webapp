@@ -18,21 +18,6 @@ export class AppointmentService {
   private readonly API_URL = '/api/v1/appointment/main';
 
   /**
-   * Tạo lịch hẹn mới
-   */
-  create(request: AppointmentRequest): Observable<Appointment> {
-    return this.http.post<Appointment>(this.API_URL, request);
-  }
-
-  createByCustomer(request: AppointmentRequest): Observable<Appointment> {
-    return this.http.post<Appointment>(`${this.API_URL}/customer`, request);
-  }
-
-  createBookingServiceByCustomer(request: ServiceAppointmentRequest): Observable<Appointment> {
-    return this.http.post<Appointment>(`${this.API_URL}/customer/booking-service`, request);
-  }
-
-  /**
    * Lấy lịch hẹn theo ID
   */
   getById(id: string): Observable<Appointment> {
@@ -107,34 +92,6 @@ export class AppointmentService {
   }
 
   /**
-   * Xác nhận lịch hẹn (Cập nhật status thành "Đã phê duyệt")
-   */
-  confirmAppointment(appointmentId: string): Observable<Appointment> {
-    return this.http.put<Appointment>(`${this.API_URL}/confirm/${appointmentId}`, {});
-  }
-
-  /**
-   * Huỷ lịch hẹn (Cập nhật status thành "Đã huỷ")
-   */
-  cancelAppointment(appointmentId: string): Observable<Appointment> {
-    return this.http.put<Appointment>(`${this.API_URL}/cancel/${appointmentId}`, {});
-  }
-
-  /**
-   * Nhắc lịch khám (Cập nhật status thành "Chờ khám")
-   */
-  remindAppointment(appointmentId: string): Observable<Appointment> {
-    return this.http.put<Appointment>(`${this.API_URL}/remind/${appointmentId}`, {});
-  }
-
-  /**
-   * Đánh dấu là đã khám (Cập nhật status thành "Đã khám")
-   */
-  markAsExamined(appointmentId: string): Observable<Appointment> {
-    return this.http.put<Appointment>(`${this.API_URL}/mark-as-examined/${appointmentId}`, {});
-  }
-
-  /**
    * Tìm các cuộc hẹn của bác sĩ theo lịch trình và ngày hẹn
    */
   getAppointmentsByScheduleAndDate(doctorScheduleId: string, appointmentDate: string): Observable<Appointment[]> {
@@ -172,6 +129,24 @@ export class AppointmentService {
   getDoctorAppointmentHistory(doctorId: string, status = '', keyword = '', page = 1, size = 10): Observable<PageResponse<Appointment>> {
     return this.http.get<PageResponse<Appointment>>(
       `${this.API_URL}/doctor/${doctorId}/history?status=${status}&keyword=${keyword}&page=${page}&size=${size}`
+    );
+  }
+
+  /**
+   * Lấy danh sách lịch sử khám của dịch vụ
+   */
+  getServiceAppointmentHistory(serviceId: string, status = '', keyword = '', page = 1, size = 10): Observable<PageResponse<Appointment>> {
+    return this.http.get<PageResponse<Appointment>>(
+      `${this.API_URL}/service/${serviceId}/history?status=${status}&keyword=${keyword}&page=${page}&size=${size}`
+    );
+  }
+
+  /**
+ * Lấy danh sách lịch khám của tất cả bác sĩ
+ */
+  getAllDoctorsAppointments(status: string = '', keyword: string = '', page: number = 1, size: number = 10): Observable<PageResponse<Appointment>> {
+    return this.http.get<PageResponse<Appointment>>(
+      `${this.API_URL}/get-all?status=${status}&keyword=${keyword}&page=${page}&size=${size}`
     );
   }
 
@@ -222,15 +197,15 @@ export class AppointmentService {
   /**
  * Lấy lịch sử kết quả khám của bệnh nhân theo dịch vụ
  */
-getResultByPatientAndService(patientId: string, serviceId: string, date: string | null = null, page: number = 1, size: number = 10): Observable<PageResponse<AppointmentResultResponse>> {
-  let url = `${this.API_URL}/result/${patientId}/${serviceId}?page=${page}&size=${size}`;
-  
-  if (date) {
-    url += `&date=${date}`;
-  }
+  getResultByPatientAndService(patientId: string, serviceId: string, date: string | null = null, page: number = 1, size: number = 10): Observable<PageResponse<AppointmentResultResponse>> {
+    let url = `${this.API_URL}/result/${patientId}/${serviceId}?page=${page}&size=${size}`;
 
-  return this.http.get<PageResponse<AppointmentResultResponse>>(url);
-}
+    if (date) {
+      url += `&date=${date}`;
+    }
+
+    return this.http.get<PageResponse<AppointmentResultResponse>>(url);
+  }
 
 
 }

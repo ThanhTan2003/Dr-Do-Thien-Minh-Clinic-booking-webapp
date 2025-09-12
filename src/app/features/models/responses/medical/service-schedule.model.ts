@@ -9,6 +9,7 @@ export interface ServiceSchedule {
   maxPatients: number;
   status: boolean;
   statusName: string;
+  roomName: string;
   serviceResponse: Service;
   timeFrameResponse: TimeFrame;
 }

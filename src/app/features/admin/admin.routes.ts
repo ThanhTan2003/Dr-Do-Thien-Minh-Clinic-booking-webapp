@@ -16,12 +16,18 @@ export const adminRoutes: Routes = [
         children: [
             {
                 path: '',
-                redirectTo: 'trang-chu',
+                redirectTo: 'lich-hen',
                 pathMatch: 'full'
             },
+            // {
+            //     path: 'trang-chu',
+            //     loadChildren: () => import('./features/home/home.routes').then(m => m.homeRoutes),
+            //     canActivate: [RoleGuard],
+            //     data: { roles: ALL_ROLES }
+            // },
             {
-                path: 'trang-chu',
-                loadChildren: () => import('./features/home/home.routes').then(m => m.homeRoutes),
+                path: 'lich-hen',
+                loadChildren: () => import('./features/appointment/appointment.routes').then(m => m.appointmentRoutes),
                 canActivate: [RoleGuard],
                 data: { roles: ALL_ROLES }
             },

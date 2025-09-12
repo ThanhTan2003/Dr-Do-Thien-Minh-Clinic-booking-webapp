@@ -79,10 +79,10 @@
             <thead>
                 <tr class="bg-sky-600 text-white">
                     <th class="border p-2 text-center whitespace-nowrap">STT</th>
-                    <th class="border p-2 text-left whitespace-nowrap">Khung giờ</th>
+                    <th class="border p-2 text-left whitespace-nowrap">Giờ khám</th>
                     <th class="border p-2 text-left whitespace-nowrap">Mã lịch hẹn</th>
                     <th class="border p-2 text-left whitespace-nowrap">Bệnh nhân</th>
-                    <th class="border p-2 text-left whitespace-nowrap">Ngày sinh</th>
+                    <th class="border p-2 text-left whitespace-nowrap">Năm sinh</th>
                     <th class="border p-2 text-left whitespace-nowrap">Dịch vụ</th>
                     <th class="border p-2 text-left whitespace-nowrap">Trạng thái</th>
                     <th class="border p-2 text-center whitespace-nowrap"></th>
@@ -104,12 +104,26 @@
                     </td>
                 </tr>
 
-                <tr *ngFor="let appointment of appointments; let i = index" class="align-top">
+                <tr *ngFor="let appointment of appointments; let i = index" class="border hover:bg-gray-100 transition duration-200 ease-in-out align-top ">
                     <td class="border border-gray-400 p-2 text-center">
                         {{ (currentPage - 1) * pageSize + i + 1 }}
                     </td>
                     <td class="border border-gray-400 p-2 text-left whitespace-nowrap text-amber-800 font-semibold">
-                        {{ appointment.doctorScheduleResponse.timeFrameResponse.name }}
+                        <ng-container *ngIf="appointment.doctorScheduleResponse?.timeFrameResponse?.name">
+                            {{ appointment.doctorScheduleResponse.timeFrameResponse.name }} -
+                            <span class="text-zinc-600">{{ appointment.doctorScheduleResponse.timeFrameResponse.session
+                                }}</span>
+                        </ng-container>
+                        <ng-container
+                            *ngIf="!appointment.doctorScheduleResponse?.timeFrameResponse?.name && appointment.serviceAppointmentResponse?.timeFrameResponse?.name">
+                            {{ appointment.serviceAppointmentResponse.timeFrameResponse.name }} -
+                            <span class="text-zinc-600">{{
+                                appointment.serviceAppointmentResponse.timeFrameResponse.session }}</span>
+                        </ng-container>
+                        <ng-container
+                            *ngIf="!appointment.doctorScheduleResponse?.timeFrameResponse?.name && !appointment.serviceAppointmentResponse?.timeFrameResponse?.name">
+                            ...
+                        </ng-container>
                     </td>
                     <td class="border border-gray-400 p-2 text-left whitespace-nowrap">
                         {{ appointment.id }}
@@ -120,7 +134,7 @@
                     </td>
 
                     <td class="border border-gray-400 p-2 text-left whitespace-nowrap">
-                        {{ formatDate(appointment.patientResponse.dateOfBirth) }}
+                        {{ getBirthYearAsString(appointment.patientResponse.dateOfBirth) }}
                     </td>
 
                     <td class="border border-gray-400 p-2 text-left text-cyan-900 font-semibold">

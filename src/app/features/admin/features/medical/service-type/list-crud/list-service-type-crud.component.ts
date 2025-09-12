@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Router, RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { ServiceCategoryService } from '../../../../../shared/services/medical/service-category.service';
@@ -8,10 +8,10 @@ import { PageResponse } from '../../../../../models/responses/page-response.mode
 import { PaginationComponent } from '../../../../shared/components/pagination/pagination.component';
 import { PageSizeSelectorComponent } from '../../../../shared/components/page-size-selector/page-size-selector.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { 
-  faRotate, 
+import {
+  faRotate,
   faPlus,
-  faMagnifyingGlass, 
+  faMagnifyingGlass,
   faPenToSquare,
   faTrash,
   faCircleQuestion
@@ -27,11 +27,11 @@ import { ToastrService } from 'ngx-toastr';
   templateUrl: './list-service-type-crud.component.html',
   standalone: true,
   imports: [
-    FormsModule, 
-    PaginationComponent, 
-    PageSizeSelectorComponent, 
-    RouterModule, 
-    CommonModule, 
+    FormsModule,
+    PaginationComponent,
+    PageSizeSelectorComponent,
+    RouterModule,
+    CommonModule,
     FontAwesomeModule,
     CreateServiceTypeComponent,
     UpdateServiceTypeComponent,
@@ -65,11 +65,42 @@ export class ListServiceTypeCrudComponent implements OnInit {
   constructor(
     private serviceCategoryService: ServiceCategoryService,
     private router: Router,
-    private toastr: ToastrService
-  ) {}
+    private toastr: ToastrService,
+    private route: ActivatedRoute
+  ) { }
 
   ngOnInit(): void {
+    this.route.queryParams.subscribe(params => {
+      // Chỉ cập nhật các giá trị nếu chúng thực sự thay đổi
+      const newPage = +params['page'] || 1;
+      const newSize = +params['size'] || 5;
+      const newKeyword = params['keyword'] || '';
+
+      // Kiểm tra xem có cần cập nhật không
+      if (newPage !== this.currentPage ||
+        newSize !== this.pageSize ||
+        newKeyword !== this.keyword) {
+
+        this.currentPage = newPage;
+        this.pageSize = newSize;
+        this.keyword = newKeyword;
+      }
+    });
     this.searchCategories();
+  }
+
+  updateQueryParams() {
+    const queryParams: any = {
+      page: this.currentPage,
+      size: this.pageSize,
+      keyword: this.keyword
+    };
+
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: queryParams,
+      replaceUrl: true // Sử dụng replaceUrl thay vì merge
+    });
   }
 
   ngAfterViewInit(): void {
@@ -100,6 +131,7 @@ export class ListServiceTypeCrudComponent implements OnInit {
 
   handleSearch(): void {
     this.currentPage = 1;
+    this.updateQueryParams();
     this.searchCategories();
   }
 
@@ -120,12 +152,14 @@ export class ListServiceTypeCrudComponent implements OnInit {
 
   onPageChange(page: number): void {
     this.currentPage = page;
+    this.updateQueryParams();
     this.searchCategories(page);
   }
 
   onPageSizeChange(newSize: number): void {
     this.pageSize = newSize;
     this.currentPage = 1;
+    this.updateQueryParams();
     this.searchCategories();
   }
 

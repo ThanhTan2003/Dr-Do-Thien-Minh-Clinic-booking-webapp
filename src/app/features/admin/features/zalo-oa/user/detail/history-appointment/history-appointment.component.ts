@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
@@ -81,14 +81,41 @@ export class HistoryAppointmentComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private appointmentService: AppointmentService,
-    private appointmentStatisticsService: AppointmentStatisticsService) {}
+    private appointmentStatisticsService: AppointmentStatisticsService,
+    private router: Router
+  ) {}
 
-  ngOnInit(): void {
-    this.userId = this.route.parent?.snapshot.paramMap.get('userId') || '';
-    this.loadStatuses();
-    this.loadAppointments();
-    this.loadStatistics();
-  }
+    ngOnInit(): void {
+      this.userId = this.route.parent?.snapshot.paramMap.get('userId') || '';
+      
+      this.route.queryParams.subscribe(params => {
+        // Chỉ cập nhật các giá trị nếu chúng thực sự thay đổi
+        const newPage = +params['page'] || 1;
+        const newSize = +params['size'] || 10;
+        const newKeyword = params['keyword'] || '';
+        const newStatus = params['status'] || '';
+        
+        // Kiểm tra xem có cần cập nhật không
+        if (newPage !== this.currentPage || 
+            newSize !== this.pageSize || 
+            newKeyword !== this.keyword ||
+            newStatus !== this.selectedStatus) {
+          
+          this.currentPage = newPage;
+          this.pageSize = newSize;
+          this.keyword = newKeyword;
+          this.selectedStatus = newStatus;
+          
+          this.loadStatuses();
+          this.loadAppointments();
+          this.loadStatistics();
+        }
+      });
+      
+      this.loadStatuses();
+      this.loadAppointments();
+      this.loadStatistics();
+    }
 
   loadStatistics(): void {
     this.appointmentStatisticsService.getStatisticsByZaloUid(this.userId).subscribe({
@@ -132,25 +159,47 @@ export class HistoryAppointmentComponent implements OnInit {
     });
   }
 
+  updateQueryParams() {
+    const queryParams: any = {
+      page: this.currentPage,
+      size: this.pageSize,
+      keyword: this.keyword
+    };
+    
+    // Chỉ thêm status nếu có giá trị
+    if (this.selectedStatus && this.selectedStatus.trim() !== '') {
+      queryParams.status = this.selectedStatus;
+    }
+    
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: queryParams,
+      replaceUrl: true
+    });
+  }
+
   handleSearch(): void {
     this.currentPage = 1;
+    this.updateQueryParams();
+    this.loadAppointments();
+  }
+  
+  onPageChange(page: number): void {
+    this.currentPage = page;
+    this.updateQueryParams();
+    this.loadAppointments(page);
+  }
+  
+  onPageSizeChange(newSize: number): void {
+    this.pageSize = newSize;
+    this.currentPage = 1;
+    this.updateQueryParams();
     this.loadAppointments();
   }
 
   refreshList(): void {
     this.keyword = '';
     this.selectedStatus = '';
-    this.currentPage = 1;
-    this.loadAppointments();
-  }
-
-  onPageChange(page: number): void {
-    this.currentPage = page;
-    this.loadAppointments(page);
-  }
-
-  onPageSizeChange(newSize: number): void {
-    this.pageSize = newSize;
     this.currentPage = 1;
     this.loadAppointments();
   }

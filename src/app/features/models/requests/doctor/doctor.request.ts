@@ -1,4 +1,5 @@
 export interface DoctorRequest {
+    id?:string;
     name: string;
     zaloUid: string;
     phone: string;

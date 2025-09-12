@@ -94,9 +94,9 @@
                 <div class="mb-0 md:col-span-2 lg:col-span-4">
                     <label class="block text-sm font-semibold text-sky-800">Dịch vụ đặt khám</label>
                     <div
-                        *ngIf="appointment?.doctorServiceResponse?.serviceResponse?.serviceName || appointment?.serviceAppointmentResponse?.serviceResponse?.serviceName">
+                        *ngIf="appointment.doctorServiceResponse?.serviceResponse?.serviceName || appointment.serviceAppointmentResponse?.serviceResponse?.serviceName">
                         <textarea rows="1" class="mt-1 p-1 pl-2 bg-gray-50 border border-gray-200 rounded-md w-full font-semibold text-indigo-800"
-                            readonly>{{ appointment?.doctorServiceResponse?.serviceResponse?.serviceName || appointment?.serviceAppointmentResponse?.serviceResponse?.serviceName || '' }}</textarea>
+                            readonly>{{ appointment.doctorServiceResponse.serviceResponse.serviceName || appointment.serviceAppointmentResponse.serviceResponse.serviceName || '' }}</textarea>
                     </div>
                 </div>
                 <!-- Thông tin cơ bản -->
@@ -108,7 +108,7 @@
 
                 <div class="mb-0">
                     <label class="block text-sm font-semibold text-sky-800">Bác sĩ</label>
-                    <input type="text" [value]="appointment?.doctorScheduleResponse?.doctorResponse?.name || ''"
+                    <input type="text" [value]="appointment.doctorScheduleResponse.doctorResponse.name || ''"
                         readonly class="mt-1 p-1 pl-2 bg-gray-50 border border-gray-200 rounded-md w-full font-semibold text-indigo-800" />
                 </div>
 
@@ -123,7 +123,7 @@
                     <div
                         *ngIf="appointment?.doctorScheduleResponse?.timeFrameResponse || appointment?.serviceAppointmentResponse?.timeFrameResponse">
                         <input type="text"
-                            [value]="appointment?.doctorScheduleResponse?.timeFrameResponse?.fullName || appointment?.serviceAppointmentResponse?.timeFrameResponse?.fullName || ''"
+                            [value]="appointment.doctorScheduleResponse.timeFrameResponse.fullName || appointment.serviceAppointmentResponse.timeFrameResponse.fullName || ''"
                             readonly class="mt-1 p-1 pl-2 bg-gray-50 border border-gray-200 rounded-md w-full" />
                     </div>
                 </div>
@@ -169,7 +169,7 @@
                     <div class="mb-0 md:col-span-2 lg:col-span-1" *ngIf="appointment?.reExaminationDate">
                         <label class="block text-sm font-semibold text-green-800">Hẹn ngày tái khám</label>
                         <input class="mt-1 p-1 pl-2 bg-gray-50 border border-gray-200 rounded-md w-full" type="text"
-                            [value]="appointment?.reExaminationDate ? formatDate(appointment.reExaminationDate) : ''" readonly />
+                            [value]="appointment.reExaminationDate ? formatDate(appointment.reExaminationDate) : ''" readonly />
                     </div>
                     
 

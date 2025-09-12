@@ -10,11 +10,12 @@ import { PaginationComponent } from '../../../../shared/components/pagination/pa
 import { PageSizeSelectorComponent } from '../../../../shared/components/page-size-selector/page-size-selector.component';
 import { TagService } from '../../../../../shared/services/zalo_oa/user/tag.service';
 import { TagResponse } from '../../../../../models/responses/zalo_oa/user/tag-response.model';
-import { 
-  faRotate, 
-  faMagnifyingGlass, 
-  faCommentDots, 
-  faCircleInfo 
+import {
+  faRotate,
+  faMagnifyingGlass,
+  faCommentDots,
+  faCircleInfo,
+  faCircleQuestion
 } from '@fortawesome/free-solid-svg-icons';
 
 
@@ -30,6 +31,7 @@ export class ListUserComponent implements OnInit {
   faMagnifyingGlass = faMagnifyingGlass;
   faCommentDots = faCommentDots;
   faCircleInfo = faCircleInfo;
+  faCircleQuestion = faCircleQuestion;
 
   users: ZaloUserResponse[] = [];
   keyword: string = '';
@@ -51,11 +53,49 @@ export class ListUserComponent implements OnInit {
     private tagService: TagService,
     private router: Router,
     private route: ActivatedRoute
-  ) {}
+  ) { }
 
   ngOnInit(): void {
+    this.route.queryParams.subscribe(params => {
+      // Chỉ cập nhật các giá trị nếu chúng thực sự thay đổi
+      const newPage = +params['page'] || 1;
+      const newSize = +params['size'] || 10;
+      const newKeyword = params['keyword'] || '';
+      const newTagId = params['tagId'] || '';
+
+      // Kiểm tra xem có cần cập nhật không
+      if (newPage !== this.currentPage ||
+        newSize !== this.pageSize ||
+        newKeyword !== this.keyword ||
+        newTagId !== this.selectedTagId) {
+
+        this.currentPage = newPage;
+        this.pageSize = newSize;
+        this.keyword = newKeyword;
+        this.selectedTagId = newTagId;
+      }
+    });
     this.loadTags();
     this.loadUsers();
+  }
+
+  updateQueryParams() {
+    const queryParams: any = {
+      page: this.currentPage,
+      size: this.pageSize,
+      keyword: this.keyword
+    };
+
+    // Chỉ thêm tagId nếu có giá trị, không thêm nếu rỗng
+    if (this.selectedTagId && this.selectedTagId.trim() !== '') {
+      queryParams.tagId = this.selectedTagId;
+    }
+
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: queryParams,
+      replaceUrl: true // Sử dụng replaceUrl thay vì merge
+    });
   }
 
   ngAfterViewInit(): void {
@@ -93,19 +133,29 @@ export class ListUserComponent implements OnInit {
     });
   }
 
+
   handleSearch(): void {
     this.currentPage = 1;
+    this.updateQueryParams();
+    this.loadUsers();
+  }
+
+  handleTagChange(): void {
+    this.currentPage = 1;
+    this.updateQueryParams();
     this.loadUsers();
   }
 
   onPageChange(page: number): void {
     this.currentPage = page;
+    this.updateQueryParams();
     this.loadUsers();
   }
 
   onPageSizeChange(newSize: number): void {
     this.pageSize = newSize;
     this.currentPage = 1;
+    this.updateQueryParams();
     this.loadUsers();
   }
 
@@ -135,6 +185,17 @@ export class ListUserComponent implements OnInit {
 
   goToDetailUser(userId: string): void {
     console.log(userId);
+    // this.router.navigate([userId], { relativeTo: this.route });
+    // Lưu các tham số tìm kiếm vào localStorage trước khi chuyển trang
+    const searchParams = {
+      page: this.currentPage,
+      size: this.pageSize,
+      keyword: this.keyword,
+      tagId: this.selectedTagId
+    };
+    localStorage.setItem('userListSearchParams', JSON.stringify(searchParams));
+
+    // Chuyển đến detail page
     this.router.navigate([userId], { relativeTo: this.route });
   }
 } 

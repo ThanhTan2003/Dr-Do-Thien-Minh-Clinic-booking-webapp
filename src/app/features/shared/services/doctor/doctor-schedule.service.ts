@@ -12,9 +12,59 @@ import { DoctorScheduleStatus } from '../../../models/responses/doctor/doctor-sc
   providedIn: 'root'
 })
 export class DoctorScheduleService {
-  constructor(private http: HttpService) {}
+  constructor(private http: HttpService) { }
 
   private readonly API_URL = '/api/v1/appointment/doctor-schedule';
+
+  /**
+   * 1. Lấy danh sách lịch khám theo tiêu chí (lọc theo doctorId, dayOfWeek, session, status)
+   */
+  getDoctorSchedules(
+    doctorId?: string,
+    dayOfWeek?: string,
+    session?: string,
+    status?: boolean
+  ): Observable<DoctorSchedule[]> {
+    const params = new URLSearchParams();
+    if (doctorId) params.append('doctorId', doctorId);
+    if (dayOfWeek) params.append('dayOfWeek', dayOfWeek);
+    if (session) params.append('session', session);
+    if (status !== undefined) params.append('status', status.toString());
+
+    return this.http.get<DoctorSchedule[]>(
+      `${this.API_URL}/search?${params.toString()}`
+    );
+  }
+
+  /**
+   * 2. Thêm danh sách lịch khám mới cho bác sĩ
+   */
+  createOrUpdateBatch(requests: DoctorScheduleRequest[]): Observable<DoctorSchedule[]> {
+    return this.http.post<DoctorSchedule[]>(`${this.API_URL}/batch`, requests);
+  }
+
+  /**
+   * 3. Cập nhật danh sách lịch khám
+   */
+  updateBatch(requests: DoctorScheduleRequest[]): Observable<DoctorSchedule[]> {
+    return this.http.put<DoctorSchedule[]>(`${this.API_URL}/batch`, requests);
+  }
+
+  /**
+   * 4. Xoá lịch khám theo ID
+   */
+  delete(id: string): Observable<string> {
+    return this.http.delete<string>(`${this.API_URL}/${id}`);
+  }
+
+  /**
+   * 5. Lấy lịch làm việc của bác sĩ theo ngày
+   */
+  getScheduleByDoctorAndDate(doctorId: string, date: string): Observable<DoctorSchedule[]> {
+    return this.http.get<DoctorSchedule[]>(
+      `${this.API_URL}/doctor/${doctorId}/schedule?date=${date}`
+    );
+  }
 
   /**
    * Tạo mới lịch làm việc cho bác sĩ
@@ -63,11 +113,6 @@ export class DoctorScheduleService {
   /**
    * Lấy lịch làm việc của bác sĩ theo ngày
    */
-  getScheduleByDoctorAndDate(doctorId: string, date: string): Observable<DoctorSchedule[]> {
-    return this.http.get<DoctorSchedule[]>(
-      `${this.API_URL}/doctor/${doctorId}/schedule?date=${date}`
-    );
-  }
   getScheduleByServiceAndDate(serviceId: string, date: string): Observable<ServiceSchedule[]> {
     return this.http.get<ServiceSchedule[]>(
       `${this.API_URL}/service/${serviceId}/schedule?date=${date}`
@@ -110,35 +155,28 @@ export class DoctorScheduleService {
     return this.http.get<string[]>(`${this.API_URL}/customer/get-day-of-week-by-service/${serviceId}`);
   }
 
-    /**
-   * Tạo mới hoặc cập nhật lịch làm việc cho bác sĩ theo batch
+  /**
+   * Lấy lịch làm việc của bác sĩ theo ngày trong tuần
    */
-    createOrUpdateBatch(requests: DoctorScheduleRequest[]): Observable<DoctorSchedule[]> {
-      return this.http.post<DoctorSchedule[]>(`${this.API_URL}/batch`, requests);
-    }
+  getSchedules(doctorId: string, dayOfWeek: string): Observable<DoctorSchedule[]> {
+    return this.http.get<DoctorSchedule[]>(
+      `${this.API_URL}/schedules?doctorId=${doctorId}&dayOfWeek=${dayOfWeek}`
+    );
+  }
 
-    /**
-     * Lấy lịch làm việc của bác sĩ theo ngày trong tuần
-     */
-    getSchedules(doctorId: string, dayOfWeek: string): Observable<DoctorSchedule[]> {
-      return this.http.get<DoctorSchedule[]>(
-        `${this.API_URL}/schedules?doctorId=${doctorId}&dayOfWeek=${dayOfWeek}`
-      );
-    }
-  
-    /**
-     * Lấy lịch làm việc đang hoạt động của bác sĩ theo ngày trong tuần
-     */
-    getActiveSchedules(doctorId: string, dayOfWeek: string): Observable<DoctorSchedule[]> {
-      return this.http.get<DoctorSchedule[]>(
-        `${this.API_URL}/active-schedules?doctorId=${doctorId}&dayOfWeek=${dayOfWeek}`
-      );
-    }
-  
-    /**
-     * Lấy danh sách trạng thái của lịch làm việc bác sĩ
-     */
-    getStatuses(): Observable<DoctorScheduleStatus[]> {
-      return this.http.get<DoctorScheduleStatus[]>(`${this.API_URL}/statuses`);
-    }
+  /**
+   * Lấy lịch làm việc đang hoạt động của bác sĩ theo ngày trong tuần
+   */
+  getActiveSchedules(doctorId: string, dayOfWeek: string): Observable<DoctorSchedule[]> {
+    return this.http.get<DoctorSchedule[]>(
+      `${this.API_URL}/active-schedules?doctorId=${doctorId}&dayOfWeek=${dayOfWeek}`
+    );
+  }
+
+  /**
+   * Lấy danh sách trạng thái của lịch làm việc bác sĩ
+   */
+  getStatuses(): Observable<DoctorScheduleStatus[]> {
+    return this.http.get<DoctorScheduleStatus[]>(`${this.API_URL}/statuses`);
+  }
 }

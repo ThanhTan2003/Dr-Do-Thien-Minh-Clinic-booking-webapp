@@ -30,7 +30,8 @@ export {
     validateBirthDate,
     getDaysBetween,
     addDays,
-    subtractDays
+    subtractDays,
+    getBirthYearAsString
 } from './date.util';
 
 // Status utilities

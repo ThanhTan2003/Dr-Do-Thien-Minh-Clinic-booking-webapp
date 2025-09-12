@@ -14,11 +14,11 @@ import { faArrowLeft, faHistory, faUserGroup, faNoteSticky, faFileMedical } from
   templateUrl: './detail-user.component.html',
   standalone: true,
   imports: [
-    CommonModule, 
-    FormsModule, 
-    FontAwesomeModule, 
+    CommonModule,
+    FormsModule,
+    FontAwesomeModule,
     RouterOutlet,
-    ZaloInformationComponent, 
+    ZaloInformationComponent,
     FontAwesomeModule]
 })
 export class DetailUserComponent implements OnInit {
@@ -26,7 +26,7 @@ export class DetailUserComponent implements OnInit {
     private location: Location,
     private router: Router,
     private route: ActivatedRoute
-  ) {}
+  ) { }
 
   userId: string | null = null;
   private destroy$ = new Subject<void>();
@@ -66,7 +66,7 @@ export class DetailUserComponent implements OnInit {
         // Kiểm tra xem có route con nào đang active không
         const currentPath = this.router.url.split('/').pop();
         const isValidPath = this.tabs.some(tab => tab.path === currentPath);
-        
+
         // Nếu không có route con nào active hoặc route không hợp lệ, mới chuyển về tab mặc định
         if (!currentPath || !isValidPath) {
           this.goTo('nhom-doi-tuong');
@@ -80,7 +80,31 @@ export class DetailUserComponent implements OnInit {
   }
 
   goBack(): void {
-    this.router.navigate(['/admin/zalo-oa/nguoi-dung']);
+    // this.router.navigate(['/admin/zalo-oa/nguoi-dung']);
+    // this.location.back();
+    // Lấy các tham số tìm kiếm từ localStorage
+    const searchParamsStr = localStorage.getItem('userListSearchParams');
+
+    if (searchParamsStr) {
+      try {
+        const searchParams = JSON.parse(searchParamsStr);
+
+        // Quay về list page với các tham số tìm kiếm đã lưu
+        this.router.navigate(['/admin/zalo-oa/nguoi-dung'], {
+          queryParams: searchParams
+        });
+
+        // Xóa localStorage sau khi sử dụng
+        localStorage.removeItem('userListSearchParams');
+      } catch (error) {
+        console.error('Error parsing search params:', error);
+        // Fallback: quay về list page mặc định
+        this.router.navigate(['/admin/zalo-oa/nguoi-dung']);
+      }
+    } else {
+      // Fallback: quay về list page mặc định
+      this.router.navigate(['/admin/zalo-oa/nguoi-dung']);
+    }
   }
 
   goTo(path: string) {

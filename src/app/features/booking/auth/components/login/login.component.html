@@ -3,7 +3,7 @@
   <div class="flex flex-col items-center pt-4">
     <img src="/login/logo-PKDKDQ.png" alt="Logo Phòng khám" class="h-20 mb-2" />
     <div class="text-sky-700 text-center text-lg md:text-xl font-semibold">
-      Phòng Khám Đa Khoa Dân Quý
+      {{ clinic?.clinicName || '...' }}
     </div>
   </div>
 
@@ -43,11 +43,10 @@
     <div class="flex flex-col md:flex-row justify-center items-center gap-4 mb-2">
       <div class="flex items-center">
         <fa-icon [icon]="faPhone" class="text-sky-600 mr-2"></fa-icon>
-        <span><strong>Số điện thoại:</strong> 02733.886.886</span>
+        <span><strong>Số điện thoại:</strong> {{ clinic?.supportPhone || 'Chưa có thông tin' }}</span>
       </div>
       <div class="flex items-center">
-        
-        <span><strong><fa-icon [icon]="faMapMarkerAlt" class="text-sky-600 mr-2"></fa-icon> Địa chỉ:</strong> Số 245, Phan Thanh Giản, Phường Mỹ Tho, tỉnh Đồng Tháp (Cầu Quay dãy vựa rau củ đi vào, gần quán ốc Ngọc).</span>
+        <span><strong><fa-icon [icon]="faMapMarkerAlt" class="text-sky-600 mr-2"></fa-icon> Địa chỉ:</strong> {{ clinic?.address || 'Chưa có thông tin' }}</span>
       </div>
     </div>
   </footer>

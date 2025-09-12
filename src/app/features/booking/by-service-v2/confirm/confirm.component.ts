@@ -10,7 +10,7 @@ import { Service } from '../../../models/responses/medical/service.model';
 import { TimeFrame } from '../../../models/responses/appointment/time-frame.model';
 import { ServiceAppointmentRequest } from '../../../models/requests/appointment/service-appointment.request';
 
-import { AppointmentService } from '../../../shared/services/appointment/appointment.service';
+import { AppointmentActionService } from '../../../shared/services/appointment/appointment-action.service';
 import { PatientService } from '../../../shared/services/patient/patient.service';
 import { ServiceService } from '../../../shared/services/medical/service.service';
 import { TimeFrameService } from '../../../shared/services/appointment/time-frame.service';
@@ -66,7 +66,7 @@ export class ConfirmComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private router: Router,
     private location: Location,
-    private appointmentService: AppointmentService,
+    private appointmentActionService: AppointmentActionService,
     private patientService: PatientService,
     private serviceService: ServiceService,
     private timeFrameService: TimeFrameService,
@@ -177,7 +177,7 @@ export class ConfirmComponent implements OnInit, OnDestroy {
     console.log('Gửi yêu cầu tạo appointment:', request);
 
     this.loadingCreate = true;
-    this.appointmentService.createBookingServiceByCustomer(request)
+    this.appointmentActionService.createBookingServiceByCustomer(request)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: appointment => {

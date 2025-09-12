@@ -1,0 +1,180 @@
+<!-- Thông tin Zalo OA -->
+<div class="relative p-4">
+    <!-- Tiêu đề -->
+    <div class=" bg-white px-2 text-sky-900 font-bold text-xl">
+        <fa-icon [icon]="faComments"></fa-icon> &nbsp;THÔNG TIN ZALO OA
+    </div>
+    <hr class="my-2 border-sky-700">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <!-- OAID -->
+        <div>
+            <label class="block text-sm font-semibold text-sky-800">OAID</label>
+            <input type="text" readonly value="1234567890123456789"
+                class="mt-1 p-1 pl-2 bg-gray-50 border border-gray-300 rounded-md w-full cursor-not-allowed" />
+        </div>
+
+        <!-- Tên OA -->
+        <div>
+            <label class="block text-sm font-semibold text-sky-800">Tên OA</label>
+            <input type="text" readonly value="Phòng khám Đa khoa Dân Quý"
+                class="mt-1 p-1 pl-2 bg-gray-50 border border-gray-300 rounded-md w-full cursor-not-allowed" />
+        </div>
+
+        <!-- Số người theo dõi -->
+        <div>
+            <label class="block text-sm font-semibold text-sky-800">Người theo dõi</label>
+            <input type="text" readonly value="4.521"
+                class="mt-1 p-1 pl-2 bg-gray-50 border border-gray-300 rounded-md w-full cursor-not-allowed" />
+        </div>
+
+        <!-- OA Alias -->
+        <!-- <div>
+        <label class="block text-sm font-semibold text-sky-800">OA Alias</label>
+        <input type="text" readonly value="zaloademo"
+          class="mt-1 p-1 pl-2 bg-gray-50 border border-sky-300 rounded-md w-full cursor-not-allowed" />
+      </div> -->
+
+        <!-- Trạng thái xác minh -->
+        <div>
+            <label class="block text-sm font-semibold text-sky-800">Trạng thái xác minh</label>
+            <input type="text" readonly value="Đã xác minh"
+                class="mt-1 p-1 pl-2 bg-gray-50 border border-gray-300 rounded-md w-full cursor-not-allowed" />
+        </div>
+
+        <!-- Loại OA -->
+        <div>
+            <label class="block text-sm font-semibold text-sky-800">Loại OA</label>
+            <input type="text" readonly value="Doanh nghiệp"
+                class="mt-1 p-1 pl-2 bg-gray-50 border border-gray-300 rounded-md w-full cursor-not-allowed" />
+        </div>
+
+        <!-- Danh mục -->
+        <div>
+            <label class="block text-sm font-semibold text-sky-800">Danh mục</label>
+            <input type="text" readonly value="Y tế"
+                class="mt-1 p-1 pl-2 bg-gray-50 border border-gray-300 rounded-md w-full cursor-not-allowed" />
+        </div>
+
+        <!-- Linked ZCA -->
+        <div class="md:col-span-1 lg:col-span-1">
+            <label class="block text-sm font-semibold text-sky-800">Linked ZCA</label>
+            <input type="text" readonly value="ZCA-001234"
+                class="mt-1 p-1 pl-2 bg-gray-50 border border-gray-300 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-sky-500" />
+        </div>
+
+        <!-- Mô tả -->
+        <div class="md:col-span-2 lg:col-span-2">
+            <label class="block text-sm font-semibold text-sky-800">Mô tả</label>
+            <textarea rows="2" readonly
+                class="mt-1 p-1 pl-2 bg-gray-50 border border-gray-300 rounded-md w-full cursor-not-allowed resize-none">Phòng Khám Đa khoa Dân Quý hoạt động theo mô hình Bác sĩ gia đình cung cấp các dịch vụ khám sức khỏe cho người dân</textarea>
+        </div> 
+    </div>
+
+    <!-- Tiêu đề -->
+    <div class="px-2 text-orange-700 font-bold text-xl mt-6">
+        <fa-icon [icon]="faComments"></fa-icon> &nbsp;THÔNG TIN GÓI DỊCH VỤ
+    </div>
+    <hr class="my-2 border-orange-700">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <!-- Gói dịch vụ -->
+        <div>
+            <label class="block text-sm font-semibold text-orange-800">Gói dịch vụ</label>
+            <input type="text" readonly value="Premium"
+                class="mt-1 p-1 pl-2 bg-gray-50 border border-gray-300 rounded-md w-full cursor-not-allowed" />
+        </div>
+
+        <!-- Ngày hết hạn gói -->
+        <div>
+            <label class="block text-sm font-semibold text-orange-800">Hết hạn gói</label>
+            <input type="text" readonly value="31/12/2025"
+                class="mt-1 p-1 pl-2 bg-gray-50 border border-gray-300 rounded-md w-full cursor-not-allowed" />
+        </div>
+
+        <!-- Ngày tự động gia hạn -->
+        <div>
+            <label class="block text-sm font-semibold text-orange-800">Gia hạn tiếp theo</label>
+            <input type="text" readonly value="01/01/2026"
+                class="mt-1 p-1 pl-2 bg-gray-50 border border-gray-300 rounded-md w-full cursor-not-allowed" />
+        </div>
+    </div>
+
+    <!-- Tiêu đề -->
+    <div class="px-2 text-green-700 font-bold text-xl mt-8">
+        <fa-icon [icon]="faComments"></fa-icon> &nbsp;THÔNG TIN HẠN MỨC
+    </div>
+    <hr class="my-2 border-green-700">
+    <table class="w-full border-collapse border border-gray-200 shadow-lg rounded-md">
+        <thead>
+            <tr class="bg-green-600 text-white">
+                <th class="border p-2 text-center whitespace-nowrap">STT</th>
+                <th class="border p-2 text-left whitespace-nowrap">Mã</th>
+                <th class="border p-2 text-left whitespace-nowrap">Phân loại</th>
+                <th class="border p-2 text-left whitespace-nowrap">Nguồn gốc</th>
+                <th class="border p-2 text-left whitespace-nowrap">Thời hạn</th>
+                <th class="border p-2 text-left whitespace-nowrap">Số lượng cấp</th>
+                <th class="border p-2 text-left whitespace-nowrap">Khả dụng</th>
+            </tr>
+        </thead>
+        <tbody class="border border-gray-400">
+            <tr 
+                class="border hover:bg-gray-100 transition duration-200 ease-in-out align-top ">
+                <td class="border border-gray-400 p-2 text-center">
+                    1
+                </td>
+                <td class="border border-gray-400 p-2 text-left whitespace-nowrap">
+                    216991e1ea59bc03e54c
+                </td>
+
+                <td class="border border-gray-400 p-2 text-left whitespace-nowrap text-sky-900 font-semibold">
+                    Tin tư vấn
+                </td>
+
+                <td class="border border-gray-400 p-2 text-left whitespace-nowrap text-green-800 font-semibold">
+                    Theo gói dịch vụ OA
+                </td>
+
+                <td class="border border-gray-400 p-2 text-left whitespace-nowrap text-cyan-700 font-semibold">
+                    10/12/2025
+                </td>
+
+                <td class="border border-gray-400 p-2 text-left whitespace-nowrap text-purple-900 font-semibold">
+                    2000
+                </td>
+
+                <td class="border border-gray-400 p-2 text-left text-green-600 font-semibold">
+                    2587
+                </td>
+            </tr>
+            <tr 
+                class="border hover:bg-gray-100 transition duration-200 ease-in-out align-top ">
+                <td class="border border-gray-400 p-2 text-center">
+                    2
+                </td>
+                <td class="border border-gray-400 p-2 text-left whitespace-nowrap">
+                    216991e1ea59bc03e54c
+                </td>
+
+                <td class="border border-gray-400 p-2 text-left whitespace-nowrap text-sky-900 font-semibold">
+                    Tin giao dịch
+                </td>
+
+                <td class="border border-gray-400 p-2 text-left whitespace-nowrap text-green-800 font-semibold">
+                    Mua lẻ
+                </td>
+
+                <td class="border border-gray-400 p-2 text-left whitespace-nowrap text-cyan-700 font-semibold">
+                    10/12/2025
+                </td>
+
+                <td class="border border-gray-400 p-2 text-left whitespace-nowrap text-purple-900 font-semibold">
+                    2000
+                </td>
+
+                <td class="border border-gray-400 p-2 text-left text-green-600 font-semibold">
+                    2587
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+

@@ -1,17 +1,17 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { ModalLoadingComponent } from '../../../../shared/components/modal-loading.component';
-
-
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { 
   faPhone,
   faMapMarkerAlt
 } from '@fortawesome/free-solid-svg-icons';
+import { ClinicService } from '../../../../shared/services/appointment/clinic.service';
+import { Clinic } from '../../../../models/responses/appointment/clinic.model';
 
 @Component({
   selector: 'app-booking-login',
@@ -19,20 +19,50 @@ import {
   standalone: true,
   imports: [ReactiveFormsModule, CommonModule, ModalLoadingComponent, FontAwesomeModule]
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit {
   loginForm: FormGroup;
   loading = false;
   error: string | null = null;
+
+  // Clinic information
+  clinic: Clinic | null = null;
+  clinicLoading = false;
 
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private clinicService: ClinicService
   ) {
     this.loginForm = this.fb.group({
       userName: ['', Validators.required],
       password: ['', Validators.required]
+    });
+  }
+
+  ngOnInit(): void {
+    this.loadClinicInfo();
+  }
+
+  loadClinicInfo(): void {
+    this.clinicLoading = true;
+    this.clinicService.getClinicInfo().subscribe({
+      next: (res: Clinic) => {
+        this.clinic = res;
+        this.clinicLoading = false;
+      },
+      error: () => {
+        this.clinicLoading = false;
+        // Fallback values if API fails
+        this.clinic = {
+          id: '',
+          clinicName: '...',
+          address: 'Chưa có thông tin',
+          description: '',
+          supportPhone: 'Chưa có thông tin'
+        };
+      }
     });
   }
 

@@ -5,5 +5,6 @@ export interface ExamResultRequest {
     doctorMessage: string;
     note: string;
     reExaminationDate: string;  // LocalDate sẽ được chuyển thành kiểu string trong TypeScript
+    sendNotification: boolean;
 }
   

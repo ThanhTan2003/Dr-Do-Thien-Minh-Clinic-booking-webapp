@@ -1,0 +1,144 @@
+<div class="fixed inset-0 flex items-center justify-center bg-black/80 z-50">
+    <div class="bg-white rounded-xl shadow-xl w-4/5 max-w-4xl max-h-[90vh] overflow-y-auto">
+        <!-- Header -->
+        <div class="bg-sky-600 text-white p-3 rounded-t-xl flex justify-between items-center sticky top-0">
+            <h2 class="text-lg font-bold pl-2">
+                <fa-icon [icon]="faCalendarPlus"></fa-icon>&nbsp; THÊM LỊCH KHÁM DỊCH VỤ MỚI
+            </h2>
+            <button
+                (click)="onCancel()"
+                class="text-white bg-transparent hover:bg-red-500 rounded-full p-1 flex items-center justify-center"
+                style="width: 30px; height: 30px;">
+                ✕
+            </button>
+        </div>
+
+        <!-- Content -->
+        <div class="p-6">
+            <!-- Thông báo lưu ý -->
+            <div class="bg-blue-50 p-4 border border-blue-300 rounded-md">
+                <div class="text-sm text-gray-700 text-justify">
+                    <b><fa-icon [icon]="faCalendarPlus" class="text-blue-600"></fa-icon> Hướng dẫn:</b> 
+                    Nhập giờ khám cần thêm (định dạng HH:MM), buổi khám sẽ được tự động xác định bởi hệ thống. 
+                    Điều chỉnh số lượng tối đa và trạng thái cho từng giờ khám. Có thể thêm nhiều giờ khám cùng lúc.
+                </div>
+            </div>
+
+            <!-- Form thêm giờ khám -->
+            <div class="bg-gray-50 rounded-lg mb-6 mt-4">
+                <h3 class="text-md font-semibold text-sky-800 mb-3">Nhập giờ khám mới</h3>
+                <div class="flex gap-4 items-end">
+                    <div class="flex-1">
+                        <input 
+                            type="text"
+                            [(ngModel)]="selectedStartTime"
+                            placeholder="Ví dụ: 08:30, 14:15, 19:00"
+                            (keydown.enter)="addSchedule()"
+                            (keydown.tab)="addSchedule()"
+                            class="w-full p-3 border border-sky-300 rounded-md focus:outline-none focus:ring-2 focus:ring-sky-500 placeholder-gray-400">
+                    </div>
+                    <button 
+                        (click)="addSchedule()" 
+                        class="bg-sky-600 text-white px-6 py-3 rounded-md hover:bg-sky-700 transition font-medium flex-shrink-0">
+                        <fa-icon [icon]="faPlus"></fa-icon>&nbsp; Thêm
+                    </button>
+                </div>
+                <div class="text-xs text-gray-500 mt-1">Định dạng: HH:MM (24h). Buổi khám sẽ được tự động xác định</div>
+            </div>
+
+            <!-- Danh sách lịch khám đã thêm -->
+            <div *ngIf="scheduleItems.length > 0" class="mb-6">
+                <h3 class="text-md font-semibold text-sky-800 mb-3">
+                    Danh sách lịch khám ({{ scheduleItems.length }})
+                </h3>
+                <div class="overflow-x-auto">
+                    <table class="w-full border-collapse border border-gray-200 rounded-md">
+                        <thead>
+                            <tr class="bg-sky-600 text-white">
+                                <th class="border border-gray-400 p-3 text-center w-16">STT</th>
+                                <th class="border border-gray-400 p-3 text-left">Buổi</th>
+                                <th class="border border-gray-400 p-3 text-left">Giờ khám</th>
+                                <th class="border border-gray-400 p-3 text-left">Số lượng nhận khám</th>
+                                <th class="border border-gray-400 p-3 text-left">Trạng thái</th>
+                                <th class="border border-gray-400 p-3 text-center w-20"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let item of scheduleItems; let i = index" 
+                                class="border hover:bg-gray-50 transition duration-200">
+                                <td class="border border-gray-400 p-3 text-center text-gray-600">{{ i + 1 }}</td>
+                                <td class="border border-gray-400 p-3">
+                                    <span class="px-2 py-1 rounded-sm text-sm font-medium" 
+                                          [ngClass]="getTimeColor(item.startTime)">
+                                        {{ getSessionName(item.startTime) }}
+                                    </span>
+                                </td>
+                                <td class="border border-gray-400 p-3 font-semibold text-sky-800">
+                                    {{ item.startTime }}
+                                </td>
+                                <td class="border border-gray-400 p-3">
+                                    <input 
+                                        type="number" 
+                                        min="0" 
+                                        [(ngModel)]="item.maxPatients"
+                                        class="w-full p-2 border border-sky-300 rounded-md focus:outline-none focus:ring-2 focus:ring-sky-500" />
+                                </td>
+                                <td class="border border-gray-400 p-3">
+                                    <select 
+                                        [(ngModel)]="item.status"
+                                        class="w-full p-2 border border-sky-300 rounded-md focus:outline-none focus:ring-2 focus:ring-sky-500"
+                                        [ngClass]="{
+                                            'text-green-700': item.status === true,
+                                            'text-red-700': item.status === false
+                                        }">
+                                        <option *ngFor="let status of statuses" [value]="status.status">
+                                            {{ status.description }}
+                                        </option>
+                                    </select>
+                                </td>
+                                <td class="border border-gray-400 p-3 text-center">
+                                    <button 
+                                        (click)="removeScheduleItem(item.id)"
+                                        class="bg-white text-red-600 px-2 py-1 rounded border border-red-600 hover:bg-red-100 font-semibold text-sm">
+                                        <fa-icon [icon]="faTrash"></fa-icon>
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Thông báo khi chưa có lịch khám nào -->
+            <div *ngIf="scheduleItems.length === 0" class="text-center py-8 text-gray-500">
+                <fa-icon [icon]="faCalendarPlus" class="text-4xl mb-3"></fa-icon>
+                <p>Chưa có lịch khám nào được thêm</p>
+                <p class="text-sm">Hãy chọn khung giờ và nhấn "Thêm" để bắt đầu</p>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="flex justify-end gap-4 pb-6 pr-6 pt-4 border-t border-gray-200">
+            <button
+                (click)="onCancel()"
+                class="bg-white text-sky-600 border border-sky-600 font-semibold py-2 px-8 rounded-lg hover:bg-gray-100 transition duration-200">
+                Hủy &nbsp;<fa-icon [icon]="faXmark"></fa-icon>
+            </button>
+            <button
+                (click)="onSubmit()"
+                [disabled]="scheduleItems.length === 0"
+                class="bg-sky-600 text-white font-semibold py-2 px-8 rounded-lg hover:bg-sky-700 transition duration-200 disabled:bg-gray-400 disabled:cursor-not-allowed">
+                Xác nhận thêm ({{ scheduleItems.length }}) &nbsp;<fa-icon [icon]="faCalendarPlus"></fa-icon>
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal xác nhận -->
+<app-admin-modal-confirm 
+    *ngIf="showConfirmModal" 
+    [title]="confirmTitle" 
+    [content]="confirmContent"
+    (confirm)="onConfirmSubmit()" 
+    (cancel)="onCancelSubmit()">
+</app-admin-modal-confirm>

@@ -34,19 +34,41 @@ export const patientRoutes: Routes = [
         }
         return false;
       }
-    }
-  },
-  {
-    path: 'danh-sach/xem',
-    loadComponent: () => import('./list-view/list-patient-view.component').then(m => m.ListPatientViewComponent),
-    canActivate: [RoleGuard],
-    data: { roles: STAFF_ROLES }
-  },
-  {
-    path: 'danh-sach/:patientId',
-    loadComponent: () => import('./detail/detail-patient.component').then(m => m.DetailPatientComponent),
-    canActivate: [RoleGuard],
-    data: { roles: ADMIN_STAFF_ROLES }
+    },
+    children: [
+      {
+        path: ':patientId/:userId',
+        loadComponent: () => import('./detail/patient-detail.component').then(m => m.PatientDetailComponent),
+        canActivate: [RoleGuard],
+        data: { roles: ADMIN_ROLES },
+        children: [
+          {
+            path: 'thong-tin-zalo',
+            loadComponent: () => import('./detail/zalo-information/patient-zalo-information.component').then(m => m.patientZaloInformationComponent),
+            canActivate: [RoleGuard],
+            data: { roles: ADMIN_ROLES }
+          },
+          {
+            path: 'nhom-doi-tuong',
+            loadComponent: () => import('./detail/tag/patient-tag.component').then(m => m.PatientTagComponent),
+            canActivate: [RoleGuard],
+            data: { roles: ADMIN_ROLES }
+          },
+          {
+            path: 'ghi-chu',
+            loadComponent: () => import('./detail/note/patient-note.component').then(m => m.PatientNoteComponent),
+            canActivate: [RoleGuard],
+            data: { roles: ADMIN_ROLES }
+          },
+          {
+            path: 'lich-su-kham-benh',
+            loadComponent: () => import('./detail/history-appointment/patient-history-appointment.component').then(m => m.PatientHistoryAppointmentComponent),
+            canActivate: [RoleGuard],
+            data: { roles: ADMIN_ROLES }
+          }
+        ]
+      }
+    ]
   },
   {
     path: 'lich-hen',

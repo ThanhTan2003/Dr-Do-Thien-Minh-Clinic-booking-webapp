@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { TagService } from '../../../../../../shared/services/zalo_oa/user/tag.service';
@@ -56,11 +56,32 @@ export class TagInformationComponent implements OnInit {
     private route: ActivatedRoute,
     private tagService: TagService,
     private zaloUserTagService: ZaloUserTagService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
     this.userId = this.route.parent?.snapshot.paramMap.get('userId') || '';
+    
+    this.route.queryParams.subscribe(params => {
+      // Chỉ cập nhật các giá trị nếu chúng thực sự thay đổi
+      const newPage = +params['page'] || 1;
+      const newSize = +params['size'] || 10;
+      const newKeyword = params['keyword'] || '';
+      
+      // Kiểm tra xem có cần cập nhật không
+      if (newPage !== this.currentPage || 
+          newSize !== this.pageSize || 
+          newKeyword !== this.keyword) {
+        
+        this.currentPage = newPage;
+        this.pageSize = newSize;
+        this.keyword = newKeyword;
+        
+        this.loadTags();
+      }
+    });
+    
     this.loadTags();
   }
 
@@ -81,19 +102,37 @@ export class TagInformationComponent implements OnInit {
     });
   }
 
+  updateQueryParams() {
+    const queryParams: any = {
+      page: this.currentPage,
+      size: this.pageSize,
+      keyword: this.keyword
+    };
+    
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: queryParams,
+      replaceUrl: true
+    });
+  }
+  
+
   handleSearch(): void {
     this.currentPage = 1;
+    this.updateQueryParams();
     this.loadTags();
   }
-
+  
   onPageChange(page: number): void {
     this.currentPage = page;
+    this.updateQueryParams();
     this.loadTags(page);
   }
-
+  
   onPageSizeChange(newSize: number): void {
     this.pageSize = newSize;
     this.currentPage = 1;
+    this.updateQueryParams();
     this.loadTags();
   }
 

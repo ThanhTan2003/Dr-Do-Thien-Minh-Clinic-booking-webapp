@@ -32,7 +32,7 @@
               <li>Mã hồ sơ</li>
               <li>Tên bệnh nhân</li>
               <li>Dịch vụ khám</li>
-          </ul>
+            </ul>
           </div>
         </div>
       </div>
@@ -47,12 +47,13 @@
     <table class="w-full border-collapse border border-gray-200 shadow-lg rounded-md">
       <thead>
         <tr class="bg-sky-600 text-white">
-          <th class="border p-2 text-center">STT</th>
-          <th class="border p-2 text-left whitespace-nowrap">Mã lịch hẹn</th>
+          <th class="border p-2 text-center whitespace-nowrap">STT</th>
+          <th class="border p-2 text-left whitespace-nowrap">Mã lịch hẹn</th>
+          <th class="border p-2 text-left whitespace-nowrap">Ngày khám</th>
+          <th class="border p-2 text-left whitespace-nowrap">Khung giờ</th>
           <th class="border p-2 text-left whitespace-nowrap">Bệnh nhân</th>
-          <th class="border p-2 text-left whitespace-nowrap">Ngày sinh</th>
-          <th class="border p-2 text-left whitespace-nowrap">Dịch vụ khám</th>
-          <th class="border p-2 text-left whitespace-nowrap">Ngày khám</th>
+          <th class="border p-2 text-left whitespace-nowrap">Dịch vụ</th>
+          <th class="border p-2 text-left whitespace-nowrap">Trạng thái</th>
           <th class="border p-2 text-center whitespace-nowrap"></th>
         </tr>
       </thead>
@@ -68,28 +69,42 @@
         <tr *ngIf="!loading && appointments.length === 0">
           <td colspan="7" class="text-center p-4 border-gray-400">Không có dữ liệu</td>
         </tr>
-        <tr *ngFor="let appointment of appointments; let i = index" class="align-top">
-          <td class="border border-gray-400 p-2 text-center  whitespace-nowrap">
+        <tr *ngFor="let appointment of appointments; let i = index"
+          class="border hover:bg-gray-100 transition duration-200 ease-in-out align-top ">
+          <td class="border border-gray-400 p-2 text-center">
             {{ (currentPage - 1) * pageSize + i + 1 }}
           </td>
-          <td class="border border-gray-400 p-2 text-left font-semibold whitespace-nowrap text-gray-800">
+          <td class="border border-gray-400 p-2 text-left whitespace-nowrap">
             {{ appointment.id }}
           </td>
-          <td class="border border-gray-400 p-2 text-left whitespace-nowrap">
+
+          <td class="border border-gray-400 p-2 text-left whitespace-nowrap text-amber-600 font-semibold">
+            {{ appointment?.appointmentDate ? formatDate(appointment.appointmentDate) : '...' }}
+          </td>
+
+          <td class="border border-gray-400 p-2 text-left whitespace-nowrap text-amber-800 font-semibold">
+            {{ appointment.doctorScheduleResponse.timeFrameResponse.name }}
+          </td>
+        
+          <td class="border border-gray-400 p-2 text-left whitespace-nowrap text-sky-800 font-semibold">
             {{ appointment.patientResponse.fullName }}
           </td>
-          <td class="border border-gray-400 p-2 text-left whitespace-nowrap">
-            {{ formatDate(appointment.patientResponse.dateOfBirth) }}
-          </td>
-          <td class="border border-gray-400 p-2 text-justify font-semibold text-sky-900">
+
+          <td class="border border-gray-400 p-2 text-left text-cyan-700 font-semibold">
             {{ appointment.doctorServiceResponse.serviceResponse.serviceName }}
           </td>
-          <td class="border border-gray-400 p-2 text-left whitespace-nowrap">{{ formatDate(appointment.appointmentDate)
-            }}</td>
+
+          <td class="border border-gray-400 p-2 text-left whitespace-nowrap w-32">
+            <span [ngClass]="getStatusClass(appointment.status)" class="px-3 py-0 rounded-sm font-medium mb-1"
+              style="margin-left: 8px; white-space: nowrap; height: 32px; line-height: 32px; display: inline-block; min-width: 120px; text-align: left;">
+              {{ appointment.status }}
+            </span>
+          </td>
           <td class="border border-gray-400 p-2 text-center whitespace-nowrap">
             <button
-              class="bg-white text-sky-600 px-3 py-1 rounded border border-sky-600 hover:bg-sky-700 hover:text-white font-semibold">
-              Chi tiết
+              class="bg-white text-sky-600 px-3 py-1 rounded border border-sky-600 hover:bg-sky-700 hover:text-white font-semibold"
+              (click)="openDetailModal(appointment.id)">
+              Xử lý &nbsp;<fa-icon [icon]="faPenToSquare"></fa-icon>
             </button>
           </td>
         </tr>
@@ -101,3 +116,8 @@
       (pageChange)="onPageChange($event)"></app-pagination>
   </div>
 </div>
+
+<!-- Modal chi tiết lịch hẹn -->
+<app-doctor-appointment-update *ngIf="showDetailModal" [appointmentId]="selectedAppointmentId!" [isDoctor]="true"
+  [isDetail]="false" (close)="closeDetailModal()">
+</app-doctor-appointment-update>

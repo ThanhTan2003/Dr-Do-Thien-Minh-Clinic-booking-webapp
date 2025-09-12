@@ -10,8 +10,14 @@ import { firstValueFrom } from 'rxjs';
 export const medicalRoutes: Routes = [
   {
     path: '',
-    redirectTo: 'dich-vu',
+    redirectTo: 'phong-kham',
     pathMatch: 'full'
+  },
+  {
+    path: 'phong-kham',
+    loadComponent: () => import('./clinic/detail/clinic-detail.component').then(m => m.ClinicDetailComponent),
+    canActivate: [RoleGuard],
+    data: { roles: ADMIN_STAFF_ROLES }
   },
   {
     path: 'nhom-dich-vu',
@@ -78,7 +84,27 @@ export const medicalRoutes: Routes = [
         path: ':serviceId',
         loadComponent: () => import('./medical-service/edit/edit-service.component').then(m => m.EditServiceComponent),
         canActivate: [RoleGuard],
-        data: { roles: ADMIN_ROLES }
+        data: { roles: ADMIN_ROLES },
+        children: [
+          {
+            path: 'kham-benh',
+            loadComponent: () => import('./medical-service/edit/list-doctor/list-doctor.component').then(m => m.MedicalServiceListDoctorComponent),
+            canActivate: [RoleGuard],
+            data: { roles: ADMIN_ROLES }
+          },
+          {
+            path: 'lich-nhan-kham',
+            loadComponent: () => import('./medical-service/edit/list-schedule/list-schedule.component').then(m => m.MedicalServiceListScheduleComponent),
+            canActivate: [RoleGuard],
+            data: { roles: ADMIN_ROLES }
+          },
+          {
+            path: 'lich-su',
+            loadComponent: () => import('./medical-service/edit/appointment-history/appointment-history.component').then(m => m.MedicalServiceAppointmentHistoryComponent),
+            canActivate: [RoleGuard],
+            data: { roles: ADMIN_ROLES }
+          }
+        ]
       }
     ]
   },

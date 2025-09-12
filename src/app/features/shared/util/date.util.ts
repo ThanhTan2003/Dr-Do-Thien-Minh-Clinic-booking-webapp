@@ -3,6 +3,29 @@
  */
 
 /**
+ * Chuyển đổi Date object sang chuỗi định dạng dd/MM/yyyy
+ * @param date - Date object
+ * @returns Chuỗi ngày định dạng dd/MM/yyyy
+ */
+export function formatDateToString(date: Date): string {
+    const day = date.getDate().toString().padStart(2, '0');
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const year = date.getFullYear();
+    
+    return `${day}/${month}/${year}`;
+}
+
+/**
+ * Lấy năm sinh từ ngày sinh và trả về dưới dạng chuỗi
+ * @param date - Ngày sinh (Date object)
+ * @returns Năm sinh dưới dạng chuỗi
+ */
+export function getBirthYearAsString(date: Date): string {
+    const birthYear = date.getFullYear();
+    return birthYear.toString();  // Trả về năm sinh dưới dạng chuỗi
+}
+
+/**
  * Lấy tên ngày trong tuần bằng tiếng Việt
  * @param date - Ngày cần lấy tên
  * @returns Tên ngày trong tuần bằng tiếng Việt
@@ -145,19 +168,6 @@ export function parseDateFromString(dateString: string): Date | null {
     const year = parseInt(parts[2], 10);
 
     return new Date(year, month - 1, day);
-}
-
-/**
- * Chuyển đổi Date object sang chuỗi định dạng dd/MM/yyyy
- * @param date - Date object
- * @returns Chuỗi ngày định dạng dd/MM/yyyy
- */
-export function formatDateToString(date: Date): string {
-    const day = date.getDate().toString().padStart(2, '0');
-    const month = (date.getMonth() + 1).toString().padStart(2, '0');
-    const year = date.getFullYear();
-    
-    return `${day}/${month}/${year}`;
 }
 
 /**

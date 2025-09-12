@@ -108,6 +108,10 @@ export class DoctorAppointmentListComponent implements OnInit {
     });
   }
 
+  ngAfterViewInit(): void {
+    window.scrollTo({ top: 0, behavior: 'smooth' }); // Cuộn mượt về đầu trang
+  }
+
   loadStatuses(): void {
     this.appointmentService.getAppointmentStatuses().subscribe({
       next: (statuses) => {

@@ -10,27 +10,28 @@ import { PageResponse } from '../../../../../models/responses/page-response.mode
 import { PaginationComponent } from '../../../../shared/components/pagination/pagination.component';
 import { PageSizeSelectorComponent } from '../../../../shared/components/page-size-selector/page-size-selector.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { 
-  faRotate, 
+import {
+  faRotate,
   faPlus,
-  faMagnifyingGlass, 
+  faMagnifyingGlass,
   faPenToSquare,
   faCircleQuestion
 } from '@fortawesome/free-solid-svg-icons';
-import { CreateMedicalServiceComponent
+import {
+  CreateMedicalServiceComponent
 
- } from '../create/create-medical-service.component';
+} from '../create/create-medical-service.component';
 
 @Component({
   selector: 'app-list-medical-service-crud',
   templateUrl: './list-medical-service-crud.component.html',
   standalone: true,
   imports: [
-    FormsModule, 
-    PaginationComponent, 
-    PageSizeSelectorComponent, 
-    RouterModule, 
-    CommonModule, 
+    FormsModule,
+    PaginationComponent,
+    PageSizeSelectorComponent,
+    RouterModule,
+    CommonModule,
     FontAwesomeModule,
     CreateMedicalServiceComponent
   ]
@@ -60,11 +61,51 @@ export class ListMedicalServiceCrudComponent implements OnInit {
     private serviceCategoryService: ServiceCategoryService,
     private router: Router,
     private route: ActivatedRoute
-  ) {}
+  ) { }
 
   ngOnInit(): void {
+    this.route.queryParams.subscribe(params => {
+      // Chỉ cập nhật các giá trị nếu chúng thực sự thay đổi
+      const newPage = +params['page'] || 1;
+      const newSize = +params['size'] || 10;
+      const newKeyword = params['keyword'] || '';
+      const newCategory = params['category'] || '';
+
+      // Kiểm tra xem có cần cập nhật không
+      if (newPage !== this.currentPage ||
+        newSize !== this.pageSize ||
+        newKeyword !== this.keyword ||
+        newCategory !== this.selectedCategory) {
+
+        this.currentPage = newPage;
+        this.pageSize = newSize;
+        this.keyword = newKeyword;
+        this.selectedCategory = newCategory;
+
+
+      }
+    });
     this.loadCategories();
     this.searchServices();
+  }
+
+  updateQueryParams() {
+    const queryParams: any = {
+      page: this.currentPage,
+      size: this.pageSize,
+      keyword: this.keyword
+    };
+
+    // Chỉ thêm category nếu có giá trị
+    if (this.selectedCategory && this.selectedCategory.trim() !== '') {
+      queryParams.category = this.selectedCategory;
+    }
+
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: queryParams,
+      replaceUrl: true // Sử dụng replaceUrl thay vì merge
+    });
   }
 
   ngAfterViewInit(): void {
@@ -107,11 +148,13 @@ export class ListMedicalServiceCrudComponent implements OnInit {
 
   handleSearch(): void {
     this.currentPage = 1;
+    this.updateQueryParams();
     this.searchServices();
   }
 
   handleCategoryChange(): void {
     this.currentPage = 1;
+    this.updateQueryParams();
     this.searchServices();
   }
 
@@ -133,17 +176,31 @@ export class ListMedicalServiceCrudComponent implements OnInit {
 
   onPageChange(page: number): void {
     this.currentPage = page;
+    this.updateQueryParams();
     this.searchServices(page);
   }
 
   onPageSizeChange(newSize: number): void {
     this.pageSize = newSize;
     this.currentPage = 1;
+    this.updateQueryParams();
     this.searchServices();
   }
 
   goToEditMedicalService(serviceId: string): void {
-    console.log(serviceId);
+    console.log("list-medical-service-crud.component goToEditMedicalService....................");
+    console.log(window.scrollY);
+    
+    // Lưu các tham số tìm kiếm vào localStorage trước khi chuyển trang
+    const searchParams = {
+      page: this.currentPage,
+      size: this.pageSize,
+      keyword: this.keyword,
+      category: this.selectedCategory
+    };
+    localStorage.setItem('serviceListSearchParams', JSON.stringify(searchParams));
+    
+    // Chuyển đến edit page
     this.router.navigate([serviceId], { relativeTo: this.route });
   }
 } 

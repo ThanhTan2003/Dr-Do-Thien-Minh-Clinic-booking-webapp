@@ -1,27 +1,32 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { CommonModule, Location } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { Router, RouterOutlet, ActivatedRoute } from '@angular/router';
 import { EditServiceInfoComponent } from './edit-service-info/edit-service-info.component';
-import { ServiceListDoctorComponent } from './list-doctor/service-list-doctor.component';
-import { ServiceAppointmentHistoryComponent } from '../appointment-history/service-appointment-history.component';
-
+import { Location } from '@angular/common';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { faArrowLeft} from '@fortawesome/free-solid-svg-icons';
+import { faArrowLeft, faUserNurse, faCalendarDays, faHistory} from '@fortawesome/free-solid-svg-icons';
+import { FormsModule } from '@angular/forms';
+import { takeUntil } from 'rxjs/operators';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-edit-service',
   templateUrl: './edit-service.component.html',
   standalone: true,
   imports: [
-    CommonModule,
+    CommonModule, 
+    FormsModule, 
+    FontAwesomeModule, 
     RouterOutlet,
+    // Import các component con để sử dụng trong template
     EditServiceInfoComponent,
-    ServiceListDoctorComponent,
-    ServiceAppointmentHistoryComponent,
     FontAwesomeModule
   ]
 })
-export class EditServiceComponent { 
+export class EditServiceComponent implements OnInit, OnDestroy {
+  serviceId: string | null = null;
+  private destroy$ = new Subject<void>();
+
   constructor(
     private location: Location,
     private router: Router,
@@ -29,6 +34,45 @@ export class EditServiceComponent {
   ) {}
 
   faArrowLeft = faArrowLeft;
+  faUserNurse = faUserNurse;
+  faCalendarDays = faCalendarDays;
+  faHistory = faHistory;
+
+  tabs = [
+    {
+      label: 'BÁC SĨ KHÁM BỆNH',
+      path: 'kham-benh',
+      icon: this.faUserNurse,
+    },
+    {
+      label: 'LỊCH NHẬN KHÁM',
+      path: 'lich-nhan-kham',
+      icon: this.faCalendarDays,
+    },
+    {
+      label: 'LỊCH SỬ KHÁM',
+      path: 'lich-su',
+      icon: faHistory,
+    }
+  ];
+
+  ngOnInit(): void {
+    this.route.paramMap.pipe(takeUntil(this.destroy$)).subscribe((params) => {
+      this.serviceId = params.get('serviceId');
+      if (this.serviceId) {
+        // Lấy path cuối cùng, loại bỏ query string nếu có
+        let currentPath = this.router.url.split('/').pop() || '';
+        if (currentPath.includes('?')) {
+          currentPath = currentPath.split('?')[0];
+        }
+        const isValidPath = this.tabs.some(tab => tab.path === currentPath);
+
+        if (!currentPath || !isValidPath) {
+          this.goTo('kham-benh');
+        }
+      }
+    });
+  }
 
   ngAfterViewInit(): void {
     console.log("list-doctor-crud.component ngAfterViewInit....................");
@@ -36,6 +80,43 @@ export class EditServiceComponent {
   }
 
   goBack(): void {
-    this.router.navigate(['/admin/y-te/dich-vu']);
+    // Lấy các tham số tìm kiếm từ localStorage
+    const searchParamsStr = localStorage.getItem('serviceListSearchParams');
+    
+    if (searchParamsStr) {
+      try {
+        const searchParams = JSON.parse(searchParamsStr);
+        
+        // Quay về list page với các tham số tìm kiếm đã lưu
+        this.router.navigate(['/admin/y-te/dich-vu'], {
+          queryParams: searchParams
+        });
+        
+        // Xóa localStorage sau khi sử dụng
+        localStorage.removeItem('serviceListSearchParams');
+      } catch (error) {
+        console.error('Error parsing search params:', error);
+        // Fallback: quay về list page mặc định
+        this.router.navigate(['/admin/y-te/dich-vu']);
+      }
+    } else {
+      // Fallback: quay về list page mặc định
+      this.router.navigate(['/admin/y-te/dich-vu']);
+    }
+  }
+
+  goTo(path: string) {
+    this.router.navigate([path], { relativeTo: this.route });
+  }
+
+  isActive(path: string): boolean {
+    // Kiểm tra route con hiện tại có khớp với tab không
+    return this.router.url.includes(path);
+  }
+
+  ngOnDestroy(): void {
+    console.log("edit-service.component ngDestroy....................");
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 } 

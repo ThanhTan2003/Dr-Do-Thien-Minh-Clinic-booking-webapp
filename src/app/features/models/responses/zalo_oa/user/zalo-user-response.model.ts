@@ -11,5 +11,7 @@ export interface ZaloUserResponse {
   status: boolean;
   userLastInteractionDate: string; // hoặc Date nếu bạn sẽ parse về kiểu `Date`
   chatLink: string;
+  numberOfPatient: number;
+  numberOfAppointment: number;
   tags: TagResponse[];
 }

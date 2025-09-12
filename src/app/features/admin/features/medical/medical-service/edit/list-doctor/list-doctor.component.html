@@ -85,7 +85,9 @@
                         </td>
                         <td class="border border-gray-400 p-2 text-left text-amber-900">{{ doctorService.serviceFee }}
                         </td>
-                        <td class="border border-gray-400 p-2 text-center font-semibold text-purple-800">999</td>
+                        <td class="border border-gray-400 p-2 text-center font-semibold text-purple-800">
+                            {{doctorService?.numberOfExaminations ?? 0}}
+                        </td>
                         <td class="border border-gray-400 p-2 text-left font-semibold" [ngClass]="{
                     'text-green-700': doctorService.status === true,
                     'text-red-700': doctorService.status === false

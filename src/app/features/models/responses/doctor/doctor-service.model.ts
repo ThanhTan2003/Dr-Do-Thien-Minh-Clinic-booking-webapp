@@ -8,6 +8,7 @@ export interface DoctorService {
   serviceFee: string;
   status: boolean;
   statusName: string;
+  numberOfExaminations: number;
   doctorResponse: Doctor;
   serviceResponse: Service;
 }

@@ -1,0 +1,63 @@
+<div class="flex justify-between items-center">
+  <div class="flex justify-start">
+    <button type="button" class="bg-sky-700 text-white py-2 px-4 rounded hover:bg-sky-800 font-semibold"
+      (click)="openAddModal()">
+      Thêm mới &nbsp;<fa-icon [icon]="faPlus"></fa-icon>
+    </button>
+    <button class="bg-white text-sky-700 py-2 px-4 rounded border border-sky-700 font-bold hover:bg-sky-100 ml-2"
+      title="Làm mới danh sách" (click)="loadTags()">
+      <fa-icon [icon]="faRotate"></fa-icon>
+    </button>
+    <app-page-size-selector class="ml-4" [pageSize]="pageSize" [options]="pageSizeOptions"
+      (pageSizeChange)="onPageSizeChange($event)">
+    </app-page-size-selector>
+  </div>
+</div>
+<div class="md:col-span-2 text-justify mt-2">
+  <div class="overflow-x-auto">
+    <table class="w-full border-collapse border border-gray-200 shadow-lg rounded-md">
+      <thead>
+        <tr class="bg-sky-600 text-white">
+          <th class="border p-2 text-center w-16">STT</th>
+          <th class="border p-2 text-left">Tên nhóm</th>
+          <th class="border p-2 text-center w-24"></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngIf="loading">
+          <td colspan="3" class="text-center p-4 border-gray-400">
+            <div class="flex justify-center items-center">
+              <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-sky-600"></div>
+              <span class="ml-2">Đang tải dữ liệu...</span>
+            </div>
+          </td>
+        </tr>
+        <tr *ngIf="!loading && tags.length === 0">
+          <td colspan="3" class="text-center p-4 border-gray-400">Không có dữ liệu</td>
+        </tr>
+        <tr *ngFor="let tag of tags.slice((currentPage-1)*pageSize, (currentPage-1)*pageSize+pageSize); let i = index">
+          <td class="border border-gray-400 p-2 text-center">{{ (currentPage - 1) * pageSize + i + 1 }}</td>
+          <td class="border border-gray-400 p-2 text-left">{{ tag }}</td>
+          <td class="border border-gray-400 p-2 text-center whitespace-nowrap">
+            <button class="bg-white text-orange-700 px-3 py-1 rounded border border-orange-700 hover:bg-orange-100 pl-6 pr-6"
+              (click)="openDeleteModal(tag)">
+              Xóa <fa-icon [icon]="faXmark"></fa-icon>
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <app-pagination [totalElements]="totalElements" [currentPage]="currentPage" [totalPages]="totalPages"
+    (pageChange)="onPageChange($event)"></app-pagination>
+</div>
+
+<!-- Modal thêm tag -->
+<app-add-tag-for-patient *ngIf="showAddModal" [patientId]="patientId" (tagAdded)="onTagAdded()">
+</app-add-tag-for-patient>
+
+<!-- Modal xác nhận xóa -->
+<app-admin-modal-confirm-delete *ngIf="showConfirmDelete" [title]="'Xác nhận xóa nhóm đối tượng'"
+  [content]="'Bạn có chắc chắn muốn xóa nhóm đối tượng ' + (tagToDelete || '') + ' không?'" (confirm)="deleteTag()"
+  (cancel)="closeConfirmDelete()">
+</app-admin-modal-confirm-delete>

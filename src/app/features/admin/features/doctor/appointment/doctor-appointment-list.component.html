@@ -156,7 +156,7 @@
                     </td>
                 </tr>
 
-                <tr *ngFor="let appointment of appointments; let i = index" class="align-top">
+                <tr *ngFor="let appointment of appointments; let i = index" class="border hover:bg-gray-100 transition duration-200 ease-in-out align-top ">
                     <td class="border border-gray-400 p-2 text-center">
                         {{ (currentPage - 1) * pageSize + i + 1 }}
                     </td>

@@ -1,3 +1,5 @@
+import { ZaloUserResponse } from "../../responses/zalo_oa/user/zalo-user-response.model";
+
 export interface PatientRequest {
     fullName: string;
     gender: string;
@@ -7,5 +9,6 @@ export interface PatientRequest {
     address: string;
     insuranceId: string;
     relationship: string;
+    
   }
   

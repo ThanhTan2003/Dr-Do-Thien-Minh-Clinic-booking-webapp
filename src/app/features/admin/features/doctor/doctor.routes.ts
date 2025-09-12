@@ -49,16 +49,30 @@ export const doctorRoutes: Routes = [
             data: { roles: ADMIN_ROLES }
           },
           {
-            path: 'lich-kham',
+            path: 'lich-nhan-kham',
             loadComponent: () => import('./edit/edit-doctor-schedule/edit-doctor-schedule.component').then(m => m.EditDoctorScheduleComponent),
             canActivate: [RoleGuard],
             data: { roles: ADMIN_ROLES }
           },
           {
-            path: 'kham-theo-ngay',
+            path: 'lich-kham-theo-ngay',
             loadComponent: () => import('./edit/appointment/appointment-daily/appointment-daily.component').then(m => m.AppointmentDailyComponent),
             canActivate: [RoleGuard],
             data: { roles: ADMIN_ROLES }
+          },
+          {
+            path: 'nghi-phep',
+            loadComponent: () => import('./edit/doctor-leave/list/doctor-leave-list.component').then(m => m.DoctorLeaveListComponent),
+            canActivate: [RoleGuard],
+            data: { roles: ADMIN_ROLES },
+            children:[
+              {
+                path: ':doctorLeaveId',
+                loadComponent: () => import('./edit/doctor-leave/appointment/doctor-leave-appointment.component').then(m => m.DoctorLeaveAppointmentComponent),
+                canActivate: [RoleGuard],
+                data: { roles: ADMIN_ROLES },
+              }
+            ]
           },
           {
             path: 'lich-su-kham-benh',
@@ -92,12 +106,28 @@ export const doctorRoutes: Routes = [
     path: 'nghi-phep',
     loadComponent: () => import('./doctor-leave/doctor-leave.component').then(m => m.DoctorLeaveComponent),
     canActivate: [RoleGuard],
-    data: { roles: ADMIN_STAFF_ROLES }
+    data: { roles: ADMIN_STAFF_ROLES },
+    children: [
+      {
+        path: ':doctorLeaveId',
+        loadComponent: () => import('./doctor-leave/appointment/appointment-doctor-leave.component').then(m => m.AppointmentDoctorLeaveComponent),
+        canActivate: [RoleGuard],
+        data: { roles: ADMIN_ROLES }
+      }
+    ]
   },
   {
     path: 'nghi-le',
-    loadComponent: () => import('./list-view/list-doctor-view.component').then(m => m.ListDoctorViewComponent),
+    loadComponent: () => import('./holiday/holiday.component').then(m => m.HolidayComponent),
     canActivate: [RoleGuard],
-    data: { roles: ADMIN_STAFF_ROLES }
+    data: { roles: ADMIN_STAFF_ROLES },
+    children: [
+      {
+        path: ':holidayId',
+        loadComponent: () => import('./holiday/appointment/appointment-holiday.component').then(m => m.AppointmenHolidayComponent),
+        canActivate: [RoleGuard],
+        data: { roles: ADMIN_ROLES }
+      }
+    ]
   }
 ]; 

@@ -1,0 +1,84 @@
+<router-outlet #childOutlet="outlet"></router-outlet>
+
+<div *ngIf="!childOutlet.isActivated">
+  <div class="mx-auto">
+    <div class="flex items-center justify-between mb-4">
+      <!-- Nhóm bên trái: nút tải lại + selector -->
+      <div class="flex items-center">
+        <button class="bg-white text-sky-700 py-2 px-4 rounded border border-sky-700 font-bold hover:bg-sky-100" 
+                (click)="handleRefresh()" 
+                title="Làm mới danh sách">
+          Tải lại danh sách &nbsp;<fa-icon [icon]="faRotate"></fa-icon>
+        </button>
+        <app-page-size-selector class="ml-4" [pageSize]="pageSize" [options]="pageSizeOptions" (pageSizeChange)="onPageSizeChange($event)"></app-page-size-selector>
+      </div>
+    
+      <!-- Nhóm bên phải: nút Thêm mới -->
+      <button (click)="openCreateModal()" 
+              class="bg-sky-700 text-white py-2 px-4 rounded font-bold hover:bg-sky-800 flex items-center">
+         Thêm mới <fa-icon [icon]="faPlus" class="ml-2"></fa-icon>
+      </button>
+    </div>
+    
+  
+    <!-- Data Table -->
+    <div class="overflow-x-auto">
+      <table class="w-full border-collapse border border-gray-200 shadow-lg rounded-md">
+        <thead>
+          <tr class="bg-sky-600 text-white">
+            <th class="border p-2 text-center whitespace-nowrap">STT</th>
+            <th class="border p-2 text-left whitespace-nowrap">Ngày bắt đầu</th>
+            <th class="border p-2 text-left whitespace-nowrap">Ngày kết thúc</th>
+            <th class="border p-2 text-left whitespace-nowrap">Lý do</th>
+            <th class="border p-2 text-center whitespace-nowrap">Số lịch hẹn</th>
+            <th class="border p-2 text-center whitespace-nowrap">Thao tác</th>
+          </tr>
+        </thead>
+        <tbody class="border border-gray-400">
+          <tr *ngIf="loading">
+            <td colspan="6" class="text-center p-4 border-gray-400">
+              <div class="flex justify-center items-center">
+                <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-sky-600"></div>
+                <span class="ml-2">Đang tải dữ liệu...</span>
+              </div>
+            </td>
+          </tr>
+          <tr *ngIf="!loading && doctorLeaves.length === 0">
+            <td colspan="6" class="text-center p-4 border-gray-400">Không có dữ liệu</td>
+          </tr>
+          <tr *ngFor="let leave of doctorLeaves; let i = index" [ngClass]="{' bg-sky-50': isFutureOrToday(leave.leaveStartDate, leave.leaveEndDate)}" class="border hover:bg-gray-100 transition duration-200 ease-in-out align-top">
+            <td class="border p-2 text-center align-top border-gray-400">{{ (currentPage - 1) * pageSize + i + 1 }}</td>
+            <td class="border p-2 text-left border-gray-400 whitespace-nowrap text-amber-800 font-semibold">
+              <span class="text-amber-600">{{ getVietnameseDayName(leave.leaveStartDate) }}</span> - {{ formatDate(leave.leaveStartDate) }}
+            </td>
+            <td class="border p-2 text-left border-gray-400 whitespace-nowrap text-amber-800 font-semibold">
+              <span class="text-amber-600">{{ getVietnameseDayName(leave.leaveEndDate) }}</span> - {{ formatDate(leave.leaveEndDate) }}
+            </td>
+            <td class="border p-2 text-justify border-gray-400 ">{{ leave.reason }}</td>
+            <td class="border p-2 text-center border-gray-400" [ngClass]="{'text-red-600 font-semibold':leave.numberOfAppointments > 0}">{{ leave.numberOfAppointments }}</td>
+            <td class="border p-2 text-center w-48 whitespace-nowrap border-gray-400">
+              <div class="flex justify-center space-x-2">
+                <button *ngIf="leave.numberOfAppointments > 0" (click)="goToProcess(leave.id)" class="bg-white text-sky-700 px-3 py-1 rounded border border-sky-700 hover:bg-sky-800 hover:text-white font-semibold">
+                  Xử lý &nbsp;<fa-icon [icon]="faPenToSquare"></fa-icon>
+                </button>
+                <button (click)="openDeleteModal(leave)" class="bg-white text-red-700 px-3 py-1 rounded border border-red-700 hover:bg-red-800 hover:text-white font-semibold">
+                  Xóa &nbsp;<fa-icon [icon]="faTrash"></fa-icon>
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  
+    <!-- Pagination -->
+    <app-pagination [totalElements]="totalElements" [currentPage]="currentPage" [totalPages]="totalPages" (pageChange)="onPageChange($event)"></app-pagination>
+  </div>
+  
+  <!-- Modal Thêm mới -->
+  <app-create-doctor-leave *ngIf="showCreateModal" [doctorId]="doctorId" (close)="closeCreateModal()" (created)="loadDoctorLeaves(); closeCreateModal()"></app-create-doctor-leave>
+  
+  <!-- Modal xác nhận xóa -->
+  <app-admin-modal-confirm-delete *ngIf="showDeleteModal" title="Xác nhận xóa" [content]="'Bạn có chắc chắn muốn xóa ngày nghỉ này?'" (confirm)="confirmDelete()" (cancel)="cancelDelete()"></app-admin-modal-confirm-delete>
+  
+</div>

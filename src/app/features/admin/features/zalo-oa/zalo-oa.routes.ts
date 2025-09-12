@@ -5,8 +5,14 @@ import { ADMIN_MARKETING_ROLES } from '../../core/constants/role.constant';
 export const zaloOARoutes: Routes = [
   {
     path: '',
-    redirectTo: 'nguoi-dung',
+    redirectTo: 'thong-tin',
     pathMatch: 'full'
+  },
+  {
+    path: 'thong-tin',
+    loadComponent: () => import('./info/info.component').then(m => m.ZaloOAInfoComponent),
+    canActivate: [RoleGuard],
+    data: { roles: ADMIN_MARKETING_ROLES }
   },
   {
     path: 'nguoi-dung',

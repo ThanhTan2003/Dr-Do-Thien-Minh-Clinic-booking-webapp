@@ -18,6 +18,8 @@ import { PageResponse } from '../../../../../../models/responses/page-response.m
 import { PaginationComponent } from '../../../../../shared/components/pagination/pagination.component';
 import { PageSizeSelectorComponent } from '../../../../../shared/components/page-size-selector/page-size-selector.component';
 import { DoctorAppointmentUpdateComponent } from '../../../appointment/update/doctor-appointment-update.component';
+import { getBirthYearAsString, getVietnameseDayName, formatDateToString } from '../../../../../../shared/util';
+import { getStatusClassForList } from '../../../../../../shared/util/status.util';
 
 @Component({
   selector: 'app-appointment-daily',
@@ -55,13 +57,6 @@ export class AppointmentDailyComponent implements OnInit {
   faCalendarDay = faCalendarDay;
   faCircleQuestion = faCircleQuestion;
   faPenToSquare = faPenToSquare;
-
-  statusColorMap: { [key: string]: string } = {
-    "Chờ xác nhận": "bg-orange-50 text-orange-600 border border-orange-600",
-    "Chờ khám": "bg-blue-50 text-blue-600 border border-blue-600",
-    "Đã huỷ": "bg-red-50 text-red-600 border border-red-600",
-    "Đã khám": "bg-green-50 text-green-600 border border-green-600"
-  };
 
   constructor(
     private route: ActivatedRoute,
@@ -190,11 +185,6 @@ export class AppointmentDailyComponent implements OnInit {
     return date.toISOString().split('T')[0]; // Format: YYYY-MM-DD
   }
 
-  formatDate(dateString: string): string {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('vi-VN');
-  }
-
   formatDateTime(dateString: string): string {
     const date = new Date(dateString);
     return date.toLocaleString('vi-VN', {
@@ -208,7 +198,7 @@ export class AppointmentDailyComponent implements OnInit {
 
   // Hàm trả về màu sắc, nếu không có trong danh sách thì trả về màu xám
   getStatusClass(status: string): string {
-    return this.statusColorMap[status] || 'bg-gray-50 text-gray-600';  // Màu xám cho trường hợp không xác định
+    return getStatusClassForList(status);
   }
 
   openUpdateModal(appointmentId: string) {
@@ -222,5 +212,14 @@ export class AppointmentDailyComponent implements OnInit {
     if (updated === true) {
       this.loadAppointments();
     }
+  }
+
+  getBirthYearAsString(dateString: string): string {
+    return getBirthYearAsString(new Date(dateString));
+  }
+
+  getVietnameseDayName(date: string): string {
+    const dateObj = new Date(date);
+    return getVietnameseDayName(dateObj);
   }
 }

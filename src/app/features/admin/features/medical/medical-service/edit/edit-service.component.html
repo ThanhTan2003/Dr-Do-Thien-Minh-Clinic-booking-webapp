@@ -9,5 +9,26 @@
 </div>
 
 <app-edit-service-info></app-edit-service-info>
-<app-service-list-doctor></app-service-list-doctor>
-<app-service-appointment-history></app-service-appointment-history>
+<!-- Menu chuyển tab -->
+<nav class="mb-6 mt-6">
+  <div class="flex gap-2 border-b-2 border-sky-700">
+    <button
+      *ngFor="let tab of tabs"
+      class="py-2 px-4 font-bold border-b-2 transition-colors duration-200
+             hover:text-sky-900"
+      [ngClass]="{
+        'border-b-cyan-700 text-white bg-cyan-800 hover:bg-cyan-900 hover:text-white': isActive(tab.path),
+        'border border-transparent text-cyan-700 hover:border hover:border-cyan-700 hover:bg-cyan-50': !isActive(tab.path)
+      }"
+      (click)="goTo(tab.path)"
+    >
+      <fa-icon *ngIf="tab.icon" [icon]="tab.icon" class="mr-1"></fa-icon>
+      {{ tab.label }}
+    </button>
+  </div>
+</nav>
+
+<div class="min-h-[450px]">
+  <router-outlet></router-outlet>
+</div>
+<!-- <app-service-appointment-history></app-service-appointment-history> -->

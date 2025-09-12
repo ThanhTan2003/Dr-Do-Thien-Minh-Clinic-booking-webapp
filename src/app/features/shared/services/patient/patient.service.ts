@@ -66,9 +66,9 @@ export class PatientService {
   /**
    * Tìm kiếm bệnh nhân theo từ khóa (có phân trang)
    */
-  search(keyword = '', page = 1, size = 10): Observable<PageResponse<Patient>> {
+  searchPatients(keyword: string = '', tagName: string = '', page: number = 1, size: number = 10): Observable<PageResponse<Patient>> {
     return this.http.get<PageResponse<Patient>>(
-      `${this.API_URL}/search?keyword=${keyword}&page=${page}&size=${size}`
+      `${this.API_URL}/search?keyword=${keyword}&tagName=${tagName}&page=${page}&size=${size}`
     );
   }
   searchPatientsByCustomer(keyword = '', page = 1, size = 10): Observable<PageResponse<Patient>> {

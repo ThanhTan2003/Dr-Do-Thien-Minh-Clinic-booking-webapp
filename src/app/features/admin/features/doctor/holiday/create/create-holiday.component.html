@@ -1,0 +1,36 @@
+<div class="fixed inset-0 flex items-center justify-center bg-black/60 z-50">
+  <div class="bg-white rounded-xl shadow-xl w-full max-w-md">
+    <!-- Header -->
+    <div class="bg-sky-600 text-white p-3 rounded-t-xl flex justify-between items-center">
+      <h2 class="text-lg font-bold">THÊM NGÀY NGHỈ LỄ MỚI</h2>
+      <button (click)="onClose()" class="text-white bg-transparent hover:bg-red-500 rounded-full p-1 flex items-center justify-center" style="width: 30px; height: 30px;">✕</button>
+    </div>
+    <!-- Content -->
+    <form (ngSubmit)="onSubmit()" class="px-6 py-6">
+      <div class="mb-4">
+        <label class="block text-sky-700 font-semibold mb-1">Tên ngày nghỉ lễ <span class="text-red-600">(*)</span></label>
+        <input type="text" [(ngModel)]="holidayName" name="holidayName" placeholder=""
+          class="border border-sky-300 text-gray-700 p-2 rounded w-full" required />
+      </div>
+      <div class="mb-4">
+        <label class="block text-sky-700 font-semibold mb-1">Ngày bắt đầu <span class="text-red-600">(*)</span></label>
+        <input type="text" [(ngModel)]="displayStartDate" name="displayStartDate" placeholder="ngày/tháng/năm" maxlength="10"
+          (input)="onDateInput('start', $event)" (blur)="onDateBlur('start')"
+          class="border border-sky-300 text-gray-700 p-2 rounded w-full" required />
+      </div>
+      <div class="mb-4">
+        <label class="block text-sky-700 font-semibold mb-1">Ngày kết thúc <span class="text-red-600">(*)</span></label>
+        <input type="text" [(ngModel)]="displayEndDate" name="displayEndDate" placeholder="ngày/tháng/năm" maxlength="10"
+          (input)="onDateInput('end', $event)" (blur)="onDateBlur('end')"
+          class="border border-sky-300 text-gray-700 p-2 rounded w-full" required />
+      </div>
+      <div *ngIf="error" class="text-red-600 mb-2">{{ error }}</div>
+      <div *ngIf="isLoading" class="text-blue-600 mb-2">Đang xử lý...</div>
+      <div class="flex justify-end gap-4 mt-4">
+        <button type="submit" [disabled]="isLoading" class="bg-sky-600 text-white font-semibold py-2 px-8 rounded-lg hover:bg-blue-600 transition duration-200">Thêm mới</button>
+        <button type="button" (click)="onClose()" [disabled]="isLoading" class="bg-white text-sky-600 border border-sky-600 font-semibold py-2 px-8 rounded-lg hover:bg-gray-100 transition duration-200">Hủy</button>
+      </div>
+    </form>
+  </div>
+</div>
+

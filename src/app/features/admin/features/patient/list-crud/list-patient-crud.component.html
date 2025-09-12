@@ -1,1 +1,131 @@
-<p>List Patient Crud works!</p> 
+<router-outlet #childOutlet="outlet"></router-outlet>
+<div *ngIf="!childOutlet.isActivated">
+  <div class="mx-auto">
+    <!-- Filter Section -->
+    <div class="flex justify-between items-center mb-4">
+      <div class="flex items-center">
+        <button
+          class="bg-white text-sky-700 py-2 px-4 rounded border border-sky-700 font-bold hover:bg-sky-100"
+          (click)="handleRefresh()"
+          title="Làm mới danh sách"
+        >
+          Tải lại danh sách &nbsp;<fa-icon [icon]="faRotate"></fa-icon>
+        </button>
+        <app-page-size-selector
+          class="ml-4"
+          [pageSize]="pageSize"
+          [options]="pageSizeOptions"
+          (pageSizeChange)="onPageSizeChange($event)">
+        </app-page-size-selector>
+      </div>
+      <div class="flex items-center space-x-2">
+        <!-- Dropdown cho Tags -->
+        <select
+          class="border p-2 rounded border-blue-300 text-sky-800 font-semibold"
+          [(ngModel)]="selectedTag"
+          (change)="handleTagChange()"
+        >
+          <option value="">Tất cả nhóm đối tượng</option>
+          <option *ngFor="let tag of tags" [value]="tag">{{tag}}</option>
+        </select>
+        <!-- Ô tìm kiếm -->
+        <div class="relative w-64">
+          <input type="text" placeholder="Nhập từ khóa tìm kiếm" [(ngModel)]="keyword" (keyup.enter)="handleSearch()"
+            class="border p-2 rounded w-full border-blue-300 text-gray-600 pr-10" />
+
+          <!-- Group bao icon và tooltip -->
+          <div class="absolute right-2 top-1/2 -translate-y-1/2 group">
+            <fa-icon [icon]="faCircleQuestion" class="text-gray-400 cursor-pointer"></fa-icon>
+
+            <!-- Tooltip -->
+            <div
+              class="absolute left-[-230px] mt-2 w-63 p-3 bg-white border border-gray-300 rounded shadow-lg text-sm text-sky-700 z-50 opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity"
+              style="top: 100%; white-space: normal;">
+              <p class="font-semibold text-sky-800 mb-1">Có thể tìm kiếm theo:</p>
+              <ul class="list-disc list-inside text-justify space-y-1">
+                <li>Mã hồ sơ</li>
+                <li>Họ tên</li>
+                <li>Số điện thoại</li>
+                <li>Số căn cước</li>
+                <li>Mã BHYT</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <button
+          type="button"
+          (click)="handleSearch()"
+          class="bg-sky-700 text-white py-2 px-4 rounded hover:bg-sky-800"
+        >
+          <fa-icon [icon]="faMagnifyingGlass"></fa-icon>
+        </button>
+      </div>
+    </div>
+  
+    <!-- Data Table -->
+    <div class="overflow-x-auto">
+      <table class="w-full border-collapse border border-gray-200 shadow-lg rounded-md">
+        <thead>
+          <tr class="bg-sky-600 text-white">
+            <th class="border p-2 text-center whitespace-nowrap">STT</th>
+            <th class="border p-2 text-left whitespace-nowrap">Mã hồ sơ</th>
+            <th class="border p-2 text-left whitespace-nowrap">Họ tên</th>
+            <th class="border p-2 text-left whitespace-nowrap">Năm sinh</th>
+            <th class="border p-2 text-left whitespace-nowrap">Số căn cước</th>
+            <th class="border p-2 text-left whitespace-nowrap">Nhóm đối tượng</th>
+            <th class="border p-2 text-left whitespace-nowrap">Đã khám</th>
+            <th class="border p-2 text-left whitespace-nowrap">Zalo người dùng</th>
+            <th class="border p-2 text-center whitespace-nowrap"></th>
+          </tr>
+        </thead>
+        <tbody class="border border-gray-400">
+          <tr *ngIf="loading">
+            <td colspan="7" class="text-center p-4 border-gray-400">
+              <div class="flex justify-center items-center">
+                <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-sky-600"></div>
+                <span class="ml-2">Đang tải dữ liệu...</span>
+              </div>
+            </td>
+          </tr>
+          <tr *ngIf="!loading && patients.length === 0">
+            <td colspan="7" class="text-center p-4 border-gray-400">Không có dữ liệu</td>
+          </tr>
+          <tr *ngFor="let patient of patients; let i = index" class="border hover:bg-gray-100 transition duration-200 ease-in-out align-top ">
+            <td class="border p-2 text-center align-top border-gray-400">{{ (currentPage - 1) * pageSize + i + 1 }}</td>
+            <td class="border p-2 text-left border-gray-400 whitespace-nowrap">{{ patient.id }}</td>
+            <td class="border p-2 text-left border-gray-400 font-semibold text-sky-800 whitespace-nowrap">{{ patient.fullName }}</td>
+            <td class="border p-2 text-center border-gray-400">{{ getBirthYear(patient.dateOfBirth) }}</td>
+            <td class="border p-2 text-left border-gray-400 whitespace-nowrap">{{ formatNationalId(patient.identityCard) }}</td>
+            <td class="border p-2 border-gray-400">
+              <div *ngIf="patient.tags.length > 0" class="flex flex-wrap space-x-2 justify-start">
+                <span *ngFor="let tag of patient.tags" class="bg-blue-50 text-sky-600 px-3 py-1 rounded-sm font-medium mb-1" style="margin-left: 8px; white-space: nowrap">
+                  {{tag}}
+                </span>
+              </div>
+            </td>
+            <td class="border p-2 text-center border-gray-400 font-semibold text-purple-800">{{patient?.numberOfExaminations || 0}}</td>
+            <td class="border p-2 border-gray-400">
+              <div *ngIf="patient.zaloUserResponse" class="flex items-center space-x-2 font-semibold text-sky-800">
+                <img [src]="patient.zaloUserResponse.avatar" [alt]="patient.zaloUserResponse.displayName" class="w-8 h-8 rounded-full object-cover" />
+                <span>{{patient.zaloUserResponse.displayName}}</span>
+              </div>
+            </td>
+            <td class="border p-2 text-center w-32 whitespace-nowrap border-gray-400">
+              <button (click)="goToProcess(patient.id, patient.zaloUid)" class="bg-white text-sky-700 px-3 py-1 rounded border border-sky-700 hover:bg-sky-800 hover:text-white font-semibold">
+                Thao tác &nbsp;<fa-icon [icon]="faPenToSquare"></fa-icon>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  
+    <!-- Pagination -->
+    <app-pagination
+      [totalElements]="totalElements"
+      [currentPage]="currentPage"
+      [totalPages]="totalPages"
+      (pageChange)="onPageChange($event)"
+    ></app-pagination>
+  </div> 
+</div>

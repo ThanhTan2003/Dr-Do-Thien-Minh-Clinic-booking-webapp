@@ -1,0 +1,106 @@
+<div *ngIf="loading" class="flex justify-center items-center h-32">
+  <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-sky-600"></div>
+  <span class="ml-2">Đang tải dữ liệu...</span>
+</div>
+
+<div class="border border-blue-600 rounded-lg shadow-md relative p-4 pt-6 mt-8">
+  <!-- Tiêu đề -->
+  <div class="absolute -top-4 left-4 bg-white px-2 text-blue-900 font-bold text-xl">
+    <fa-icon [icon]="faIdCard"></fa-icon> &nbsp;HỒ SƠ BỆNH NHÂN
+  </div>
+  <form *ngIf="!loading && patient" autocomplete="off" (ngSubmit)="$event.preventDefault()">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
+      <!-- Thông tin cơ bản -->
+      <div class="mb-0">
+        <label class="block text-sm font-semibold text-sky-800">Mã hồ sơ</label>
+        <input type="text" [value]="patient.id" readonly
+          class="mt-1 p-1 pl-2 bg-gray-50 border border-gray-200 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-sky-500" />
+      </div>
+
+      <div class="mb-0">
+        <label class="block text-sm font-semibold text-sky-800">Họ tên</label>
+        <input type="text" [(ngModel)]="patientRequest.fullName" name="fullName"
+          class="mt-1 p-1 pl-2 bg-white border border-sky-300 rounded-md w-full text-amber-800 focus:outline-none focus:ring-2 focus:ring-sky-500" />
+      </div>
+
+      <div class="mb-0">
+        <label class="block text-sm font-semibold text-sky-800">Giới tính</label>
+        <input type="text" [(ngModel)]="patientRequest.gender" name="gender"
+          class="mt-1 p-1 pl-2 bg-white border border-sky-300 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-sky-500" />
+      </div>
+
+      <div class="mb-0">
+        <label class="block text-sm font-semibold text-sky-800">Ngày sinh</label>
+        <input type="date" [(ngModel)]="patientRequest.dateOfBirth" name="dateOfBirth"
+          class="mt-1 p-1 pl-2 bg-white border border-sky-300 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-sky-500" />
+      </div>
+
+      <div class="mb-0">
+        <label class="block text-sm font-semibold text-sky-800">Mối quan hệ</label>
+        <select [(ngModel)]="patientRequest.relationship" name="relationship"
+          class="mt-1 p-1 pl-2 bg-white border border-sky-300 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-sky-500">
+          <option value="">Chọn mối quan hệ</option>
+          <option *ngFor="let rel of relationships" [value]="rel">{{ rel }}</option>
+        </select>
+      </div>
+
+      <div class="mb-0">
+        <label class="block text-sm font-semibold text-sky-800">Số căn cước</label>
+        <input type="text" [(ngModel)]="patientRequest.identityCard" name="identityCard"
+          class="mt-1 p-1 pl-2 bg-white border border-sky-300 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-sky-500" />
+      </div>
+
+      <div class="mb-0">
+        <label class="block text-sm font-semibold text-sky-800">Số thẻ BHYT</label>
+        <input type="text" [(ngModel)]="patientRequest.insuranceId" name="insuranceId"
+          class="mt-1 p-1 pl-2 bg-white border border-sky-300 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-sky-500" />
+      </div>
+
+      <div class="mb-0">
+        <label class="block text-sm font-semibold text-sky-800">Số điện thoại</label>
+        <input type="text" [(ngModel)]="patientRequest.phoneNumber" name="phoneNumber"
+          class="mt-1 p-1 pl-2 bg-white border border-sky-300 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-sky-500" />
+      </div>
+
+      <div class="mb-0 md:col-span-2 lg:col-span-2">
+        <label class="block text-sm font-semibold text-sky-800">Địa chỉ</label>
+        <textarea rows="1" [(ngModel)]="patientRequest.address" name="address"
+          class="mt-1 p-1 pl-2 bg-white border border-sky-300 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-sky-500"></textarea>
+      </div>
+
+      <div class="mb-0 md:col-span-2 lg:col-span-2 text-right">
+        <label class="block text-sm font-semibold text-sky-800">&nbsp;</label>
+        <button type="button"
+          class="bg-white text-orange-800 border border-orange-800 font-semibold px-4 py-2 rounded-md hover:bg-orange-100 transition"
+          (click)="openConfirmDelete()">
+          Xóa thông tin &nbsp;<fa-icon [icon]="faX"></fa-icon>
+        </button>
+        <button type="button" class="bg-sky-600 text-white font-semibold px-4 py-2 rounded-md hover:bg-sky-700 transition ml-4"
+          (click)="openConfirmUpdate()">
+          Cập nhật thông tin &nbsp;<fa-icon [icon]="faPen"></fa-icon>
+        </button>
+      </div>
+    </div>
+  </form>
+  <div *ngIf="!loading && !patient" class="text-center text-red-600 font-semibold mt-4">
+    Không tìm thấy thông tin hồ sơ bệnh nhân.
+  </div>
+</div>
+
+<!-- Modal xác nhận cập nhật -->
+<app-admin-modal-confirm
+  *ngIf="showConfirmUpdate"
+  title="Xác nhận cập nhật"
+  content="Bạn có chắc chắn muốn cập nhật thông tin hồ sơ bệnh nhân này?"
+  (confirm)="onConfirmUpdate()"
+  (cancel)="onCancelUpdate()">
+</app-admin-modal-confirm>
+
+<!-- Modal xác nhận xóa -->
+<app-admin-modal-confirm-delete
+  *ngIf="showConfirmDelete"
+  [title]="'Xác nhận xóa hồ sơ bệnh nhân'"
+  [content]="'Bạn có chắc chắn muốn xóa hồ sơ bệnh nhân này không?'"
+  (confirm)="onConfirmDelete()"
+  (cancel)="onCancelDelete()">
+</app-admin-modal-confirm-delete>

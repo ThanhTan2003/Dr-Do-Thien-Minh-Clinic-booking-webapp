@@ -42,6 +42,8 @@ export class CreateDoctorComponent implements OnInit {
 
   ngOnInit(): void {}
 
+  
+
   handleSubmit(): void {
     const requiredFields: (keyof DoctorRequest)[] = [
       'name',

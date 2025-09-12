@@ -1,10 +1,9 @@
 import { Component, Input, Output, EventEmitter, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { faXmark, faInfoCircle, faIdCard, faCalendarCheck, faPenToSquare, faPlus, faRotate, faMagnifyingGlass, faTags, faStickyNote, faHistory } from '@fortawesome/free-solid-svg-icons';
 import { Appointment } from '../../../../../models/responses/appointment/appointment.model';
 import { AppointmentService } from '../../../../../shared/services/appointment/appointment.service';
+import { AppointmentActionService } from '../../../../../shared/services/appointment/appointment-action.service';
 import { ExamResultRequest } from '../../../../../models/requests/appointment/exam-result.request';
 import { AdminModalConfirmComponent } from '../../../../shared/components/modal-confirm/admin-modal-confirm.component';
 import { AdminModalConfirmDeleteComponent } from '../../../../shared/components/modal-confirm-delete/admin-modal-confirm-delete.component';
@@ -26,7 +25,26 @@ import { PatientNoteService } from '../../../../../shared/services/patient/patie
 import { PatientNoteResponse } from '../../../../../models/responses/patient/patient-note.response';
 
 // Import utility functions
-import { getStatusClassForForm, getUpdatableStatuses } from '../../../../../shared/util/status.util';
+import { getStatusClassForList } from '../../../../../shared/util';
+
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { faXmark, 
+  faInfoCircle, 
+  faIdCard, 
+  faCalendarCheck, 
+  faPenToSquare, 
+  faPlus, 
+  faRotate, 
+  faMagnifyingGlass, 
+  faTags, 
+  faStickyNote, 
+  faCheck,
+  faTimes,
+  faTrash,
+  faCheckCircle,
+  faRedo,
+  faPen,
+  faHistory } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-doctor-appointment-update',
@@ -69,6 +87,12 @@ export class DoctorAppointmentUpdateComponent implements OnInit {
   faTags = faTags;
   faStickyNote = faStickyNote;
   faHistory = faHistory;
+  faCheck = faCheck;
+  faTimes = faTimes;
+  faTrash = faTrash;
+  faCheckCircle = faCheckCircle;
+  faRedo = faRedo;
+  faPen = faPen;
 
   appointment: Appointment | null = null;
 
@@ -104,7 +128,8 @@ export class DoctorAppointmentUpdateComponent implements OnInit {
     doctorMessage: '',
     result: '',
     note: '',
-    reExaminationDate: ''
+    reExaminationDate: '',
+    sendNotification: true
   };
 
   // Sử dụng utility function để lấy danh sách trạng thái có thể cập nhật
@@ -118,8 +143,16 @@ export class DoctorAppointmentUpdateComponent implements OnInit {
   tagToDelete: string | null = null;
   noteToDelete: PatientNoteResponse | null = null;
 
+  // Modal states for actions
+  showConfirmAction: boolean = false;
+  showConfirmDelete: boolean = false;
+  confirmActionType: 'confirm' | 'cancel' | 'markDone' | 'reconfirm' | 'update' | null = null;
+  confirmActionLabel: string = '';
+  confirmActionContent: string = '';
+
   constructor(
     private appointmentService: AppointmentService,
+    private appointmentActionService: AppointmentActionService,
     private patientTagService: PatientTagService,
     private patientNoteService: PatientNoteService,
     private toastr: ToastrService
@@ -231,8 +264,8 @@ export class DoctorAppointmentUpdateComponent implements OnInit {
   }
 
   // Sử dụng utility function thay vì local mapping
-  getStatusClass(status: string): string {
-    return getStatusClassForForm(status);
+  getStatusClassForList(status: string): string {
+    return getStatusClassForList(status);
   }
 
   // Tag modal handlers
@@ -341,6 +374,159 @@ export class DoctorAppointmentUpdateComponent implements OnInit {
           this.toastr.error('Không thể xóa ghi chú', 'Lỗi');
           console.log('Lỗi khác:', error.status);
         }
+      }
+    });
+  }
+
+  // Action handlers
+  onClickConfirmAppointment() {
+    this.confirmActionType = 'confirm';
+    this.confirmActionLabel = 'Xác nhận lịch hẹn';
+    this.confirmActionContent = 'Bạn có chắc chắn muốn xác nhận lịch hẹn này?';
+    this.showConfirmAction = true;
+  }
+  onClickCancelAppointment() {
+    this.confirmActionType = 'cancel';
+    this.confirmActionLabel = 'Huỷ lịch hẹn';
+    this.confirmActionContent = 'Bạn có chắc chắn muốn huỷ lịch hẹn này?';
+    this.showConfirmAction = true;
+  }
+  onClickMarkAsDone() {
+    this.confirmActionType = 'markDone';
+    this.confirmActionLabel = 'Xác nhận đã khám';
+    this.confirmActionContent = 'Bạn có chắc chắn muốn xác nhận đã khám cho lịch hẹn này?';
+    this.showConfirmAction = true;
+  }
+  onClickReconfirmAppointment() {
+    this.confirmActionType = 'reconfirm';
+    this.confirmActionLabel = 'Xác nhận lại lịch hẹn';
+    this.confirmActionContent = 'Bạn có chắc chắn muốn xác nhận lại lịch hẹn này?';
+    this.showConfirmAction = true;
+  }
+  onClickUpdateAppointment() {
+    this.confirmActionType = 'update';
+    this.confirmActionLabel = 'Cập nhật lịch hẹn';
+    this.confirmActionContent = 'Bạn có chắc chắn muốn cập nhật lịch hẹn này?';
+    this.showConfirmAction = true;
+  }
+  onClickDeleteAppointment() {
+    this.showConfirmDelete = true;
+  }
+
+  // Confirm modal handler
+  onConfirmAction(confirmed: boolean) {
+    this.showConfirmAction = false;
+    if (!confirmed || !this.appointmentId) return;
+    switch (this.confirmActionType) {
+      case 'confirm':
+        this.handleConfirmAppointment();
+        break;
+      case 'cancel':
+        this.handleCancelAppointment();
+        break;
+      case 'markDone':
+        this.handleMarkAsDone();
+        break;
+      case 'reconfirm':
+        this.handleReconfirmAppointment();
+        break;
+      case 'update':
+        this.handleUpdateAppointment();
+        break;
+    }
+    this.confirmActionType = null;
+  }
+
+  // Delete modal handler
+  onConfirmDelete(confirmed: boolean) {
+    this.showConfirmDelete = false;
+    if (confirmed && this.appointmentId) {
+      this.handleDeleteAppointment();
+    }
+  }
+
+  // API calls
+  handleConfirmAppointment() {
+    this.confirmLoading = true;
+    this.appointmentActionService.confirmAppointment(this.appointmentId, this.result).subscribe({
+      next: () => {
+        this.toastr.success('Xác nhận lịch hẹn thành công!');
+        this.confirmLoading = false;
+        this.close.emit(true);
+      },
+      error: (err) => {
+        this.toastr.error(err.error?.message || 'Xác nhận lịch hẹn thất bại!');
+        this.confirmLoading = false;
+      }
+    });
+  }
+  handleCancelAppointment() {
+    this.confirmLoading = true;
+    this.appointmentActionService.cancelAppointment(this.appointmentId, this.result).subscribe({
+      next: () => {
+        this.toastr.success('Huỷ lịch hẹn thành công!');
+        this.confirmLoading = false;
+        this.close.emit(true);
+      },
+      error: (err) => {
+        this.toastr.error(err.error?.message || 'Huỷ lịch hẹn thất bại!');
+        this.confirmLoading = false;
+      }
+    });
+  }
+  handleMarkAsDone() {
+    this.confirmLoading = true;
+    this.appointmentActionService.markAppointmentAsDone(this.appointmentId, this.result).subscribe({
+      next: () => {
+        this.toastr.success('Xác nhận đã khám thành công!');
+        this.confirmLoading = false;
+        this.close.emit(true);
+      },
+      error: (err) => {
+        this.toastr.error(err.error?.message || 'Xác nhận đã khám thất bại!');
+        this.confirmLoading = false;
+      }
+    });
+  }
+  handleReconfirmAppointment() {
+    this.confirmLoading = true;
+    this.appointmentActionService.confirmAppointment(this.appointmentId, this.result).subscribe({
+      next: () => {
+        this.toastr.success('Xác nhận lại lịch hẹn thành công!');
+        this.confirmLoading = false;
+        this.close.emit(true);
+      },
+      error: (err) => {
+        this.toastr.error(err.error?.message || 'Xác nhận lại lịch hẹn thất bại!');
+        this.confirmLoading = false;
+      }
+    });
+  }
+  handleUpdateAppointment() {
+    this.confirmLoading = true;
+    this.appointmentActionService.updateById(this.appointmentId, this.result).subscribe({
+      next: () => {
+        this.toastr.success('Cập nhật lịch hẹn thành công!');
+        this.confirmLoading = false;
+        this.close.emit(true);
+      },
+      error: (err) => {
+        this.toastr.error(err.error?.message || 'Cập nhật lịch hẹn thất bại!');
+        this.confirmLoading = false;
+      }
+    });
+  }
+  handleDeleteAppointment() {
+    this.confirmLoading = true;
+    this.appointmentActionService.deleteAppointment(this.appointmentId).subscribe({
+      next: () => {
+        this.toastr.success('Xoá lịch hẹn thành công!');
+        this.confirmLoading = false;
+        this.close.emit(true);
+      },
+      error: (err) => {
+        this.toastr.error(err.error?.message || 'Xoá lịch hẹn thất bại!');
+        this.confirmLoading = false;
       }
     });
   }

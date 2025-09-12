@@ -10,7 +10,7 @@
     </ul>
 </div>
 
-<!-- Lịch làm việc -->
+<!-- Lịch làm việc -->
 <div class="pt-6">
     <div class="flex gap-6">
         <!-- Menu buổi -->
@@ -21,12 +21,19 @@
                     Buổi khám
                 </h3>
                 <div class="space-y-2">
-                    <button *ngFor="let session of sessions" (click)="onSelectSession(session)" [ngClass]="{
+                    <button *ngFor="let session of getAvailableSessions()" (click)="onSelectSession(session)" [ngClass]="{
                                 'bg-sky-600 text-white': selectedSession === session,
-                                'bg-white text-sky-600 hover:bg-sky-50': selectedSession !== session
+                                'bg-white text-sky-600 hover:bg-sky-50': selectedSession !== session,
+                                'border-sky-600 font-bold': session === 'Tất cả'
                             }"
                         class="w-full text-left px-4 py-4 rounded-md border border-sky-200 transition-all duration-200 flex items-center">
                         <span class="font-medium">{{ session }}</span>
+                        <span *ngIf="session !== 'Tất cả'" class="ml-auto text-xs px-2 py-1 rounded-full" [ngClass]="getSessionColor(session)">
+                            {{ getScheduleCountBySession(session) }}
+                        </span>
+                        <span *ngIf="session === 'Tất cả'" class="ml-auto text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full">
+                            {{ getScheduleCountBySession(session) }}
+                        </span>
                     </button>
                 </div>
             </div>
@@ -36,40 +43,84 @@
         <div class="flex-1">
             <div class="bg-white rounded-lg shadow-md overflow-hidden border border-sky-400">
                 <div class="p-4 border-b border-gray-200">
-                    <h3 class="text-lg font-semibold text-sky-800 flex items-center">
-                        <fa-icon [icon]="faCalendarDays" class="mr-2"></fa-icon>
-                        Lịch khám bệnh - buổi {{ selectedSession }}
-                    </h3>
+                    <div class="flex justify-between items-center">
+                        <h3 class="text-lg font-semibold text-sky-800 flex items-center">
+                            <fa-icon [icon]="faCalendarDays" class="mr-2"></fa-icon>
+                            <span *ngIf="selectedSession === 'Tất cả'">Lịch khám bệnh - tất cả buổi</span>
+                            <span *ngIf="selectedSession !== 'Tất cả'">Lịch khám bệnh - buổi {{ selectedSession }}</span>
+                        </h3>
+                        <div class="flex items-center gap-4">
+                            <!-- Nút cập nhật tất cả -->
+                            <button *ngIf="changedScheduleIds.size > 0" (click)="onUpdateAll()"
+                                class="bg-blue-600 text-white font-semibold px-4 py-2 rounded-md hover:bg-blue-700 transition">
+                                <fa-icon [icon]="faSave" class="mr-2"></fa-icon>
+                                Cập nhật tất cả ({{changedScheduleIds.size}})
+                            </button>
+                            <!-- Nút thêm lịch khám mới -->
+                            <button (click)="onCreateSchedule()"
+                                class="bg-sky-700 text-white font-semibold px-4 py-2 rounded-md hover:bg-sky-800 transition">
+                                <fa-icon [icon]="faPlus" class="mr-2"></fa-icon>
+                                Thêm lịch khám mới
+                            </button>
+                            
+                            <!-- Filter theo trạng thái -->
+                            <select class="border p-2 rounded border-sky-300 text-sky-900 font-semibold"
+                                [(ngModel)]="selectedStatus" (change)="onSelectStatus(selectedStatus)">
+                                <option value="">Tất cả trạng thái</option>
+                                <option *ngFor="let status of statuses" [value]="status.status">{{status.description}}</option>
+                            </select>
+                            
+                        </div>
+                    </div>
                 </div>
                 <div class="overflow-x-auto">
                     <table class="w-full border-collapse">
                         <thead>
                             <tr class="bg-sky-600 text-white">
                                 <th class="p-3 text-center w-16 border border-gray-400">STT</th>
-                                <th class="p-3 text-left border border-gray-400">Khung giờ</th>
+                                <!-- <th *ngIf="selectedSession === 'Tất cả'" class="p-3 text-left border border-gray-400">Buổi</th> -->
+                                <th class="p-3 text-left border border-gray-400">Buổi</th>
+                                <th class="p-3 text-left border border-gray-400">Giờ khám</th>
                                 <th class="p-3 text-left border border-gray-400">Tối đa đăng ký</th>
-                                <th class="p-3 text-center border border-gray-400">Đã khám</th>
+                                <!-- <th class="p-3 text-center border border-gray-400">Đã khám</th> -->
                                 <th class="p-3 text-left border border-gray-400">Trạng thái</th>
-                                <th class="p-3 text-center border border-gray-400">Thao tác</th>
+                                <th class="p-3 text-center border border-gray-400 w-60"></th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr *ngFor="let tf of getTimeFramesBySession(selectedSession); let i = index"
-                                class="border-b border-gray-200 hover:bg-gray-50">
-                                <ng-container *ngIf="editableRows[tf.id]">
+                            <tr *ngFor="let schedule of getSchedulesBySession(selectedSession); let i = index"
+                                class="border hover:bg-gray-100 transition duration-200 ease-in-out align-top"
+                                [ngClass]="{
+                                    'bg-yellow-50': editableRows[schedule.id]?.hasChanges && selectedSession !== 'Tất cả',
+                                    'bg-yellow-50 border-yellow-300': editableRows[schedule.id]?.hasChanges && selectedSession === 'Tất cả'
+                                }"
+                                [class]="selectedSession === 'Tất cả' && !editableRows[schedule.id]?.hasChanges ? getRowSessionColor(schedule.timeFrameResponse.session) : ''">
+                                <ng-container *ngIf="editableRows[schedule.id]">
                                     <td class="p-3 text-center text-gray-600 border border-gray-400">{{ i + 1 }}</td>
-                                    <td class="p-3 text-sky-800 font-semibold border border-gray-400">{{ tf.name }}</td>
+                                    <!-- <td *ngIf="selectedSession === 'Tất cả'" class="p-3 text-sky-700 font-medium border border-gray-400">
+                                        <span class="px-2 py-1 rounded-sm text-sm font-medium" [ngClass]="getSessionColor(schedule.timeFrameResponse.session)">
+                                            {{ schedule.timeFrameResponse.session }}
+                                        </span>
+                                    </td> -->
+                                    <td class="p-3 text-sky-700 font-medium border border-gray-400">
+                                        <span class="px-2 py-1 rounded-sm text-sm font-medium" [ngClass]="getSessionColor(schedule.timeFrameResponse.session)">
+                                            {{ schedule.timeFrameResponse.session }}
+                                        </span>
+                                    </td>
+                                    <td class="p-3 text-sky-800 font-semibold border border-gray-400">{{ schedule.timeFrameResponse.name }}</td>
                                     <td class="p-3 border border-gray-400 w-40">
-                                        <input type="number" min="0" [(ngModel)]="editableRows[tf.id].maxPatients"
+                                        <input type="number" min="0" [(ngModel)]="editableRows[schedule.id].maxPatients"
+                                            (ngModelChange)="onFieldChange(schedule.id)"
                                             class="w-full p-1 px-3 border border-sky-300 rounded-md focus:outline-none focus:ring-2 focus:ring-sky-500" />
                                     </td>
-                                    <td class="p-3 text-center border border-gray-400">10</td>
+                                    <!-- <td class="p-3 text-center border border-gray-400">-</td> -->
                                     <td class="p-3 border border-gray-400">
-                                        <select [(ngModel)]="editableRows[tf.id].status"
+                                        <select [(ngModel)]="editableRows[schedule.id].status"
+                                            (ngModelChange)="onFieldChange(schedule.id)"
                                             class="w-full p-1 border border-sky-300 rounded-md focus:outline-none focus:ring-2 focus:ring-sky-500 min-w-max"
                                             [ngClass]="{
-                                                    'text-green-700': editableRows[tf.id].status === true,
-                                                    'text-red-700': editableRows[tf.id].status === false
+                                                    'text-green-700': editableRows[schedule.id].status === true,
+                                                    'text-red-700': editableRows[schedule.id].status === false
                                                 }">
                                             <option *ngFor="let st of statuses" [value]="st.status">
                                                 {{ st.description }}
@@ -77,10 +128,16 @@
                                         </select>
                                     </td>
                                     <td class="border border-gray-400 p-2 text-center whitespace-nowrap">
-                                        <button (click)="onUpdateSchedule(tf)"
-                                            class="bg-white text-sky-600 px-3 py-1 rounded border border-sky-600 hover:bg-sky-100 font-semibold">
-                                            Cập nhật &nbsp;<fa-icon [icon]="faPen"></fa-icon>
-                                        </button>
+                                        <div class="flex gap-2 justify-center">
+                                            <button (click)="onUpdateSchedule(schedule)"
+                                                class="bg-white text-sky-600 px-2 py-1 rounded border border-sky-600 hover:bg-sky-100 font-semibold text-sm">
+                                                Cập nhật &nbsp;<fa-icon [icon]="faPen"></fa-icon>
+                                            </button>
+                                            <button (click)="onDeleteSchedule(schedule)"
+                                                class="bg-white text-red-600 px-2 py-1 rounded border border-red-600 hover:bg-red-100 font-semibold text-sm">
+                                                Xóa &nbsp;<fa-icon [icon]="faTrash"></fa-icon>
+                                            </button>
+                                        </div>
                                     </td>
                                 </ng-container>
                             </tr>
@@ -92,14 +149,19 @@
     </div>
 </div>
 
-<!-- <div class="flex items-center justify-end mt-4">
-        <div class="flex gap-3">
-            <button class="bg-sky-600 text-white font-semibold px-4 py-2 rounded-md hover:bg-sky-700 transition">
-                Lưu thay đổi
-            </button>
-        </div>
-    </div> -->
-
 <app-admin-modal-confirm *ngIf="showConfirmModal" [title]="confirmTitle" [content]="confirmContent"
     (confirm)="onConfirmUpdate()" (cancel)="onCancelUpdate()">
 </app-admin-modal-confirm>
+
+<app-admin-modal-confirm-delete *ngIf="showDeleteModal" [title]="deleteTitle" [content]="deleteContent"
+    (confirm)="onConfirmDelete()" (cancel)="onCancelDelete()">
+</app-admin-modal-confirm-delete>
+
+<!-- Modal tạo lịch khám mới -->
+<app-create-doctor-schedule 
+    *ngIf="showCreateModal" 
+    [statuses]="statuses"
+    [doctorId]="doctorId || ''"
+    [dayOfWeek]="selectedDay"
+    (scheduleCreated)="onScheduleCreated()">
+</app-create-doctor-schedule>

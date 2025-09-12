@@ -13,22 +13,27 @@ import {
     faUsers,
     faBell,
     faLayerGroup,
-    faCalendarAlt
+    faCalendarAlt,
+    faInfoCircle
 } from '@fortawesome/free-solid-svg-icons';
   
 export const AdminMenuItems = [
-    {
-      id: 'TrangChu',
-      label: 'Trang chủ',
-      icon: faHouse,
-      path: 'trang-chu'
-    },
+    // {
+    //   id: 'TrangChu',
+    //   label: 'Trang chủ',
+    //   icon: faHouse,
+    //   path: 'trang-chu'
+    // },
 
     {
-      id: 'LichHenMoi',
-      label: 'Lịch hẹn mới',
+      id: 'LichHen',
+      label: 'Lịch hẹn',
       icon: faCalendarAlt,
-      path: 'lich-hen-moi'
+      path: 'lich-hen',
+      children: [
+        { id: 'DanhSach', label: 'Danh sách', path: 'danh-sach', icon: faUsers }
+        // { id: 'LichHen', label: 'Lịch hẹn', path: 'lich-hen', icon: faCalendarDays }
+      ]
     },
 
     {
@@ -50,7 +55,7 @@ export const AdminMenuItems = [
       icon: faBriefcaseMedical,
       path: 'y-te',
       children: [
-        // { id: 'PhongKham', label: 'Phòng khám', path: 'phong-kham', icon: faHospital },
+        { id: 'PhongKham', label: 'Phòng khám', path: 'phong-kham', icon: faHospital },
         { id: 'DichVu', label: 'Dịch vụ', path: 'dich-vu', icon: faFileMedical },
         { id: 'NhomDichVu', label: 'Nhóm chuyên môn', path: 'nhom-dich-vu', icon: faLayerGroup }
         
@@ -64,8 +69,8 @@ export const AdminMenuItems = [
       icon: faHospitalUser,
       path: 'benh-nhan',
       children: [
-        { id: 'DanhSach', label: 'Danh sách', path: 'danh-sach', icon: faUsers },
-        { id: 'LichHen', label: 'Lịch hẹn', path: 'lich-hen', icon: faCalendarDays }
+        { id: 'DanhSach', label: 'Hồ sơ khám bệnh', path: 'danh-sach', icon: faUsers }
+        // { id: 'LichHen', label: 'Lịch hẹn', path: 'lich-hen', icon: faCalendarDays }
       ]
     },
 
@@ -85,6 +90,7 @@ export const AdminMenuItems = [
       icon: faCommentDots,
       path: 'zalo-oa',
       children: [
+        { id: 'ThongTin', label: 'Thông tin', path: 'thong-tin', icon: faInfoCircle },
         { id: 'NguoiDung', label: 'Người dùng', path: 'nguoi-dung', icon: faUsers },
         { id: 'NhomNguoiDung', label: 'Nhóm người dùng', path: 'nhom-nguoi-dung', icon: faLayerGroup },
         { id: 'GuiThongBao', label: 'Gửi thông báo', path: 'thong-bao', icon: faBell }

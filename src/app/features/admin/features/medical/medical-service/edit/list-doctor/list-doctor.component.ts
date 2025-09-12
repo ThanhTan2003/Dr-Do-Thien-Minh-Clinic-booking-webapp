@@ -18,8 +18,8 @@ import { DoctorService as DoctorServiceAPI } from '../../../../../../shared/serv
 import { DoctorStatus } from '../../../../../../models/responses/doctor/doctor-status.model';
 
 @Component({
-  selector: 'app-service-list-doctor',
-  templateUrl: './service-list-doctor.component.html',
+  selector: 'app-medical-service-list-doctor',
+  templateUrl: './list-doctor.component.html',
   standalone: true,
   imports: [
     CommonModule,
@@ -29,7 +29,7 @@ import { DoctorStatus } from '../../../../../../models/responses/doctor/doctor-s
     PageSizeSelectorComponent
   ]
 })
-export class ServiceListDoctorComponent implements OnInit {
+export class MedicalServiceListDoctorComponent implements OnInit {
   // FontAwesome icons
   faRotate = faRotate;
   faMagnifyingGlass = faMagnifyingGlass;
@@ -57,7 +57,7 @@ export class ServiceListDoctorComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadStatuses();
-    this.serviceId = this.route.snapshot.params['serviceId'];
+    this.serviceId = this.route.parent?.snapshot.paramMap?.get('serviceId') || '';
     this.searchDoctors();
   }
 

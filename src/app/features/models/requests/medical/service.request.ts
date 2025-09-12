@@ -1,4 +1,5 @@
 export interface ServiceRequest {
+    id?:string;
     serviceName: string;
     description: string;
     price: string;

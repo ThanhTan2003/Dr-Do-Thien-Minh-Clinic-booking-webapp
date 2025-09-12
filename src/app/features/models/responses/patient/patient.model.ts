@@ -1,3 +1,5 @@
+import { ZaloUserResponse } from "../zalo_oa/user/zalo-user-response.model";
+
 export interface Patient {
     id: string;
     zaloUid: string;
@@ -15,5 +17,7 @@ export interface Patient {
     numberOfPatient: number;
     numberOfExaminations: number;
     tags: string[];
+
+    zaloUserResponse: ZaloUserResponse;
   }
   

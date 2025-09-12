@@ -41,13 +41,13 @@ export class EditDoctorComponent implements OnInit {
       icon: this.faFileMedical,
     },
     {
-      label: 'LỊCH LÀM VIỆC',
-      path: 'lich-kham',
+      label: 'LỊCH NHẬN KHÁM',
+      path: 'lich-nhan-kham',
       icon: this.faCalendarDays,
     },
     {
       label: 'LỊCH KHÁM THEO NGÀY',
-      path: 'kham-theo-ngay',
+      path: 'lich-kham-theo-ngay',
       icon: this.faStethoscope,
     },
     {
@@ -95,7 +95,29 @@ export class EditDoctorComponent implements OnInit {
   }
 
   goBack(): void {
-    this.router.navigate(['/admin/bac-si/danh-sach']);
+    // Lấy các tham số tìm kiếm từ localStorage
+    const searchParamsStr = localStorage.getItem('doctorListSearchParams');
+    
+    if (searchParamsStr) {
+      try {
+        const searchParams = JSON.parse(searchParamsStr);
+        
+        // Quay về list page với các tham số tìm kiếm đã lưu
+        this.router.navigate(['/admin/bac-si/danh-sach'], {
+          queryParams: searchParams
+        });
+        
+        // Xóa localStorage sau khi sử dụng
+        localStorage.removeItem('doctorListSearchParams');
+      } catch (error) {
+        console.error('Error parsing search params:', error);
+        // Fallback: quay về list page mặc định
+        this.router.navigate(['/admin/bac-si/danh-sach']);
+      }
+    } else {
+      // Fallback: quay về list page mặc định
+      this.router.navigate(['/admin/bac-si/danh-sach']);
+    }
   }
 
   goTo(path: string) {

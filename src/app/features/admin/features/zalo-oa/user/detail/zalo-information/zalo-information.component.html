@@ -30,12 +30,10 @@
 
           <div>
             <label class="block text-sm font-semibold text-sky-800">Trạng thái</label>
-            <input type="text" [value]="user.status ? 'Đã quan tâm' : 'Chưa quan tâm'" readonly
-              [ngClass]="{
+            <input type="text" [value]="user.status ? 'Đã quan tâm' : 'Chưa quan tâm'" readonly [ngClass]="{
                 'text-green-700': user.status === true,
                 'text-orange-600': user.status === false
-              }"
-              class="mt-1 p-1 pl-2 bg-gray-50 border border-gray-200 rounded-md w-full" />
+              }" class="mt-1 p-1 pl-2 bg-gray-50 border border-gray-200 rounded-md w-full" />
           </div>
 
           <div>
@@ -76,7 +74,8 @@
           <div class="md:col-span-2 lg:col-span-2">
             <label class="block text-sm font-semibold text-sky-800">Địa chỉ</label>
             <textarea [(ngModel)]="formData.address"
-              class="mt-1 p-1 pl-2 border border-sky-300 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-blue-500" rows="2"></textarea>
+              class="mt-1 p-1 pl-2 border border-sky-300 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+              rows="2"></textarea>
           </div>
         </div>
       </div>
@@ -88,7 +87,7 @@
       <div class="w-1/2 flex items-center justify-start pl-2">
         <label class="block text-base font-semibold text-sky-800">Ngày cuối tương tác: </label>
         <span class="text-base font-semibold ml-2"> {{user.userLastInteractionDate || '...'}}</span>
-          <!-- <span class="font-bold">Chuyên môn:</span>
+        <!-- <span class="font-bold">Chuyên môn:</span>
           <span class="ml-2 flex flex-wrap gap-2">
               <span *ngFor="let category of doctor.nameOfServiceCategory"
                   class="bg-blue-50 text-sky-600 px-2 py-1 font-medium shadow-md hover:shadow-lg transition">
@@ -99,27 +98,24 @@
       <!-- Bên phải: Hai nút, căn phải -->
       <div class="w-1/2 flex items-center justify-end">
         <button (click)="onUpdateClick()"
-        class="bg-sky-600 text-white font-semibold px-4 py-2 rounded-md hover:bg-sky-700 transition">
-        Cập nhật thông tin &nbsp;<fa-icon [icon]="faPen"></fa-icon>
-      </button>
-      <a [href]="user.chatLink" target="_blank" rel="noopener noreferrer">
-        <button
-          class="bg-white text-sky-800 border border-sky-800 font-semibold px-4 py-2 rounded-md hover:bg-sky-100 transition ml-3">
-          Nhắn tin &nbsp;<fa-icon [icon]="faCommentDots"></fa-icon>
+          class="bg-sky-600 text-white font-semibold px-4 py-2 rounded-md hover:bg-sky-700 transition">
+          Cập nhật thông tin &nbsp;<fa-icon [icon]="faPen"></fa-icon>
         </button>
-      </a>
+        <a [href]="user.chatLink" target="_blank" rel="noopener noreferrer">
+          <button
+            class="bg-white text-sky-800 border border-sky-800 font-semibold px-4 py-2 rounded-md hover:bg-sky-100 transition ml-3">
+            Nhắn tin &nbsp;<fa-icon [icon]="faCommentDots"></fa-icon>
+          </button>
+        </a>
       </div>
-  </div>
+    </div>
 
-    
+
   </div>
 </div>
 
 <!-- Modal xác nhận cập nhật -->
-<app-admin-modal-confirm
-  *ngIf="showConfirmModalUpdate"
-  title="Xác nhận cập nhật"
-  content="Bạn có chắc chắn muốn cập nhật thông tin người dùng này?"
-  (confirm)="onConfirmUpdate()"
+<app-admin-modal-confirm *ngIf="showConfirmModalUpdate" title="Xác nhận cập nhật"
+  content="Bạn có chắc chắn muốn cập nhật thông tin người dùng này?" (confirm)="onConfirmUpdate()"
   (cancel)="onCancelUpdate()">
 </app-admin-modal-confirm>
