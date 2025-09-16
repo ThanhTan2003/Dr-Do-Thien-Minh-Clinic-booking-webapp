@@ -146,4 +146,26 @@ export function getNextPossibleStatuses(currentStatus: string): string[] {
     };
     
     return statusFlow[currentStatus] || [];
-} 
+}
+
+/**
+ * Mảng trạng thái bác sĩ gợi ý (ServiceDoctorSuggestionStatus) và màu chữ tương ứng
+ * Key: code (từ BE)
+ */
+export const SUGGESTED_DOCTOR_STATUS_COLOR_MAP: StatusMapping = {
+    "00": "text-gray-700",       // Tất cả
+    "01": "text-green-700",     // Chưa có lịch khám
+    "02": "text-orange-700",      // Đã có lịch khám
+    "03": "text-red-700",        // Đã ngừng khám dịch vụ
+    "04": "text-purple-700",     // Nghỉ phép
+    "05": "text-gray-500"        // Ngừng làm việc
+};
+
+/**
+ * Hàm trả về màu sắc cho trạng thái bác sĩ gợi ý theo code
+ * @param code - Mã trạng thái từ BE
+ * @returns CSS class màu chữ
+ */
+export function getDoctorSuggestionStatusClass(code: string): string {
+    return SUGGESTED_DOCTOR_STATUS_COLOR_MAP[code] || "text-gray-700";
+}

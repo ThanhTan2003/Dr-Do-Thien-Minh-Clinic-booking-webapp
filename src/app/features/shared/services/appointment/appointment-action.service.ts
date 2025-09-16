@@ -7,6 +7,8 @@ import { HttpService } from '../../../../core/services/http.service';
 import { ExamResultRequest } from '../../../models/requests/appointment/exam-result.request';
 import { ServiceAppointmentRequest } from '../../../models/requests/appointment/service-appointment.request';
 import { AppointmentResultResponse } from '../../../models/responses/appointment/appointment-result.response';
+import { AssignDoctorRequest } from '../../../models/requests/appointment/assign-doctor-request';
+import { SuggestedDoctor } from '../../../models/responses/appointment/suggested-doctor.model';
 
 @Injectable({
     providedIn: 'root'
@@ -65,6 +67,52 @@ export class AppointmentActionService {
      */
     deleteAppointment(id: string): Observable<void> {
         return this.http.delete<void>(`${this.API_URL}/${id}`);
+    }
+
+
+    /**
+     * 3.1 Lấy danh sách gợi ý bác sĩ cho lịch hẹn theo dịch vụ
+     */
+    getSuggestedDoctors(
+        appointmentId: string,
+        keyword = '',
+        page = 1,
+        size = 10
+    ): Observable<PageResponse<SuggestedDoctor>> {
+        const qs = new URLSearchParams();
+        if (keyword) qs.set('keyword', keyword);
+        qs.set('page', String(page));
+        qs.set('size', String(size));
+
+        return this.http.get<PageResponse<SuggestedDoctor>>(
+            `${this.API_URL}/${appointmentId}/suggested-doctors?${qs.toString()}`
+        );
+    }
+
+    /**
+     * 3.2 Chỉ định bác sĩ khám
+     */
+    assignDoctor(
+        appointmentId: string,
+        request: AssignDoctorRequest
+    ): Observable<Appointment> {
+        return this.http.post<Appointment>(
+            `${this.API_URL}/${appointmentId}/assign-doctor`,
+            request
+        );
+    }
+
+    /**
+     * 3.3 Chuyển đổi khám theo bác sĩ -> khám theo dịch vụ
+     */
+    convertToServiceAppointment(
+        appointmentId: string,
+        request: ServiceAppointmentRequest
+    ): Observable<Appointment> {
+        return this.http.put<Appointment>(
+            `${this.API_URL}/${appointmentId}/convert`,
+            request
+        );
     }
 
 }

@@ -20,6 +20,7 @@ import { FormatDatePipe } from '../../../../shared/pipes/format-date.pipe';
 import { BirthYearPipe } from '../../../../shared/pipes/birth-year.pipe';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DoctorAppointmentUpdateComponent } from '../../doctor/appointment/update/doctor-appointment-update.component';
+import { SuggestedDoctorComponent } from '../service-appointment/suggested-doctor/suggested-doctor.component';
 import { getStatusClassForList } from '../../../../shared/util/status.util';
 import { formatNumber } from '../../../../shared/util/format.util';
 import { getVietnameseDayName, formatDateToString } from '../../../../shared/util/date.util';
@@ -36,7 +37,8 @@ import { getVietnameseDayName, formatDateToString } from '../../../../shared/uti
         FontAwesomeModule,
         FormatDatePipe,
         BirthYearPipe,
-        DoctorAppointmentUpdateComponent
+        DoctorAppointmentUpdateComponent,
+        SuggestedDoctorComponent
     ]
 })
 export class AppointmentListCrudComponent implements OnInit {
@@ -78,6 +80,10 @@ export class AppointmentListCrudComponent implements OnInit {
 
     showUpdateModal: boolean = false;
     selectedAppointmentId: string | null = null;
+
+    // Modal chọn bác sĩ
+    showSuggestedDoctorModal: boolean = false;
+    selectedAppointmentForDoctor: Appointment | null = null;
 
     constructor(
         private appointmentService: AppointmentService,
@@ -221,5 +227,24 @@ export class AppointmentListCrudComponent implements OnInit {
 
     formatNumber(value: number | string): string {
         return formatNumber(value);
+    }
+
+    // Modal chọn bác sĩ methods
+    openSuggestedDoctorModal(appointment: Appointment): void {
+        this.selectedAppointmentForDoctor = appointment;
+        this.showSuggestedDoctorModal = true;
+    }
+
+    closeSuggestedDoctorModal(): void {
+        this.showSuggestedDoctorModal = false;
+        this.selectedAppointmentForDoctor = null;
+    }
+
+    onDoctorAssigned(assigned: boolean): void {
+        if (assigned) {
+            this.loadAppointments();
+            this.loadStatistics();
+        }
+        this.closeSuggestedDoctorModal();
     }
 } 
