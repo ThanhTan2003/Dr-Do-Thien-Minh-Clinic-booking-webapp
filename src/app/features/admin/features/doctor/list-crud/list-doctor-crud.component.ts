@@ -192,14 +192,15 @@ export class ListDoctorCrudComponent implements OnInit {
 
   searchDoctors(page: number = 1): void {
     this.loading = true;
-    let status: boolean = true;
+    let status: boolean | undefined = undefined;
     if (this.selectedStatus !== '') {
       status = this.selectedStatus === 'true';
     }
+
     this.doctorService.searchDoctorsWithStatusAndCategory(
       this.keyword,
-      status,
       this.selectedCategory,
+      status,
       page,
       this.pageSize
     ).subscribe({

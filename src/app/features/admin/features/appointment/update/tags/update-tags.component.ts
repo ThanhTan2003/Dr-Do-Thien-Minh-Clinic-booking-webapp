@@ -3,11 +3,11 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faPlus, faRotate, faMagnifyingGlass, faXmark } from '@fortawesome/free-solid-svg-icons';
-import { PatientTagService } from '../../../../../../shared/services/patient/patient-tag.service';
-import { PageResponse } from '../../../../../../models/responses/page-response.model';
+import { PatientTagService } from '../../../../../shared/services/patient/patient-tag.service';
+import { PageResponse } from '../../../../../models/responses/page-response.model';
 import { ToastrService } from 'ngx-toastr';
-import { PaginationComponent } from '../../../../../shared/components/pagination/pagination.component';
-import { PageSizeSelectorComponent } from '../../../../../shared/components/page-size-selector/page-size-selector.component';
+import { PaginationComponent } from '../../../../shared/components/pagination/pagination.component';
+import { PageSizeSelectorComponent } from '../../../../shared/components/page-size-selector/page-size-selector.component';
 
 @Component({
   selector: 'app-update-tags',

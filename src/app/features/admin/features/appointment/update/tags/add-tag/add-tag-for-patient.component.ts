@@ -1,15 +1,15 @@
 import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { PatientTagService } from '../../../../../../../shared/services/patient/patient-tag.service';
-import { PageResponse } from '../../../../../../../models/responses/page-response.model';
+import { PatientTagService } from '../../../../../../shared/services/patient/patient-tag.service';
+import { PageResponse } from '../../../../../../models/responses/page-response.model';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faPlus, faRotate, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 import { ToastrService } from 'ngx-toastr';
-import { PaginationComponent } from '../../../../../../shared/components/pagination/pagination.component';
-import { PageSizeSelectorComponent } from '../../../../../../shared/components/page-size-selector/page-size-selector.component';
-import { AdminModalConfirmComponent } from '../../../../../../shared/components/modal-confirm/admin-modal-confirm.component';
-import { PatientTagRequest } from '../../../../../../../models/requests/patient/patient-tag.request';
+import { PaginationComponent } from '../../../../../shared/components/pagination/pagination.component';
+import { PageSizeSelectorComponent } from '../../../../../shared/components/page-size-selector/page-size-selector.component';
+import { AdminModalConfirmComponent } from '../../../../../shared/components/modal-confirm/admin-modal-confirm.component';
+import { PatientTagRequest } from '../../../../../../models/requests/patient/patient-tag.request';
 
 @Component({
   selector: 'app-add-tag-for-patient',

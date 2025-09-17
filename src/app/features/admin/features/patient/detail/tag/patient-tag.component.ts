@@ -9,7 +9,7 @@ import { ToastrService } from 'ngx-toastr';
 import { PaginationComponent } from '../../../../shared/components/pagination/pagination.component';
 import { PageSizeSelectorComponent } from '../../../../shared/components/page-size-selector/page-size-selector.component';
 import { AdminModalConfirmDeleteComponent } from '../../../../shared/components/modal-confirm-delete/admin-modal-confirm-delete.component';
-import { AddTagForPatientComponent } from '../../../../features/doctor/appointment/update/tags/add-tag/add-tag-for-patient.component';
+import { AddTagForPatientComponent } from '../../../appointment/update/tags/add-tag/add-tag-for-patient.component';
 
 @Component({
   selector: 'app-patient-tag',

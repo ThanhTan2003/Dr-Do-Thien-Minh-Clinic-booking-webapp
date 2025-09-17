@@ -22,7 +22,8 @@ import {
 import { FormatDatePipe } from '../../../../shared/pipes/format-date.pipe';
 import {BirthYearPipe} from '../../../../shared/pipes/birth-year.pipe';
 import { ActivatedRoute, Router } from '@angular/router';
-import { DoctorAppointmentUpdateComponent } from './update/doctor-appointment-update.component';
+import { DoctorAppointmentUpdateComponent } from '../../appointment/update/doctor-appointment-update.component';
+import { SuggestedDoctorComponent } from '../../appointment/service-appointment/suggested-doctor/suggested-doctor.component';
 
 // Import utility functions
 import { getStatusClassForList } from '../../../../shared/util/status.util';
@@ -39,7 +40,8 @@ import { getStatusClassForList } from '../../../../shared/util/status.util';
     FontAwesomeModule, 
     FormatDatePipe,
     BirthYearPipe,
-    DoctorAppointmentUpdateComponent
+    DoctorAppointmentUpdateComponent,
+    SuggestedDoctorComponent
   ]
 })
 export class DoctorAppointmentListComponent implements OnInit {
@@ -87,6 +89,10 @@ export class DoctorAppointmentListComponent implements OnInit {
 
   showUpdateModal: boolean = false;
   selectedAppointmentId: string | null = null;
+
+  // Modal chọn bác sĩ
+  showSuggestedDoctorModal: boolean = false;
+  selectedAppointmentForDoctor: Appointment | null = null;
 
   constructor(
     private appointmentService: AppointmentService,
@@ -159,6 +165,7 @@ export class DoctorAppointmentListComponent implements OnInit {
     currentDate.setDate(currentDate.getDate() - 1);
     this.selectedDate = currentDate.toISOString().split('T')[0];
     this.currentPage = 1;
+    this.updateQueryParams();
     this.loadAppointments();
     this.loadStatistics();
   }
@@ -168,6 +175,7 @@ export class DoctorAppointmentListComponent implements OnInit {
     currentDate.setDate(currentDate.getDate() + 1);
     this.selectedDate = currentDate.toISOString().split('T')[0];
     this.currentPage = 1;
+    this.updateQueryParams();
     this.loadAppointments();
     this.loadStatistics();
   }
@@ -251,5 +259,24 @@ export class DoctorAppointmentListComponent implements OnInit {
       this.loadAppointments();
       this.loadStatistics();
     }
+  }
+
+  // Modal chọn bác sĩ methods
+  openSuggestedDoctorModal(appointment: Appointment): void {
+    this.selectedAppointmentForDoctor = appointment;
+    this.showSuggestedDoctorModal = true;
+  }
+
+  closeSuggestedDoctorModal(): void {
+    this.showSuggestedDoctorModal = false;
+    this.selectedAppointmentForDoctor = null;
+  }
+
+  onDoctorAssigned(assigned: boolean): void {
+    if (assigned) {
+      this.loadAppointments();
+      this.loadStatistics();
+    }
+    this.closeSuggestedDoctorModal();
   }
 }

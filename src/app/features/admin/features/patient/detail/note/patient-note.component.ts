@@ -9,7 +9,7 @@ import { ToastrService } from 'ngx-toastr';
 import { PaginationComponent } from '../../../../shared/components/pagination/pagination.component';
 import { PageSizeSelectorComponent } from '../../../../shared/components/page-size-selector/page-size-selector.component';
 import { AdminModalConfirmDeleteComponent } from '../../../../shared/components/modal-confirm-delete/admin-modal-confirm-delete.component';
-import { AddNoteComponent } from '../../../../features/doctor/appointment/update/notes/add-note/add-note.component';
+import { AddNoteComponent } from '../../../appointment/update/notes/add-note/add-note.component';
 import { PatientNoteResponse } from '../../../../../models/responses/patient/patient-note.response';
 
 @Component({

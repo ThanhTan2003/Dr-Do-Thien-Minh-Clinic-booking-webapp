@@ -17,24 +17,45 @@
     </div>
 
     <!-- Content -->
-    <div class="p-4 overflow-y-auto">
+    <div class="p-4 pl-6 pr-6 overflow-y-auto">
       
       <!-- Appointment Info -->
       <div class="bg-blue-50 p-4 border border-blue-300 rounded-md mb-6" *ngIf="appointment">
-        <div class="text-sm text-gray-700">
-          <div class="grid grid-cols-2 gap-4">
-            <div>
-              <strong>Mã lịch hẹn:</strong> {{ appointment.id }}
-            </div>
-            <div>
-              <strong>Bệnh nhân:</strong> {{ appointment.patientResponse.fullName }}
-            </div>
-            <div>
-              <strong>Dịch vụ:</strong> {{ appointment.serviceName }}
-            </div>
-            <div>
-              <strong>Ngày khám:</strong> {{ appointment.appointmentDate | date:'dd/MM/yyyy' }}
-            </div>
+        <div *ngIf="!loading && appointment" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
+          <div class="mb-0">
+            <label class="block text-sm font-semibold text-sky-800">Mã lịch hẹn</label>
+            <input type="text" [value]="appointment.id" readonly
+              class="mt-1 p-1 pl-2 bg-gray-50 border border-gray-200 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-sky-500" />
+          </div>
+  
+          <div class="mb-0">
+            <label class="block text-sm font-semibold text-sky-800">Bệnh nhân</label>
+            <input type="text" [value]="appointment.patientResponse.fullName" readonly
+              class="mt-1 p-1 pl-2 bg-gray-50 border border-gray-200 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-sky-500" />
+          </div>
+  
+          <div class="mb-0">
+            <label class="block text-sm font-semibold text-sky-800">Ngày khám</label>
+            <input type="text" [value]="appointment.appointmentDateName" readonly
+              class="mt-1 p-1 pl-2 bg-gray-50 border border-gray-200 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-sky-500" />
+          </div>
+          <div class="mb-0">
+            <label class="block text-sm font-semibold text-sky-800">Giờ khám</label>
+            <input type="text" [value]="appointment.doctorScheduleResponse?.timeFrameResponse?.fullName || 
+                  appointment.serviceAppointmentResponse?.timeFrameResponse?.fullName || '...'" readonly
+              class="mt-1 p-1 pl-2 bg-gray-50 border border-gray-200 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-sky-500" />
+          </div>
+          <div class="mb-0 md:col-span-2 lg:col-span-2">
+            <label class="block text-sm font-semibold text-sky-800">Dịch vụ đặt khám</label>
+            <textarea rows="1"
+              class="mt-1 p-1 pl-2 bg-gray-50 border border-gray-200 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-sky-500"
+              readonly>{{ appointment?.serviceName || '...' }}</textarea>
+          </div>
+          <div class="mb-0 md:col-span-2 lg:col-span-2">
+            <label class="block text-sm font-semibold text-sky-800">Phí khám bệnh</label>
+            <textarea rows="1"
+              class="mt-1 p-1 pl-2 bg-gray-50 border border-gray-200 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-sky-500"
+              readonly>{{ appointment?.price || '...' }}</textarea>
           </div>
         </div>
       </div>

@@ -1,15 +1,15 @@
 import { Component, Input, Output, EventEmitter, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Appointment } from '../../../../../models/responses/appointment/appointment.model';
-import { AppointmentService } from '../../../../../shared/services/appointment/appointment.service';
-import { AppointmentActionService } from '../../../../../shared/services/appointment/appointment-action.service';
-import { ExamResultRequest } from '../../../../../models/requests/appointment/exam-result.request';
-import { AdminModalConfirmComponent } from '../../../../shared/components/modal-confirm/admin-modal-confirm.component';
-import { AdminModalConfirmDeleteComponent } from '../../../../shared/components/modal-confirm-delete/admin-modal-confirm-delete.component';
-import { FormatDatePipe } from '../../../../../shared/pipes/format-date.pipe';
-import { FormatDateTimePipe } from '../../../../../shared/pipes/format-datetime.pipe';
-import { FormatPhonePipe } from '../../../../../shared/pipes/format-phone.pipe';
+import { Appointment } from '../../../../models/responses/appointment/appointment.model';
+import { AppointmentService } from '../../../../shared/services/appointment/appointment.service';
+import { AppointmentActionService } from '../../../../shared/services/appointment/appointment-action.service';
+import { ExamResultRequest } from '../../../../models/requests/appointment/exam-result.request';
+import { AdminModalConfirmComponent } from '../../../shared/components/modal-confirm/admin-modal-confirm.component';
+import { AdminModalConfirmDeleteComponent } from '../../../shared/components/modal-confirm-delete/admin-modal-confirm-delete.component';
+import { FormatDatePipe } from '../../../../shared/pipes/format-date.pipe';
+import { FormatDateTimePipe } from '../../../../shared/pipes/format-datetime.pipe';
+import { FormatPhonePipe } from '../../../../shared/pipes/format-phone.pipe';
 import { ToastrService } from 'ngx-toastr';
 
 // Import các component con
@@ -20,12 +20,12 @@ import { AddTagForPatientComponent } from './tags/add-tag/add-tag-for-patient.co
 import { AddNoteComponent } from './notes/add-note/add-note.component';
 
 // Import services
-import { PatientTagService } from '../../../../../shared/services/patient/patient-tag.service';
-import { PatientNoteService } from '../../../../../shared/services/patient/patient-note.service';
-import { PatientNoteResponse } from '../../../../../models/responses/patient/patient-note.response';
+import { PatientTagService } from '../../../../shared/services/patient/patient-tag.service';
+import { PatientNoteService } from '../../../../shared/services/patient/patient-note.service';
+import { PatientNoteResponse } from '../../../../models/responses/patient/patient-note.response';
 
 // Import utility functions
-import { getStatusClassForList } from '../../../../../shared/util';
+import { getStatusClassForList } from '../../../../shared/util';
 
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faXmark, 

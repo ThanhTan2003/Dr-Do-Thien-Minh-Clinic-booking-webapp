@@ -193,6 +193,7 @@
                             <ng-container
                                 *ngIf="appointment.doctorScheduleResponse == null && appointment.serviceAppointmentResponse">
                                 <button
+                                    (click)="openSuggestedDoctorModal(appointment)"
                                     class="bg-emerald-500 text-white px-3 py-1 rounded border border-emerald-600 hover:bg-emerald-600 hover:text-white font-medium">
                                     Chọn bác sĩ &nbsp;<fa-icon [icon]="faChalkboardTeacher"></fa-icon>
                                 </button>
@@ -234,3 +235,10 @@
 
 <app-doctor-appointment-update *ngIf="showUpdateModal" [appointmentId]="selectedAppointmentId!"
     (close)="closeUpdateModal($event)"></app-doctor-appointment-update>
+
+<!-- Modal chọn bác sĩ -->
+<app-suggested-doctor *ngIf="showSuggestedDoctorModal" 
+    [appointment]="selectedAppointmentForDoctor!"
+    (doctorAssigned)="onDoctorAssigned($event)"
+    (close)="closeSuggestedDoctorModal()">
+</app-suggested-doctor>

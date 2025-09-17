@@ -10,7 +10,7 @@ import { DoctorStatus } from '../../../models/responses/doctor/doctor-status.mod
   providedIn: 'root'
 })
 export class DoctorService {
-  constructor(private http: HttpService) {}
+  constructor(private http: HttpService) { }
 
   private readonly API_URL = '/api/v1/appointment/doctor';
 
@@ -44,15 +44,15 @@ export class DoctorService {
   /**
  * Cập nhật avatar bác sĩ
  */
-updateAvatar(id: string, file: File): Observable<Doctor> {
-  const formData = new FormData();
-  formData.append('file', file, file.name);
+  updateAvatar(id: string, file: File): Observable<Doctor> {
+    const formData = new FormData();
+    formData.append('file', file, file.name);
 
-  return this.http.put<Doctor>(
-    `${this.API_URL}/${id}/avatar`,
-    formData
-  );
-}
+    return this.http.put<Doctor>(
+      `${this.API_URL}/${id}/avatar`,
+      formData
+    );
+  }
 
 
   /**
@@ -93,18 +93,27 @@ updateAvatar(id: string, file: File): Observable<Doctor> {
   }
 
   /**
-   * Tìm kiếm bác sĩ theo từ khóa và trạng thái
+ * Tìm bác sĩ theo từ khóa, trạng thái (tùy chọn) và danh mục dịch vụ
+ */
+  /**
+   * Tìm kiếm bác sĩ theo từ khoá + trạng thái (tuỳ chọn) + serviceCategoryId (phân trang)
    */
   searchDoctorsWithStatusAndCategory(
-    keyword: string, 
-    status: boolean, 
-    serviceCategoryId: string, 
-    page = 1, 
-    size = 10): Observable<PageResponse<Doctor>> {
-    return this.http.get<PageResponse<Doctor>>(
-      `${this.API_URL}/search/keyword-status-category?keyword=${keyword}&status=${status}&serviceCategoryId=${serviceCategoryId}&page=${page}&size=${size}`
-    );
+    keyword = '',
+    serviceCategoryId = '',
+    status: boolean | undefined,
+    page = 1,
+    size = 10
+  ): Observable<PageResponse<Doctor>> {
+    let url = `${this.API_URL}/search/keyword-status-category?keyword=${keyword}&serviceCategoryId=${serviceCategoryId}`;
+    if (status !== undefined) {
+      url += `&status=${status}`;
+    }
+    url += `&page=${page}&size=${size}`;
+
+    return this.http.get<PageResponse<Doctor>>(url);
   }
+
 
   /**
    * Lấy danh sách trạng thái

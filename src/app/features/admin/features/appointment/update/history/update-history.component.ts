@@ -3,12 +3,12 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faPlus, faRotate, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
-import { AppointmentService } from '../../../../../../shared/services/appointment/appointment.service';
-import { AppointmentResultResponse } from '../../../../../../models/responses/appointment/appointment-result.response';
-import { PageResponse } from '../../../../../../models/responses/page-response.model';
+import { AppointmentService } from '../../../../../shared/services/appointment/appointment.service';
+import { AppointmentResultResponse } from '../../../../../models/responses/appointment/appointment-result.response';
+import { PageResponse } from '../../../../../models/responses/page-response.model';
 import { ToastrService } from 'ngx-toastr';
-import { PaginationComponent } from '../../../../../shared/components/pagination/pagination.component';
-import { PageSizeSelectorComponent } from '../../../../../shared/components/page-size-selector/page-size-selector.component';
+import { PaginationComponent } from '../../../../shared/components/pagination/pagination.component';
+import { PageSizeSelectorComponent } from '../../../../shared/components/page-size-selector/page-size-selector.component';
 
 @Component({
   selector: 'app-update-history',

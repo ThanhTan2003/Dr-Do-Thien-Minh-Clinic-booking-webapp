@@ -1,8 +1,8 @@
 import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { PatientNoteService } from '../../../../../../../shared/services/patient/patient-note.service';
-import { PatientNoteRequest } from '../../../../../../../models/requests/patient/patient-note.request';
+import { PatientNoteService } from '../../../../../../shared/services/patient/patient-note.service';
+import { PatientNoteRequest } from '../../../../../../models/requests/patient/patient-note.request';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faPlus, faXmark } from '@fortawesome/free-solid-svg-icons';
 import { ToastrService } from 'ngx-toastr';

@@ -19,7 +19,7 @@ import {
 import { FormatDatePipe } from '../../../../shared/pipes/format-date.pipe';
 import { BirthYearPipe } from '../../../../shared/pipes/birth-year.pipe';
 import { ActivatedRoute, Router } from '@angular/router';
-import { DoctorAppointmentUpdateComponent } from '../../doctor/appointment/update/doctor-appointment-update.component';
+import { DoctorAppointmentUpdateComponent } from '../update/doctor-appointment-update.component';
 import { SuggestedDoctorComponent } from '../service-appointment/suggested-doctor/suggested-doctor.component';
 import { getStatusClassForList } from '../../../../shared/util/status.util';
 import { formatNumber } from '../../../../shared/util/format.util';

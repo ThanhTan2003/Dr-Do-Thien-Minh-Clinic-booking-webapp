@@ -7,7 +7,7 @@ import { Appointment } from '../../../../../../models/responses/appointment/appo
 import { PageResponse } from '../../../../../../models/responses/page-response.model';
 import { PageSizeSelectorComponent } from '../../../../../shared/components/page-size-selector/page-size-selector.component';
 import { PaginationComponent } from '../../../../../shared/components/pagination/pagination.component';
-import { DoctorAppointmentUpdateComponent } from '../../../../doctor/appointment/update/doctor-appointment-update.component';
+import { DoctorAppointmentUpdateComponent } from '../../../../appointment/update/doctor-appointment-update.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { 
   faCircleQuestion,

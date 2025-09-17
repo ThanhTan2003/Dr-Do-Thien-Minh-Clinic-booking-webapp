@@ -17,7 +17,7 @@ import { Appointment } from '../../../../../../models/responses/appointment/appo
 import { PageResponse } from '../../../../../../models/responses/page-response.model';
 import { PaginationComponent } from '../../../../../shared/components/pagination/pagination.component';
 import { PageSizeSelectorComponent } from '../../../../../shared/components/page-size-selector/page-size-selector.component';
-import { DoctorAppointmentUpdateComponent } from '../../../appointment/update/doctor-appointment-update.component';
+import { DoctorAppointmentUpdateComponent } from '../../../../appointment/update/doctor-appointment-update.component';
 import { getBirthYearAsString, getVietnameseDayName, formatDateToString } from '../../../../../../shared/util';
 import { getStatusClassForList } from '../../../../../../shared/util/status.util';
 
