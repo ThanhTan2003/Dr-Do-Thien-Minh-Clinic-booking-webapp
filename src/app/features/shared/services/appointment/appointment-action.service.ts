@@ -30,8 +30,16 @@ export class AppointmentActionService {
         return this.http.post<Appointment>(`${this.API_URL}/customer`, request);
     }
 
+    createByAdmin(request: AppointmentRequest): Observable<Appointment> {
+        return this.http.post<Appointment>(`${this.API_URL}/admin`, request);
+    }
+
     createBookingServiceByCustomer(request: ServiceAppointmentRequest): Observable<Appointment> {
         return this.http.post<Appointment>(`${this.API_URL}/customer/booking-service`, request);
+    }
+
+    createBookingServiceByAdmin(request: ServiceAppointmentRequest): Observable<Appointment> {
+        return this.http.post<Appointment>(`${this.API_URL}/admin/booking-service`, request);
     }
 
     /**
@@ -114,5 +122,32 @@ export class AppointmentActionService {
             request
         );
     }
+
+    /**
+    * 4.1 Lấy danh sách gợi ý thay thế bác sĩ cho lịch hẹn (dựa vào bác sĩ hiện tại)
+    */
+    getSuggestedDoctorsByDoctor(
+        appointmentId: string,
+        keyword = '',
+        page = 1,
+        size = 10
+    ): Observable<PageResponse<SuggestedDoctor>> {
+        let url = `${this.API_URL}/${appointmentId}/doctor/suggested-doctors?keyword=${keyword}&page=${page}&size=${size}`;
+        return this.http.get<PageResponse<SuggestedDoctor>>(url);
+    }
+
+    /**
+    * 4.2 Chỉ định bác sĩ thay thế cho lịch hẹn
+    */
+    assignDoctorByDoctor(
+        appointmentId: string,
+        request: AssignDoctorRequest
+    ): Observable<Appointment> {
+        return this.http.post<Appointment>(
+            `${this.API_URL}/${appointmentId}/doctor/assign-doctor`,
+            request
+        );
+    }
+
 
 }

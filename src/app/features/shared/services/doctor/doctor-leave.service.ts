@@ -64,8 +64,8 @@ export class DoctorLeave {
   /**
    * Lấy các lịch nghỉ bác sĩ sắp tới
    */
-  getUpcomingDoctorLeaves(doctorId: string): Observable<string[]> {
-    return this.http.get<string[]>(
+  getUpcomingDoctorLeaves(doctorId: string): Observable<Date[]> {
+    return this.http.get<Date[]>(
       `${this.API_URL}/upcoming/doctor?doctorId=${doctorId}`
     );
   }

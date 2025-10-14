@@ -24,7 +24,15 @@ export class ClinicDetailComponent implements OnInit {
     clinicName: '',
     address: '',
     description: '',
-    supportPhone: ''
+    supportPhone: '',
+    allowBookingByDoctor: false,
+    allowBookingByService: false,
+    sendNotificationToDoctorOnBooking: false,
+    sendNotificationToZaloOAAdminOnBooking: false,
+    sendNotificationToPatientOnBooking: false,
+    sendNotificationOnConfirmed: false,
+    sendReminderBefore1Day: false,
+    sendThanksAfterVisit: false
   };
 
   showConfirmUpdate = false;
@@ -47,7 +55,15 @@ export class ClinicDetailComponent implements OnInit {
           clinicName: res.clinicName,
           address: res.address,
           description: res.description,
-          supportPhone: res.supportPhone
+          supportPhone: res.supportPhone,
+          allowBookingByDoctor: res.allowBookingByDoctor || false,
+          allowBookingByService: res.allowBookingByService || false,
+          sendNotificationToDoctorOnBooking: res.sendNotificationToDoctorOnBooking || false,
+          sendNotificationToZaloOAAdminOnBooking: res.sendNotificationToZaloOAAdminOnBooking || false,
+          sendNotificationToPatientOnBooking: res.sendNotificationToPatientOnBooking || false,
+          sendNotificationOnConfirmed: res.sendNotificationOnConfirmed || false,
+          sendReminderBefore1Day: res.sendReminderBefore1Day || false,
+          sendThanksAfterVisit: res.sendThanksAfterVisit || false
         };
         this.loading = false;
       },

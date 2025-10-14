@@ -1,9 +1,9 @@
 <div class="min-h-screen flex flex-col bg-white">
   <!-- Header -->
-  <div class="flex flex-col items-center pt-4">
+  <div class="flex flex-col items-center pt-4 bg-gradient-to-b from-sky-200 to-white pb-4">
     <img src="/login/logo-PKDKDQ.png" alt="Logo Phòng khám" class="h-20 mb-2" />
     <div class="text-sky-700 text-center text-lg md:text-xl font-semibold">
-      {{ clinic?.clinicName || 'Phòng Khám Đa Khoa Dân Quý' }}
+      {{ clinic?.clinicName || 'Phòng Khám Đa Khoa' }}
     </div>
   </div>
 
@@ -13,10 +13,15 @@
       ĐẶT LỊCH KHÁM BỆNH<br />TRỰC TUYẾN
     </h1>
 
+    <!-- Thông tin mô tả phòng khám (nếu có) -->
+    <div *ngIf="hasDescription && !loading" class="max-w-md mx-auto mb-4 p-4 bg-sky-50 border border-sky-200 rounded-xl">
+      <p class="text-sm text-sky-800 text-center leading-relaxed">{{ clinic?.description }}</p>
+    </div>
+
     <!-- Các nút chức năng -->
     <div class="space-y-4 max-w-md mx-auto mt-10 p-5 pt-0 pb-0">
       <!-- Khám theo bác sĩ -->
-      <button (click)="goToByDoctor()"
+      <button *ngIf="canBookByDoctor" (click)="goToByDoctor()"
         class="w-full p-6 bg-white border-2 border-blue-600 text-blue-700 rounded-2xl shadow-md transition duration-200 hover:bg-blue-50 flex items-center justify-between">
         <div class="flex items-center">
           <div class="bg-blue-100 p-3 rounded-full mr-4">
@@ -30,7 +35,7 @@
       </button>
 
       <!-- Khám theo dịch vụ -->
-      <button (click)="goToByService()"
+      <button *ngIf="canBookByService" (click)="goToByService()"
         class="w-full p-6 bg-white border-2 border-cyan-600 text-cyan-700 rounded-2xl shadow-md transition duration-200 hover:bg-cyan-50 flex items-center justify-between">
         <div class="flex items-center">
           <div class="bg-cyan-100 p-3 rounded-full mr-4">
@@ -53,6 +58,34 @@
           <div class="text-left">
             <h3 class="text-xl font-bold">Hồ sơ / Lịch sử</h3>
             <p class="text-sm">Quản lý hồ sơ và lịch sử khám</p>
+          </div>
+        </div>
+      </button>
+
+      <!-- Lịch khám -->
+      <button (click)="goToAppointmentSchedule()"
+        class="w-full p-6 bg-white border-2 border-blue-indigo-600 text-indigo-700 rounded-2xl shadow-md transition duration-200 hover:bg-indigo-50 flex items-center justify-between">
+        <div class="flex items-center">
+          <div class="bg-blue-indigo-100 p-3 rounded-full mr-4">
+            <fa-icon [icon]="faCalendarAlt" class="text-2xl text-blue-indigo-600"></fa-icon>
+          </div>
+          <div class="text-left">
+            <h3 class="text-xl font-bold">Lịch khám</h3>
+            <p class="text-sm">Lịch khám bệnh / Tái khám</p>
+          </div>
+        </div>
+      </button>
+
+      <!-- Đăng xuất -->
+      <button (click)="logout()"
+        class="w-full p-6 bg-white border-2 border-red-600 text-red-700 rounded-2xl shadow-md transition duration-200 hover:bg-red-50 flex items-center justify-between">
+        <div class="flex items-center">
+          <div class="bg-red-100 p-3 rounded-full mr-4">
+            <fa-icon [icon]="faSignOutAlt" class="text-2xl text-red-600"></fa-icon>
+          </div>
+          <div class="text-left">
+            <h3 class="text-xl font-bold">Đăng xuất</h3>
+            <p class="text-sm">Thoát khỏi hệ thống</p>
           </div>
         </div>
       </button>

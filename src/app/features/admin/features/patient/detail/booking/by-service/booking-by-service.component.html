@@ -1,0 +1,198 @@
+<div class="p-6 bg-gray-50 min-h-screen">
+  <!-- Header -->
+  <!-- <div class="bg-white rounded-lg shadow-sm border border-sky-200 p-6 mb-6">
+    <h1 class="text-2xl font-bold text-sky-800 mb-2">
+      <fa-icon [icon]="faStethoscope" class="mr-2"></fa-icon>
+      ĐĂNG KÝ KHÁM BỆNH THEO DỊCH VỤ
+    </h1>
+    <div class="text-gray-600" *ngIf="patient">
+      Đăng ký lịch khám cho bệnh nhân: <span class="font-semibold text-sky-700">{{ patient.fullName }}</span>
+    </div>
+  </div> -->
+
+  <!-- Progress Steps -->
+  <div class="bg-white rounded-lg shadow-sm border border-sky-200 p-6 mb-6">
+    <div class="flex items-center justify-between">
+      <!-- Step 1: Chọn dịch vụ -->
+      <div class="flex items-center cursor-pointer" (click)="onStepClick(1)">
+        <div class="flex items-center justify-center w-10 h-10 rounded-full border-2 mr-3"
+             [ngClass]="{
+               'bg-sky-600 border-sky-600 text-white': isStepCompleted(1),
+               'bg-white border-sky-600 text-sky-600': currentStep === 1,
+               'bg-gray-100 border-gray-300 text-gray-400': !canAccessStep(1)
+             }">
+          <fa-icon [icon]="isStepCompleted(1) ? faCheckCircle : faStethoscope"></fa-icon>
+        </div>
+        <div class="text-sm font-medium"
+             [ngClass]="{
+               'text-sky-600': currentStep >= 1,
+               'text-gray-400': !canAccessStep(1)
+             }">
+          Chọn dịch vụ
+        </div>
+      </div>
+
+      <fa-icon [icon]="faArrowRight" class="text-gray-400 mx-2"></fa-icon>
+
+      <!-- Step 2: Chọn ngày giờ -->
+      <div class="flex items-center cursor-pointer" (click)="onStepClick(2)">
+        <div class="flex items-center justify-center w-10 h-10 rounded-full border-2 mr-3"
+             [ngClass]="{
+               'bg-sky-600 border-sky-600 text-white': isStepCompleted(2),
+               'bg-white border-sky-600 text-sky-600': currentStep === 2,
+               'bg-gray-100 border-gray-300 text-gray-400': !canAccessStep(2)
+             }">
+          <fa-icon [icon]="isStepCompleted(2) ? faCheckCircle : faCalendarAlt"></fa-icon>
+        </div>
+        <div class="text-sm font-medium"
+             [ngClass]="{
+               'text-sky-600': currentStep >= 2,
+               'text-gray-400': !canAccessStep(2)
+             }">
+          Chọn ngày giờ
+        </div>
+      </div>
+
+      <fa-icon [icon]="faArrowRight" class="text-gray-400 mx-2"></fa-icon>
+
+      <!-- Step 3: Xác nhận -->
+      <div class="flex items-center cursor-pointer" (click)="onStepClick(3)">
+        <div class="flex items-center justify-center w-10 h-10 rounded-full border-2 mr-3"
+             [ngClass]="{
+               'bg-sky-600 border-sky-600 text-white': isStepCompleted(3),
+               'bg-white border-sky-600 text-sky-600': currentStep === 3,
+               'bg-gray-100 border-gray-300 text-gray-400': !canAccessStep(3)
+             }">
+          <fa-icon [icon]="faCheckCircle"></fa-icon>
+        </div>
+        <div class="text-sm font-medium"
+             [ngClass]="{
+               'text-sky-600': currentStep >= 3,
+               'text-gray-400': !canAccessStep(3)
+             }">
+          Xác nhận
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Step Content -->
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <!-- Step 1: Chọn dịch vụ -->
+    <div class="bg-white rounded-lg shadow-sm border border-sky-200 p-6">
+      <h3 class="text-lg font-semibold text-sky-800 mb-4 flex items-center">
+        <fa-icon [icon]="faStethoscope" class="mr-2"></fa-icon>
+        Bước 1: Chọn dịch vụ khám
+      </h3>
+      
+      <div *ngIf="!selectedService" class="text-center py-8">
+        <fa-icon [icon]="faStethoscope" class="text-4xl text-gray-300 mb-4"></fa-icon>
+        <p class="text-gray-500 mb-4">Chưa chọn dịch vụ</p>
+        <button 
+          (click)="openSelectServiceModal()"
+          class="bg-sky-600 text-white px-6 py-2 rounded-lg hover:bg-sky-700 font-semibold">
+          Chọn dịch vụ khám
+        </button>
+      </div>
+
+      <div *ngIf="selectedService" class="border border-green-200 bg-green-50 rounded-lg p-4">
+        <div class="flex items-center justify-between">
+          <div class="flex-1">
+            <div class="font-semibold text-green-800">{{ selectedService.serviceName }}</div>
+            <div class="text-sm text-green-600">Chuyên môn: {{ selectedServiceCategory?.categoryName || '...' }}</div>
+            <div class="text-sm text-green-600">Phí khám: {{ selectedService.price }}</div>
+          </div>
+          <button 
+            (click)="openSelectServiceModal()"
+            class="bg-white text-sky-600 border border-sky-600 px-4 py-2 rounded-lg hover:bg-sky-50 text-sm font-semibold">
+            Thay đổi
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 2: Chọn ngày giờ -->
+    <div class="bg-white rounded-lg shadow-sm border border-sky-200 p-6">
+      <h3 class="text-lg font-semibold text-sky-800 mb-4 flex items-center">
+        <fa-icon [icon]="faCalendarAlt" class="mr-2"></fa-icon>
+        Bước 2: Chọn ngày giờ khám
+      </h3>
+
+      <div *ngIf="!selectedDate || !selectedTimeFrame" class="text-center py-8">
+        <fa-icon [icon]="faCalendarAlt" class="text-4xl text-gray-300 mb-4"></fa-icon>
+        <p class="text-gray-500 mb-4">Chưa chọn ngày giờ khám</p>
+        <button 
+          (click)="openSelectDateModal()"
+          [disabled]="!canAccessStep(2)"
+          class="bg-sky-600 text-white px-6 py-2 rounded-lg hover:bg-sky-700 font-semibold disabled:bg-gray-300 disabled:cursor-not-allowed">
+          Chọn ngày giờ khám
+        </button>
+      </div>
+
+      <div *ngIf="selectedDate && selectedTimeFrame" class="border border-green-200 bg-green-50 rounded-lg p-4">
+        <div class="flex items-center justify-between">
+          <div class="flex-1">
+            <div class="font-semibold text-green-800">{{ selectedDate | date:'dd/MM/yyyy' }}</div>
+            <div class="text-sm text-green-600">{{ selectedTimeFrame.fullName }}</div>
+          </div>
+          <button 
+            (click)="openSelectDateModal()"
+            class="bg-white text-sky-600 border border-sky-600 px-4 py-2 rounded-lg hover:bg-sky-50 text-sm font-semibold">
+            Thay đổi
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 3: Xác nhận -->
+    <div class="bg-white rounded-lg shadow-sm border border-sky-200 p-6">
+      <h3 class="text-lg font-semibold text-sky-800 mb-4 flex items-center">
+        <fa-icon [icon]="faCheckCircle" class="mr-2"></fa-icon>
+        Bước 3: Xác nhận thông tin
+      </h3>
+
+      <div class="text-center py-8">
+        <fa-icon [icon]="faInfoCircle" class="text-4xl text-gray-300 mb-4"></fa-icon>
+        <p class="text-gray-500 mb-4">Kiểm tra và xác nhận thông tin lịch hẹn</p>
+        <button 
+          (click)="openConfirmModal()"
+          [disabled]="!canAccessStep(3) || !selectedService || !selectedDate || !selectedTimeFrame"
+          class="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 font-semibold disabled:bg-gray-300 disabled:cursor-not-allowed">
+          Xác nhận thông tin lịch hẹn
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modals -->
+<app-select-service 
+  *ngIf="showSelectServiceModal"
+  (serviceSelected)="onServiceSelected($event)"
+  (close)="onSelectServiceModalClose()">
+</app-select-service>
+
+<app-select-date 
+  *ngIf="showSelectDateModal && selectedService"
+  [serviceId]="selectedService.id"
+  (dateTimeSelected)="onDateTimeSelected($event)"
+  (close)="onSelectDateModalClose()">
+</app-select-date>
+
+<app-confirm 
+  *ngIf="showConfirmModal"
+  [patient]="patient"
+  [selectedService]="selectedService"
+  [selectedDate]="selectedDate"
+  [selectedTimeFrame]="selectedTimeFrame"
+  (confirm)="onFinalConfirm()"
+  (close)="onConfirmModalClose()">
+</app-confirm>
+
+<app-admin-modal-confirm 
+  *ngIf="showFinalConfirmModal"
+  title="XÁC NHẬN ĐẶT LỊCH KHÁM"
+  content="Bạn có chắc chắn muốn đặt lịch khám với thông tin đã chọn? Việc này không thể hoàn tác."
+  (confirm)="createAppointment()"
+  (cancel)="onFinalConfirmModalClose()">
+</app-admin-modal-confirm>

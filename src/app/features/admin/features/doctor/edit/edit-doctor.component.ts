@@ -23,7 +23,7 @@ import { Subject } from 'rxjs';
   ],
   templateUrl: './edit-doctor.component.html'
 })
-export class EditDoctorComponent implements OnInit {
+export class EditDoctorComponent implements OnInit, OnDestroy {
   faArrowLeft = faArrowLeft;
   doctorId: string | null = null;
   private destroy$ = new Subject<void>();
@@ -120,8 +120,23 @@ export class EditDoctorComponent implements OnInit {
     }
   }
 
-  goTo(path: string) {
-    this.router.navigate([path], { relativeTo: this.route });
+  getTabHref(path: string): string {
+    const currentUrl = this.router.url;
+    const baseUrl = currentUrl.split('/').slice(0, -1).join('/');
+    return `${baseUrl}/${path}`;
+  }
+
+  goTo(path: string, event?: Event) {
+    // Chỉ prevent default và navigate nếu là left click (không có modifier keys)
+    if (event) {
+      const mouseEvent = event as MouseEvent;
+      if (!mouseEvent.ctrlKey && !mouseEvent.metaKey && !mouseEvent.shiftKey) {
+        event.preventDefault();
+        this.router.navigate([path], { relativeTo: this.route });
+      }
+    } else {
+      this.router.navigate([path], { relativeTo: this.route });
+    }
   }
 
   isActive(path: string): boolean {
@@ -129,7 +144,9 @@ export class EditDoctorComponent implements OnInit {
     return this.router.url.includes(path);
   }
 
-  ngDestroy(): void {
-    console.log("edit-doctor.component ngDestroy....................");
+  ngOnDestroy(): void {
+    console.log("edit-doctor.component ngOnDestroy....................");
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

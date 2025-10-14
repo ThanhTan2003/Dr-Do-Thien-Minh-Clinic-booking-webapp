@@ -22,6 +22,7 @@ import { ToastrService } from 'ngx-toastr';
 import { ModalLoadingComponent } from '../../../shared/components/modal-loading.component';
 
 import {formatDate, formatPhone, formatInsuranceId, formatNationalId} from '../../../shared/util/format.util'
+import { getVietnameseDayName } from '../../../shared/util/date.util';
 
 @Component({
   selector: 'app-confirm',
@@ -72,6 +73,10 @@ export class ConfirmComponent implements OnInit, OnDestroy {
     private timeFrameService: TimeFrameService,
     private toastr: ToastrService
   ) { }
+
+  getVietnameseDayName(value: string | Date): string {
+    return getVietnameseDayName(new Date(value));
+  }
 
   formatDate(value: string | Date): string {
     return formatDate(value);

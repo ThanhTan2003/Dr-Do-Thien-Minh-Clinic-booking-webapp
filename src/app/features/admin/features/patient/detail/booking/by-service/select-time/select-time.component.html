@@ -1,0 +1,66 @@
+<!-- Modal Overlay -->
+<div class="fixed inset-0 flex items-center justify-center bg-black/80 z-50">
+  <div class="bg-white rounded-xl shadow-xl w-3/5 max-w-3xl max-h-[90vh] flex flex-col">
+    
+    <!-- Header -->
+    <div class="bg-sky-600 text-white p-2 rounded-t-xl flex justify-between items-center">
+      <h2 class="text-xl font-bold text-white ml-2">
+        <fa-icon [icon]="faClock" class="mr-2"></fa-icon>
+        CHỌN KHUNG GIỜ
+      </h2>
+      <button
+        (click)="closeModal()"
+        class="text-white bg-transparent hover:bg-red-500 rounded-full p-1 flex items-center justify-center mr-2"
+        style="width: 35px; height: 35px;">
+        <fa-icon [icon]="faXmark" class="text-lg"></fa-icon>
+      </button>
+    </div>
+
+    <!-- Content -->
+    <div class="p-6 overflow-y-auto">
+      
+      <!-- Loading -->
+      <div *ngIf="loading" class="flex flex-col items-center justify-center py-8">
+        <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-sky-600"></div>
+        <span class="mt-4 text-sky-700 font-medium text-lg">Đang tải khung giờ...</span>
+      </div>
+      
+      <!-- Time slots -->
+      <div *ngIf="!loading">
+        <ng-container *ngIf="timeSlots.length > 0; else noTimeSlots">
+          <div *ngFor="let sessionGroup of groupTimeSlots()">
+            <h4 class="text-md font-bold text-gray-600 pb-2 mt-4">Buổi {{ sessionGroup.session }}:</h4>
+            <div class="grid grid-cols-2 gap-2">
+              <button
+                *ngFor="let slot of sessionGroup.slots"
+                class="p-2 text-center rounded-lg border bg-white text-cyan-700 border-sky-700 hover:bg-sky-100 font-semibold"
+                (click)="handleTimeSlotClick(slot)">
+                {{ slot.name }}
+              </button>
+            </div>
+          </div>
+          <p class="mt-4 text-base text-gray-500">
+            Tất cả theo múi giờ Việt Nam <b>GMT+7</b>
+          </p>
+        </ng-container>
+        
+        <ng-template #noTimeSlots>
+          <div class="text-center text-gray-500 py-8">
+            <fa-icon [icon]="faClock" class="text-4xl text-gray-300 mb-4"></fa-icon>
+            <p class="text-lg">Không có khung giờ khả dụng.</p>
+          </div>
+        </ng-template>
+      </div>
+      
+      <!-- Close button -->
+      <div class="flex justify-end mt-6">
+        <button
+          (click)="closeModal()"
+          class="px-6 py-2 bg-gradient-to-r from-cyan-600 to-sky-700 text-white font-semibold rounded-lg hover:from-cyan-700 hover:to-sky-800">
+          Đóng
+        </button>
+      </div>
+      
+    </div>
+  </div>
+</div>

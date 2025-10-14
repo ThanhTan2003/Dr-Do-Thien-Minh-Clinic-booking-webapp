@@ -85,7 +85,7 @@
         </div>
         <div class="grid [grid-template-columns:4fr_6fr] gap-2">
           <p class="font-semibold">Ngày khám:</p>
-          <p>{{ formatDate(appointment?.appointmentDate || '') || '...' }}</p>
+          <p>{{ getVietnameseDayName(appointment?.appointmentDate || '') }} - {{ formatDate(appointment?.appointmentDate || '') || '...' }}</p>
         </div>
         <div class="grid [grid-template-columns:4fr_6fr] gap-2">
           <p class="font-semibold">Khung giờ:</p>

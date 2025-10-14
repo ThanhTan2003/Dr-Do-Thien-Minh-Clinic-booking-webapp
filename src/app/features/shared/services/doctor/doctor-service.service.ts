@@ -80,6 +80,27 @@ export class DoctorServiceService {
     return this.http.get<PageResponse<DoctorService>>(url);
   }
 
+  searchByDoctorAndCustomer(
+    keyword = '',
+    doctorId = '',
+    status?: boolean,
+    doctorStatus?: boolean,
+    page = 1,
+    size = 10
+  ): Observable<PageResponse<DoctorService>> {
+    let url = `${this.API_URL}/customer/search-by-doctor?keyword=${keyword}&doctorId=${doctorId}&page=${page}&size=${size}`;
+
+    if (status !== undefined) {
+      url += `&status=${status}`;
+    }
+
+    if (doctorStatus !== undefined) {
+      url += `&doctorStatus=${doctorStatus}`;
+    }
+
+    return this.http.get<PageResponse<DoctorService>>(url);
+  }
+
 
 
   /**

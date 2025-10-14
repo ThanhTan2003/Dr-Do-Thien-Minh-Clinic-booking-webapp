@@ -138,7 +138,10 @@
                     <td class="border border-gray-400 p-2 text-center">
                         {{ (currentPage - 1) * pageSize + i + 1 }}
                     </td>
-                    <td class="border border-gray-400 p-2 text-left whitespace-nowrap">
+                    <td class="border border-gray-400 p-2 text-left whitespace-nowrap cursor-copy"
+                        (click)="copyToClipboard(appointment.id)"
+                        title="Sao chép"
+                    >
                         {{ appointment.id }}
                     </td>
 
@@ -226,3 +229,8 @@
     (doctorAssigned)="onDoctorAssigned($event)"
     (close)="closeSuggestedDoctorModal()">
 </app-suggested-doctor>
+
+<!-- Notification -->
+<div *ngIf="notification" class="fixed bottom-4 right-4 bg-green-500 text-white px-4 py-2 rounded shadow-lg">
+    {{notification}}
+  </div>

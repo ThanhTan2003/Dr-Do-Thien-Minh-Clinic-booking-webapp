@@ -7,10 +7,11 @@
 
     <!-- Tab Menu -->
     <div class="bg-slate-100 flex justify-start space-x-4 w-full rounded text-gray-700 shadow-md">
-        <button *ngFor="let item of menuItems"
-            [class]="'py-2 px-4 font-bold rounded ' + (selectedSubMenuId === item.id ? 'text-sky-600 border border-sky-600 hover:bg-blue-100' : 'hover:bg-sky-700 hover:text-white')"
-            (click)="onMenuSelect(item)">
+        <a *ngFor="let item of menuItems"
+            [href]="getMenuHref(item)"
+            [class]="'py-2 px-4 font-bold rounded no-underline block ' + (selectedSubMenuId === item.id ? 'text-sky-600 border border-sky-600 hover:bg-blue-100' : 'hover:bg-sky-700 hover:text-white')"
+            (click)="onMenuSelect(item, $event)">
             <fa-icon [icon]="item.icon"></fa-icon> &nbsp;&nbsp;{{item.label}}
-        </button>
+        </a>
     </div>
 </div>

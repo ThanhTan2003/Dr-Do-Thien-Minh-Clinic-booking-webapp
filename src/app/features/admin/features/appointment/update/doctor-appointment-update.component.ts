@@ -18,6 +18,8 @@ import { UpdateNotesComponent } from './notes/update-notes.component';
 import { UpdateHistoryComponent } from './history/update-history.component';
 import { AddTagForPatientComponent } from './tags/add-tag/add-tag-for-patient.component';
 import { AddNoteComponent } from './notes/add-note/add-note.component';
+import { DoctorReplacementComponent } from '../doctor-replacement/doctor-replacement.component';
+import { ZaloOaInfoComponent } from './zalo-oa-info/zalo-oa-info.component';
 
 // Import services
 import { PatientTagService } from '../../../../shared/services/patient/patient-tag.service';
@@ -44,7 +46,9 @@ import { faXmark,
   faCheckCircle,
   faRedo,
   faPen,
-  faHistory } from '@fortawesome/free-solid-svg-icons';
+  faExchangeAlt,
+  faHistory,
+  faUser } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-doctor-appointment-update',
@@ -63,7 +67,9 @@ import { faXmark,
     UpdateNotesComponent,
     UpdateHistoryComponent,
     AddTagForPatientComponent,
-    AddNoteComponent
+    AddNoteComponent,
+    DoctorReplacementComponent,
+    ZaloOaInfoComponent
   ]
 })
 export class DoctorAppointmentUpdateComponent implements OnInit {
@@ -93,6 +99,8 @@ export class DoctorAppointmentUpdateComponent implements OnInit {
   faCheckCircle = faCheckCircle;
   faRedo = faRedo;
   faPen = faPen;
+  faExchangeAlt =faExchangeAlt;
+  faUser = faUser;
 
   appointment: Appointment | null = null;
 
@@ -100,6 +108,8 @@ export class DoctorAppointmentUpdateComponent implements OnInit {
   showConfirm: boolean = false;
   confirmLoading: boolean = false;
   error: string = '';
+
+  isDoctorReplaced: boolean = false;
 
   // Tab system
   activeTab: string = 'tags';
@@ -149,6 +159,12 @@ export class DoctorAppointmentUpdateComponent implements OnInit {
   confirmActionType: 'confirm' | 'cancel' | 'markDone' | 'reconfirm' | 'update' | null = null;
   confirmActionLabel: string = '';
   confirmActionContent: string = '';
+
+  // Modal thay thế bác sĩ
+  showDoctorReplacementModal: boolean = false;
+
+  // Modal thông tin Zalo
+  showZaloOaInfoModal: boolean = false;
 
   constructor(
     private appointmentService: AppointmentService,
@@ -224,6 +240,10 @@ export class DoctorAppointmentUpdateComponent implements OnInit {
   }
 
   closeModal(): void {
+    if (this.isDoctorReplaced) {
+      this.close.emit(true);
+      return;
+    }
     this.close.emit(false);
   }
 
@@ -529,5 +549,31 @@ export class DoctorAppointmentUpdateComponent implements OnInit {
         this.confirmLoading = false;
       }
     });
+  }
+
+  // Modal thay thế bác sĩ methods
+  openDoctorReplacementModal(): void {
+    this.showDoctorReplacementModal = true;
+  }
+
+  closeDoctorReplacementModal(): void {
+    this.showDoctorReplacementModal = false;
+  }
+
+  onDoctorReplaced(replaced: boolean): void {
+    if (replaced) {
+      this.loadAppointment(); // Reload appointment to get updated doctor info
+      this.isDoctorReplaced = true;
+    }
+    this.closeDoctorReplacementModal();
+  }
+
+  // Modal thông tin Zalo methods
+  openZaloOaInfoModal(): void {
+    this.showZaloOaInfoModal = true;
+  }
+
+  closeZaloOaInfoModal(): void {
+    this.showZaloOaInfoModal = false;
   }
 }

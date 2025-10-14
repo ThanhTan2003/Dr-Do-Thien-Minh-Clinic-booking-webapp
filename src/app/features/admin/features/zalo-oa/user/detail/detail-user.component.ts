@@ -37,11 +37,11 @@ export class DetailUserComponent implements OnInit {
   faNoteSticky = faNoteSticky;
   faFileMedical = faFileMedical;
   tabs = [
-    {
-      label: 'NHÓM ĐỐI TƯỢNG',
-      path: 'nhom-doi-tuong',
-      icon: this.faUserGroup
-    },
+    // {
+    //   label: 'NHÓM ĐỐI TƯỢNG',
+    //   path: 'nhom-doi-tuong',
+    //   icon: this.faUserGroup
+    // },
     {
       label: 'GHI CHÚ',
       path: 'ghi-chu',
@@ -69,7 +69,7 @@ export class DetailUserComponent implements OnInit {
 
         // Nếu không có route con nào active hoặc route không hợp lệ, mới chuyển về tab mặc định
         if (!currentPath || !isValidPath) {
-          this.goTo('nhom-doi-tuong');
+          this.goTo('ghi-chu');
         }
       }
     });
@@ -107,8 +107,23 @@ export class DetailUserComponent implements OnInit {
     }
   }
 
-  goTo(path: string) {
-    this.router.navigate([path], { relativeTo: this.route });
+  getTabHref(path: string): string {
+    const currentUrl = this.router.url;
+    const baseUrl = currentUrl.split('/').slice(0, -1).join('/');
+    return `${baseUrl}/${path}`;
+  }
+
+  goTo(path: string, event?: Event) {
+    // Chỉ prevent default và navigate nếu là left click (không có modifier keys)
+    if (event) {
+      const mouseEvent = event as MouseEvent;
+      if (!mouseEvent.ctrlKey && !mouseEvent.metaKey && !mouseEvent.shiftKey) {
+        event.preventDefault();
+        this.router.navigate([path], { relativeTo: this.route });
+      }
+    } else {
+      this.router.navigate([path], { relativeTo: this.route });
+    }
   }
 
   isActive(path: string): boolean {

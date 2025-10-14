@@ -6,7 +6,13 @@ import { FormsModule } from '@angular/forms';
 import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { faArrowLeft, faHistory, faUserGroup, faNoteSticky, faFileMedical } from '@fortawesome/free-solid-svg-icons';
+import { 
+  faArrowLeft, 
+  faHistory, 
+  faUserGroup, 
+  faNoteSticky, 
+  faFileMedical,
+  faCalendarPlus } from '@fortawesome/free-solid-svg-icons';
 import { PatientInformationComponent } from './patient-information/patient-information.component';
 
 @Component({
@@ -25,6 +31,7 @@ export class PatientDetailComponent implements OnInit {
   faUserGroup = faUserGroup;
   faNoteSticky = faNoteSticky;
   faFileMedical = faFileMedical;
+  faCalendarPlus = faCalendarPlus;
   tabs = [
     {
       label: 'THÔNG TIN ZALO',
@@ -45,6 +52,11 @@ export class PatientDetailComponent implements OnInit {
       label: 'LỊCH SỬ KHÁM BỆNH',
       path: 'lich-su-kham-benh',
       icon: this.faHistory
+    },
+    {
+      label: 'ĐĂNG KÝ KHÁM BỆNH',
+      path: 'dang-ky-kham-benh',
+      icon: this.faCalendarPlus
     }
   ];
 
@@ -99,8 +111,23 @@ export class PatientDetailComponent implements OnInit {
     }
   }
 
-  goTo(path: string) {
-    this.router.navigate([path], { relativeTo: this.route });
+  getTabHref(path: string): string {
+    const currentUrl = this.router.url;
+    const baseUrl = currentUrl.split('/').slice(0, -1).join('/');
+    return `${baseUrl}/${path}`;
+  }
+
+  goTo(path: string, event?: Event) {
+    // Chỉ prevent default và navigate nếu là left click (không có modifier keys)
+    if (event) {
+      const mouseEvent = event as MouseEvent;
+      if (!mouseEvent.ctrlKey && !mouseEvent.metaKey && !mouseEvent.shiftKey) {
+        event.preventDefault();
+        this.router.navigate([path], { relativeTo: this.route });
+      }
+    } else {
+      this.router.navigate([path], { relativeTo: this.route });
+    }
   }
 
   isActive(path: string): boolean {

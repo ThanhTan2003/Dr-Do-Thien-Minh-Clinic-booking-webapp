@@ -105,8 +105,23 @@ export class EditServiceComponent implements OnInit, OnDestroy {
     }
   }
 
-  goTo(path: string) {
-    this.router.navigate([path], { relativeTo: this.route });
+  getTabHref(path: string): string {
+    const currentUrl = this.router.url;
+    const baseUrl = currentUrl.split('/').slice(0, -1).join('/');
+    return `${baseUrl}/${path}`;
+  }
+
+  goTo(path: string, event?: Event) {
+    // Chỉ prevent default và navigate nếu là left click (không có modifier keys)
+    if (event) {
+      const mouseEvent = event as MouseEvent;
+      if (!mouseEvent.ctrlKey && !mouseEvent.metaKey && !mouseEvent.shiftKey) {
+        event.preventDefault();
+        this.router.navigate([path], { relativeTo: this.route });
+      }
+    } else {
+      this.router.navigate([path], { relativeTo: this.route });
+    }
   }
 
   isActive(path: string): boolean {

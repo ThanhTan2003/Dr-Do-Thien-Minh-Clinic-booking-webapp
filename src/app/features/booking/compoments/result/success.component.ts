@@ -5,7 +5,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faCheckCircle, faFileMedical, faHome } from '@fortawesome/free-solid-svg-icons';
 import { formatDate, formatPhone, formatInsuranceId, formatNationalId } from '../../../shared/util/format.util';
 import { getStatusClassForBadge, getStatusClassForForm } from '../../../shared/util/status.util';
-
+import { getVietnameseDayName } from '../../../shared/util/date.util';
 @Component({
   selector: 'app-booking-success',
   standalone: true,
@@ -20,6 +20,10 @@ export class BookingSuccessComponent {
   faHome = faHome;
 
   constructor(private router: Router) {}
+
+  getVietnameseDayName(value: string | Date): string {
+    return getVietnameseDayName(new Date(value));
+  }
 
   goToHome(): void {
     this.router.navigate(['/booking']);

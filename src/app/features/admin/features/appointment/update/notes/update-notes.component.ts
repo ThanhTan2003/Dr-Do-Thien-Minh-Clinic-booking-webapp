@@ -30,7 +30,7 @@ export class UpdateNotesComponent implements OnInit {
   notes: PatientNoteResponse[] = [];
   keyword: string = '';
   currentPage: number = 1;
-  pageSize: number = 10;
+  pageSize: number = 5;
   pageSizeOptions: number[] = [5, 10, 20, 50, 100];
   totalPages: number = 1;
   totalElements: number = 0;

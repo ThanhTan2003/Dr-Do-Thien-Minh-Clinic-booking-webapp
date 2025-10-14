@@ -259,4 +259,27 @@ export class ListDoctorCrudComponent implements OnInit {
     // Chuyển đến edit page
     this.router.navigate([doctorId], { relativeTo: this.route });
   }
+
+  getDoctorImage(doctor: Doctor): string {
+    return (
+      doctor.image ||
+      (doctor.gender === 'Nam'
+        ? '/images/default-male-doctor.jpg'
+        : '/images/default-female-doctor.jpg')
+    );
+  }
+
+  notification: string = '';
+  copyToClipboard(id: string): void {
+    navigator.clipboard.writeText(id)
+      .then(() => {
+        this.notification = 'Đã sao chép mã bác sĩ!';
+        setTimeout(() => {
+          this.notification = '';
+        }, 2000);
+      })
+      .catch((err) => {
+        console.error('Failed to copy: ', err);
+      });
+  }
 } 

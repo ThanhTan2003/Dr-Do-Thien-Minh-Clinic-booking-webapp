@@ -66,7 +66,7 @@
           <tr class="bg-sky-600 text-white">
             <th class="border p-2 text-center whitespace-nowrap">STT</th>
             <th class="border p-2 text-left whitespace-nowrap">Mã bác sĩ</th>
-            <th class="border p-2 text-left whitespace-nowrap">Họ tên bác sĩ</th>
+            <th class="border p-2 text-left whitespace-nowrap">Họ tên</th>
             <th class="border p-2 text-left whitespace-nowrap">Giới tính</th>
             <th class="border p-2 text-left whitespace-nowrap">Số điện thoại</th>
             <th class="border p-2 text-left whitespace-nowrap">Trạng thái</th>
@@ -89,9 +89,18 @@
           </tr>
           <tr *ngFor="let doctor of doctors; let i = index" class="border hover:bg-gray-100 transition duration-200 ease-in-out align-top ">
             <td class="border border-gray-400 p-2 text-center">{{ (currentPage - 1) * pageSize + i + 1 }}</td>
-            <td class="border border-gray-400 p-2 text-left whitespace-nowrap">{{ doctor.id }}</td>
-            <td class="border border-gray-400 p-2 text-left font-semibold text-sky-900 whitespace-nowrap">{{ doctor.name
-              }}</td>
+            <td class="border border-gray-400 p-2 text-left whitespace-nowrap cursor-copy"
+                (click)="copyToClipboard(doctor.id)"
+                title="Sao chép"
+            >
+                {{ doctor.id }}
+            </td>
+            <td class="border border-gray-400 p-2 text-left font-semibold text-sky-900 whitespace-nowrap">
+              <div class="flex items-center gap-2">
+                <img [src]="getDoctorImage(doctor)" class="h-12 rounded-md object-cover" />
+                <span>{{ doctor.name }}</span>
+              </div>
+            </td>
             <td class="border border-gray-400 p-2 text-left whitespace-nowrap">{{ doctor.gender }}</td>
             <td class="border border-gray-400 p-2 text-left whitespace-nowrap">{{ doctor.phone }}</td>
             <td class="border border-gray-400 p-2 text-left font-semibold whitespace-nowrap" [ngClass]="{
@@ -126,4 +135,9 @@
         (pageChange)="onPageChange($event)"></app-pagination>
     </div>
   </div>
+</div>
+
+<!-- Notification -->
+<div *ngIf="notification" class="fixed bottom-4 right-4 bg-green-500 text-white px-4 py-2 rounded shadow-lg">
+    {{notification}}
 </div>

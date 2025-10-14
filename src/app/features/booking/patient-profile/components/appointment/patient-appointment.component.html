@@ -74,7 +74,7 @@
               <div class="grid [grid-template-columns:4fr_6fr] gap-2">
                 <span class="font-semibold text-sky-800">Dịch vụ:</span>
                 <span class="text-cyan-800 font-semibold">{{
-                  appointment?.doctorServiceResponse?.serviceResponse?.serviceName?.toUpperCase() || "..." }}</span>
+                  appointment?.serviceName?.toUpperCase() || "..." }}</span>
               </div>
 
               <div class="grid [grid-template-columns:4fr_6fr] gap-2">
@@ -86,7 +86,8 @@
             <div class="space-y-3">
               <div class="grid [grid-template-columns:4fr_6fr] gap-2">
                 <span class="font-semibold text-sky-800">Giờ khám:</span>
-                <span class="text-gray-700">{{ appointment?.doctorScheduleResponse?.timeFrameResponse?.fullName || "..."
+                <span class="text-gray-700">{{ appointment.doctorScheduleResponse?.timeFrameResponse?.fullName || 
+                appointment.serviceAppointmentResponse?.timeFrameResponse?.fullName || '...'
                   }}</span>
               </div>
 

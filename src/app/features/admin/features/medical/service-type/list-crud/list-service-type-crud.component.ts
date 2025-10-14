@@ -168,6 +168,14 @@ export class ListServiceTypeCrudComponent implements OnInit {
     this.showUpdateModal = true;
   }
 
+  closeUpdateModal(updated: boolean): void {
+    this.showUpdateModal = false;
+    this.selectedCategory = null;
+    if (updated === true) {
+      this.searchCategories();
+    }
+  }
+
   onServiceTypeUpdated(): void {
     this.showUpdateModal = false;
     this.showConfirmModal = false;
@@ -179,7 +187,14 @@ export class ListServiceTypeCrudComponent implements OnInit {
     this.showConfirmDeleteModal = true;
   }
 
+  getServiceCategoryImage(serviceCategory: ServiceCategory): string {
+    return (
+      serviceCategory.image || "/images/DefaultMedical.png"
+    );
+  }
+
   onConfirmDelete(): void {
+    this.showConfirmDeleteModal = false;
     if (this.selectedCategory) {
       this.serviceCategoryService.deleteById(this.selectedCategory.id).subscribe({
         next: () => {

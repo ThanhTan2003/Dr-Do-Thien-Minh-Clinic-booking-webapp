@@ -16,6 +16,10 @@ export class ClinicService {
     return this.http.get<Clinic>(this.API_URL);
   }
 
+  getClinicInfoPublicByCustomer(): Observable<Clinic> {
+    return this.http.get<Clinic>(`${this.API_URL}/public/by-customer`);
+  }
+
   createOrUpdateClinic(clinicRequest: ClinicRequest): Observable<Clinic> {
     return this.http.post<Clinic>(this.API_URL, clinicRequest);
   }

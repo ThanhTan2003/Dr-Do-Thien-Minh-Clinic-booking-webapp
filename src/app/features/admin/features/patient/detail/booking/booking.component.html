@@ -1,0 +1,22 @@
+<div class="pt-6">
+    <div class="flex gap-6">
+        <div class="w-60 flex-shrink-0">
+            <div class="bg-white rounded-lg shadow-md p-4 border border-sky-400">
+                <h3 class="text-lg font-semibold text-sky-800 mb-4 flex items-center">
+                    Loại đăng ký
+                </h3>
+                <div class="space-y-2">
+                    <button *ngFor="let bookingType of bookingTypes" (click)="goTo(bookingType.path)" 
+                        [class]="'w-full text-left px-4 py-4 rounded-md border border-sky-200 transition-all duration-200 flex items-center ' + (selectedBookingType === bookingType ? 'bg-sky-600 text-white' : 'bg-white text-sky-600 hover:bg-sky-50')">
+                        <span class="font-medium">{{ bookingType.label }}</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="flex-1">
+            <div class="bg-white rounded-lg shadow-md overflow-hidden border border-sky-400">
+                <router-outlet></router-outlet>
+            </div>
+        </div>
+    </div>
+</div>

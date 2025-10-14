@@ -12,19 +12,20 @@
 <!-- Menu chuyển tab -->
 <nav class="mb-6 mt-6">
   <div class="flex gap-2 border-b-2 border-sky-700">
-    <button
+    <a
       *ngFor="let tab of tabs"
+      [href]="getTabHref(tab.path)"
       class="py-2 px-4 font-bold border-b-2 transition-colors duration-200
-             hover:text-sky-900"
+             hover:text-sky-900 no-underline block"
       [ngClass]="{
         'border-b-cyan-700 text-white bg-cyan-800 hover:bg-cyan-900 hover:text-white': isActive(tab.path),
         'border border-transparent text-cyan-700 hover:border hover:border-cyan-700 hover:bg-cyan-50': !isActive(tab.path)
       }"
-      (click)="goTo(tab.path)"
+      (click)="goTo(tab.path, $event)"
     >
       <fa-icon *ngIf="tab.icon" [icon]="tab.icon" class="mr-1"></fa-icon>
       {{ tab.label }}
-    </button>
+    </a>
   </div>
 </nav>
 

@@ -7,7 +7,7 @@ import {
   faCircleInfo,
   faPhone,
 } from '@fortawesome/free-solid-svg-icons';
-import { DoctorScheduleService } from '../../../shared/services/doctor/doctor-schedule.service';
+import { ServiceScheduleService } from '../../../shared/services/medical/service-schedule.service';
 import { SelectTimeComponent } from './time-select.component';
 
 @Component({
@@ -19,12 +19,23 @@ import { SelectTimeComponent } from './time-select.component';
 export class SelectDateComponent implements OnInit, OnChanges {
   @Input() serviceId: string | null = null;
   @Input() availableDays: string[] = [];
-  @Input() holidayMatrix: [number, number][] = [];
   @Input() specificHolidays: string[] = [];
   @Output() dateTimeSelection = new EventEmitter<{ date: string; serviceScheduleId: string }>();
 
   today = new Date();
-  oneMonthLater = new Date(this.today.getFullYear(), this.today.getMonth() + 1, this.today.getDate());
+  
+  // Biến lưu trữ giới hạn số ngày có thể đặt lịch
+  bookingDaysLimit: number = 30; // Mặc định 30 ngày
+  
+  // Tính toán ngày giới hạn dựa trên bookingDaysLimit
+  get minBookingDate(): Date {
+    return new Date(this.today.getTime() + 24 * 60 * 60 * 1000); // Luôn từ ngày mai
+  }
+  
+  get maxBookingDate(): Date {
+    return new Date(this.today.getTime() + this.bookingDaysLimit * 24 * 60 * 60 * 1000);
+  }
+  
   currentMonth = this.today.getMonth();
   currentYear = this.today.getFullYear();
   selectedDate: Date | null = null;
@@ -47,7 +58,24 @@ export class SelectDateComponent implements OnInit, OnChanges {
     SATURDAY: 6,
   };
 
-  constructor(private scheduleService: DoctorScheduleService) {}
+  constructor(private scheduleService: ServiceScheduleService) {}
+
+  /**
+   * Cập nhật giới hạn số ngày có thể đặt lịch
+   * @param days Số ngày giới hạn (mặc định: 30)
+   */
+  setBookingDaysLimit(days: number): void {
+    this.bookingDaysLimit = days;
+  }
+
+  /**
+   * Format ngày tháng để hiển thị
+   * @param date Ngày cần format
+   * @returns Chuỗi ngày tháng định dạng dd/mm/yyyy
+   */
+  formatDate(date: Date): string {
+    return `${date.getDate().toString().padStart(2, '0')}/${(date.getMonth() + 1).toString().padStart(2, '0')}/${date.getFullYear()}`;
+  }
 
   ngOnInit(): void {
     this.updateDaysInMonth();
@@ -95,7 +123,7 @@ export class SelectDateComponent implements OnInit, OnChanges {
 
   nextMonth(): void {
     const nextDate = new Date(this.currentYear, this.currentMonth + 1, 1);
-    if (nextDate > this.oneMonthLater) return;
+    if (nextDate > this.maxBookingDate) return;
     if (this.currentMonth === 11) {
       this.currentMonth = 0;
       this.currentYear++;
@@ -106,23 +134,20 @@ export class SelectDateComponent implements OnInit, OnChanges {
   }
 
   isHoliday(day: number, month: number, year: number): boolean {
-    const dateString = `${year}/${month + 1}/${day}`;
-    if (this.specificHolidays.includes(dateString)) return true;
-    return this.holidayMatrix.some(
-      ([holidayDay, holidayMonth]) => holidayDay === day && holidayMonth - 1 === month
-    );
+    console.log('specificHolidays ', this.specificHolidays);
+    const dateString = `${year}/${(month + 1).toString().padStart(2, '0')}/${day.toString().padStart(2, '0')}`;
+    return this.specificHolidays.includes(dateString);
   }
+  
 
   isSelectable(day: number, month: number, year: number): boolean {
     const date = new Date(year, month, day);
     const numericAvailableDays = this.availableDays.map((day) => this.dayMapping[day]);
     const isValidDay = numericAvailableDays.includes(date.getDay());
-    const maxSelectableDate = new Date(this.today);
-    maxSelectableDate.setMonth(this.today.getMonth() + 1);
 
     return (
-      date > this.today &&
-      date <= maxSelectableDate &&
+      date >= this.minBookingDate &&
+      date <= this.maxBookingDate &&
       isValidDay &&
       !this.isHoliday(day, month, year)
     );
@@ -150,7 +175,7 @@ export class SelectDateComponent implements OnInit, OnChanges {
     this.scheduleService.getScheduleByServiceAndDate(this.serviceId, formattedDate).subscribe({
       next: (data) => {
         this.timeSlots = data.map((slot) => ({
-          id: slot.id,
+          id: slot.timeFrameResponse.id,
           session: slot.timeFrameResponse.session,
           name: slot.timeFrameResponse.name,
         }));

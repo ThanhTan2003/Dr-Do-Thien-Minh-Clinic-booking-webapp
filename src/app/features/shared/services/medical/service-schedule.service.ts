@@ -76,4 +76,8 @@ export class ServiceScheduleService {
     // Sử dụng cùng endpoint với doctor schedule vì cấu trúc tương tự
     return this.http.get<any[]>('/api/v1/appointment/doctor-schedule/statuses');
   }
+
+  getListDayOfWeekByService(serviceId: string): Observable<string[]> {
+    return this.http.get<string[]>(`${this.API_URL}/customer/get-day-of-week-by-service/${serviceId}`);
+  }
 }

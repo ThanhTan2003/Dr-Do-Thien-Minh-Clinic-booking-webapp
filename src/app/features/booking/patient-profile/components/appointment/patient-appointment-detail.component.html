@@ -70,7 +70,7 @@
       </div>
     </div>
 
-    <div class="bg-white rounded-lg overflow-hidden border border-sky-600 flex flex-col justify-between relative">
+    <div class="bg-white rounded-lg overflow-hidden border border-sky-600 flex flex-col">
       <div class="text-xl font-bold text-white bg-sky-600 mb-2 p-4 pt-2 pb-2">THÔNG TIN LỊCH HẸN</div>
       <div class="grid grid-cols-1 gap-2 p-4 pt-0">
         <div class="grid [grid-template-columns:4fr_6fr] gap-2">
@@ -86,8 +86,9 @@
           <p>{{ formatDate(appointment?.appointmentDate || '') || "..." }}</p>
         </div>
         <div class="grid [grid-template-columns:4fr_6fr] gap-2">
-          <p class="font-semibold">Khung giờ:</p>
-          <p>{{ appointment?.doctorScheduleResponse?.timeFrameResponse?.fullName || "..." }}</p>
+          <p class="font-semibold">Giờ khám:</p>
+          <p>{{ appointment?.doctorScheduleResponse?.timeFrameResponse?.fullName || 
+                appointment?.serviceAppointmentResponse?.timeFrameResponse?.fullName || '...' }}</p>
         </div>
         <!-- <div class="grid [grid-template-columns:4fr_6fr] gap-2">
           <p class="font-semibold">Phòng khám:</p>
@@ -95,7 +96,7 @@
         </div> -->
         <div class="grid [grid-template-columns:4fr_6fr] gap-2">
           <p class="font-semibold">Phí khám bệnh:</p>
-          <p class="text-orange-700">{{ appointment?.doctorServiceResponse?.serviceResponse?.price || "..." }}</p>
+          <p class="text-orange-700">{{ appointment?.price || "..." }}</p>
         </div>
         <div class="grid [grid-template-columns:4fr_6fr] gap-2">
           <p class="font-semibold">Trạng thái:</p>

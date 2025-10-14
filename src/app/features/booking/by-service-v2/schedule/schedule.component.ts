@@ -1,8 +1,9 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterOutlet, ActivatedRoute } from '@angular/router';
-import { DoctorScheduleService } from '../../../shared/services/doctor/doctor-schedule.service';
+import { ServiceScheduleService } from '../../../shared/services/medical/service-schedule.service';
 import { DoctorServiceService } from '../../../shared/services/doctor/doctor-service.service';
+import { Holiday } from '../../../shared/services/doctor/holiday.service';
 import { SelectDateComponent } from './date-select.component';
 import { Subject, takeUntil } from 'rxjs';
 import { Location } from '@angular/common';
@@ -17,21 +18,22 @@ import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 })
 export class ScheduleComponent implements OnInit, OnDestroy {
   serviceId: string | null = null;
-  doctorScheduleId: string | null = null;
+  timeFrameId: string | null = null;
   availableDays: string[] = [];
   loading = true;
 
-  // Dữ liệu ngày lễ
-  holidayMatrix: [number, number][] = [[1, 1], [30, 4], [2, 9]];
-  specificHolidays: string[] = ['2024/12/30', '2025/09/03'];
+  // Dữ liệu ngày lễ - sẽ được load từ API
+  // holidayMatrix: [number, number][] = [[1, 1], [30, 4], [2, 9]];
+  specificHolidays: string[] = [];
 
   faArrowLeft = faArrowLeft;
 
   private destroy$ = new Subject<void>();
 
   constructor(
-    private scheduleService: DoctorScheduleService,
+    private scheduleService: ServiceScheduleService,
     private doctorServiceService: DoctorServiceService,
+    private holidayService: Holiday,
     private router: Router,
     private route: ActivatedRoute,
     private location: Location
@@ -41,9 +43,10 @@ export class ScheduleComponent implements OnInit, OnDestroy {
     console.log('ScheduleComponent initialized');
     this.serviceId = this.route.snapshot.paramMap.get('serviceId');
     console.log('serviceIdngOnInit ', this.serviceId);
-    this.doctorScheduleId = this.route.snapshot.paramMap.get('doctorScheduleId');
+    this.timeFrameId = this.route.snapshot.paramMap.get('timeFrameId');
     if (this.serviceId) {
       this.fetchAvailableDays();
+      this.fetchHolidays();
       //this.fetchDoctor();
     }
   }
@@ -88,14 +91,33 @@ export class ScheduleComponent implements OnInit, OnDestroy {
   //     });
   // }
 
-  handleDateTimeSelection(date: string, doctorScheduleId: string): void {
+  fetchHolidays(): void {
+    this.holidayService
+      .getUpcomingHolidays()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (holidays) => {
+          // Convert Date objects to string format
+          this.specificHolidays = holidays.map(date => {
+            const d = new Date(date);
+            return `${d.getFullYear()}/${(d.getMonth() + 1).toString().padStart(2, '0')}/${d.getDate().toString().padStart(2, '0')}`;
+          });
+          console.log('Holidays loaded:', this.specificHolidays);
+        },
+        error: (err) => {
+          console.error('Error fetching holidays:', err);
+        },
+      });
+  }
+
+  handleDateTimeSelection(date: string, timeFrameId: string): void {
     console.log('serviceId lúc gửi đi', this.serviceId);
-    console.log('doctorScheduleId', doctorScheduleId);
+    console.log('timeFrameId', timeFrameId);
     console.log('date', date);
     console.log('handleDateTimeSelection');
     if (this.serviceId) {
       this.router.navigate(
-        [doctorScheduleId, date],
+        [timeFrameId, date],
         { relativeTo: this.route }
       );
     }

@@ -1,0 +1,92 @@
+<!-- Modal Overlay -->
+<div class="fixed inset-0 flex items-center justify-center bg-black/80 z-50">
+  <div class="bg-white rounded-xl shadow-xl w-4/5 max-w-4xl max-h-[90vh] flex flex-col">
+
+    <!-- Header -->
+    <div class="bg-sky-600 text-white p-2 rounded-t-xl flex justify-between items-center">
+      <h2 class="text-xl font-bold text-white ml-2">
+        <fa-icon [icon]="faCalendarAlt" class="mr-2"></fa-icon>
+        CHỌN NGÀY KHÁM
+      </h2>
+      <button (click)="onClose()"
+        class="text-white bg-transparent hover:bg-red-500 rounded-full p-1 flex items-center justify-center mr-2"
+        style="width: 35px; height: 35px;">
+        <fa-icon [icon]="faXmark" class="text-lg"></fa-icon>
+      </button>
+    </div>
+
+    <!-- Content -->
+    <div class="p-4 overflow-y-auto">
+
+      <!-- Thông báo -->
+      <div *ngIf="bookingDaysLimit > 1" class="bg-white p-2 border border-amber-500 rounded-md mb-4">
+        <div class="text-sm text-amber-700 text-justify">
+          <fa-icon [icon]="faCircleInfo"></fa-icon> &nbsp;Phòng khám hỗ trợ đặt lịch khám trước hẹn từ
+          <b>{{ formatDate(minBookingDate) }}</b> đến
+          <b>{{ formatDate(maxBookingDate) }}</b> ({{ bookingDaysLimit }} ngày).
+        </div>
+      </div>
+
+      <!-- Trạng thái ngày -->
+      <div class="flex justify-center space-x-4 mb-4">
+        <div class="flex items-center">
+          <div class="w-6 h-6 bg-red-300 rounded-lg mr-2"></div>
+          <span class="text-gray-700">Hôm nay</span>
+        </div>
+        <div class="flex items-center">
+          <div class="w-6 h-6 bg-sky-200 rounded-lg mr-2"></div>
+          <span class="text-gray-700">Nhận khám</span>
+        </div>
+        <div class="flex items-center">
+          <div class="w-6 h-6 bg-gray-200 rounded-lg mr-2"></div>
+          <span class="text-gray-700">Không nhận khám</span>
+        </div>
+      </div>
+
+      <!-- Loading -->
+      <div *ngIf="loading" class="flex flex-col items-center justify-center py-12">
+        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-sky-600"></div>
+        <span class="mt-4 text-sky-700 font-medium text-lg">Đang tải dữ liệu...</span>
+      </div>
+
+      <!-- Lịch tháng -->
+      <div *ngIf="!loading" class="border border-sky-300 rounded-md bg-white">
+        <div class="flex justify-between items-center mb-4 bg-sky-600 p-4 rounded-t-md">
+          <button (click)="prevMonth()"
+            [disabled]="currentMonth === today.getMonth() && currentYear === today.getFullYear()"
+            class="text-white hover:bg-cyan-700 p-2 rounded-full disabled:opacity-50 disabled:cursor-not-allowed">
+            <fa-icon [icon]="faChevronLeft" size="lg"></fa-icon>
+          </button>
+          <h2 class="text-lg font-bold text-white">THÁNG {{ currentMonth + 1 }} - {{ currentYear }}</h2>
+          <button (click)="nextMonth()" class="text-white hover:bg-cyan-700 p-2 rounded-full">
+            <fa-icon [icon]="faChevronRight" size="lg"></fa-icon>
+          </button>
+        </div>
+
+        <div class="grid grid-cols-7 gap-2 text-center p-4">
+          <div *ngFor="let day of ['CN', 'Hai', 'Ba', 'Tư', 'Năm', 'Sáu', 'Bảy']" class="text-cyan-800 font-bold">
+            {{ day }}
+          </div>
+          <div *ngFor="let date of daysInMonth; let i = index">
+            <button *ngIf="date" [disabled]="!isSelectable(date.getDate(), date.getMonth(), date.getFullYear())"
+              class="p-2 rounded-lg w-full" [ngClass]="{
+                'bg-red-300 text-white': date.getDate() === today.getDate() && date.getMonth() === today.getMonth() && date.getFullYear() === today.getFullYear(),
+                'bg-sky-100 text-cyan-700 hover:bg-sky-200 font-semibold':
+                  (selectedDate && selectedDate.toISOString().split('T')[0] === date.toISOString().split('T')[0]) ||
+                  isSelectable(date.getDate(), date.getMonth(), date.getFullYear()),
+                'bg-gray-100 text-gray-400': !isSelectable(date.getDate(), date.getMonth(), date.getFullYear())
+              }" (click)="handleDateSelection(date)">
+              {{ date.getDate() }}
+            </button>
+            <div *ngIf="!date" class="p-2"></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+  <!-- Modal khung giờ -->
+  <app-select-time *ngIf="showTimeModal" [selectedDate]="selectedDate" [timeSlots]="timeSlots" [doctorId]="doctorId"
+    [loading]="loadingTimeSlots" (timeSlotSelection)="handleTimeSlotSelection($event)" (close)="closeTimeModal()">
+  </app-select-time>
+</div>

@@ -93,6 +93,20 @@ export class DoctorService {
   }
 
   /**
+ * Tìm kiếm bác sĩ theo từ khoá và danh mục dịch vụ (phân trang)
+ */
+  searchDoctorsByCategory(
+    keyword = '',
+    serviceCategoryId = '',
+    page = 1,
+    size = 10
+  ): Observable<PageResponse<Doctor>> {
+    const url = `${this.API_URL}/admin/search?keyword=${keyword}&serviceCategoryId=${serviceCategoryId}&page=${page}&size=${size}`;
+    return this.http.get<PageResponse<Doctor>>(url);
+  }
+
+
+  /**
  * Tìm bác sĩ theo từ khóa, trạng thái (tùy chọn) và danh mục dịch vụ
  */
   /**

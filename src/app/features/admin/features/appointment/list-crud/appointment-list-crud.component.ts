@@ -51,6 +51,8 @@ export class AppointmentListCrudComponent implements OnInit {
         cancelledCount: 0
     };
 
+    notification: string = '';
+
     currentPage: number = 1;
     pageSize: number = 10;
     totalElements: number = 0;
@@ -58,7 +60,7 @@ export class AppointmentListCrudComponent implements OnInit {
     loading: boolean = false;
 
     // Filters
-    selectedStatus: string = 'Chờ xác nhận';
+    selectedStatus: string = '';
     keyword: string = '';
     statuses: string[] = [];
 
@@ -247,4 +249,17 @@ export class AppointmentListCrudComponent implements OnInit {
         }
         this.closeSuggestedDoctorModal();
     }
+
+    copyToClipboard(id: string): void {
+        navigator.clipboard.writeText(id)
+          .then(() => {
+            this.notification = 'Đã sao chép mã lịch hẹn!';
+            setTimeout(() => {
+              this.notification = '';
+            }, 2000);
+          })
+          .catch((err) => {
+            console.error('Failed to copy: ', err);
+          });
+      }
 } 

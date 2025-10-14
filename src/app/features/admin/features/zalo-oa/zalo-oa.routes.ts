@@ -26,12 +26,12 @@ export const zaloOARoutes: Routes = [
         canActivate: [RoleGuard],
         data: { roles: ADMIN_MARKETING_ROLES },
         children: [
-          {
-            path: 'nhom-doi-tuong',
-            loadComponent: () => import('./user/detail/tag-information/tag-information.component').then(m => m.TagInformationComponent),
-            canActivate: [RoleGuard],
-            data: { roles: ADMIN_MARKETING_ROLES }
-          },
+          // {
+          //   path: 'nhom-doi-tuong',
+          //   loadComponent: () => import('./user/detail/tag-information/tag-information.component').then(m => m.TagInformationComponent),
+          //   canActivate: [RoleGuard],
+          //   data: { roles: ADMIN_MARKETING_ROLES }
+          // },
           {
             path: 'ghi-chu',
             loadComponent: () => import('./user/detail/note/note.component').then(m => m.NoteComponent),

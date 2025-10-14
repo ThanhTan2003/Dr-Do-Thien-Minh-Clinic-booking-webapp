@@ -1,0 +1,198 @@
+<!-- Modal Overlay -->
+<div class="fixed inset-0 flex items-center justify-center bg-black/80 z-50">
+  <div class="bg-white rounded-xl shadow-xl w-4/5 max-h-[90vh] flex flex-col">
+    
+    <!-- Header -->
+    <div class="bg-sky-600 text-white p-2 rounded-t-xl flex justify-between items-center">
+      <h2 class="text-xl font-bold text-white ml-2">
+        <fa-icon [icon]="faExchangeAlt" class="mr-2"></fa-icon>
+        THAY THẾ BÁC SĨ KHÁM
+      </h2>
+      <button
+        (click)="onClose()"
+        class="text-white bg-transparent hover:bg-red-500 rounded-full p-1 flex items-center justify-center mr-2"
+        style="width: 35px; height: 35px;">
+        <fa-icon [icon]="faXmark" class="text-lg"></fa-icon>
+      </button>
+    </div>
+
+    <!-- Content -->
+    <div class="p-4 pl-6 pr-6 overflow-y-auto">
+      
+      <!-- Appointment Info -->
+      <div class="bg-blue-50 p-4 border border-blue-300 rounded-md mb-6" *ngIf="appointment">
+        <div *ngIf="!loading && appointment" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
+          <div class="mb-0">
+            <label class="block text-sm font-semibold text-sky-800">Mã lịch hẹn</label>
+            <input type="text" [value]="appointment.id" readonly
+              class="mt-1 p-1 pl-2 bg-gray-50 border border-gray-200 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-sky-500" />
+          </div>
+  
+          <div class="mb-0">
+            <label class="block text-sm font-semibold text-sky-800">Bệnh nhân</label>
+            <input type="text" [value]="appointment.patientResponse.fullName" readonly
+              class="mt-1 p-1 pl-2 bg-gray-50 border border-gray-200 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-sky-500" />
+          </div>
+  
+          <div class="mb-0">
+            <label class="block text-sm font-semibold text-sky-800">Ngày khám</label>
+            <input type="text" [value]="appointment.appointmentDateName" readonly
+              class="mt-1 p-1 pl-2 bg-gray-50 border border-gray-200 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-sky-500" />
+          </div>
+          <div class="mb-0">
+            <label class="block text-sm font-semibold text-sky-800">Giờ khám</label>
+            <input type="text" [value]="appointment.doctorScheduleResponse?.timeFrameResponse?.fullName || 
+                  appointment.serviceAppointmentResponse?.timeFrameResponse?.fullName || '...'" readonly
+              class="mt-1 p-1 pl-2 bg-gray-50 border border-gray-200 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-sky-500" />
+          </div>
+          <div class="mb-0 md:col-span-2 lg:col-span-2">
+            <label class="block text-sm font-semibold text-sky-800">Dịch vụ đặt khám</label>
+            <textarea rows="1"
+              class="mt-1 p-1 pl-2 bg-gray-50 border border-gray-200 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-sky-500"
+              readonly>{{ appointment?.serviceName || '...' }}</textarea>
+          </div>
+          <div class="mb-0">
+            <label class="block text-sm font-semibold text-sky-800">Phí khám bệnh</label>
+            <textarea rows="1"
+              class="mt-1 p-1 pl-2 bg-gray-50 border border-gray-200 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-sky-500"
+              readonly>{{ appointment?.price || '...' }}</textarea>
+          </div>
+          <div class="mb-0">
+            <label class="block text-sm font-semibold text-sky-800">Bác sĩ hiện tại</label>
+            <textarea rows="1"
+              class="mt-1 p-1 pl-2 bg-green-50 border border-green-300 rounded-md w-full text-green-800 font-semibold focus:outline-none focus:ring-2 focus:ring-sky-500"
+              readonly>{{ appointment?.doctorName || '...' }}</textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- Filter Section -->
+      <div class="flex justify-between items-center mb-4">
+        <!-- Left side filters -->
+        <div class="flex items-center">
+          <button class="bg-white text-sky-700 py-2 px-4 rounded border border-sky-700 font-bold hover:bg-sky-100"
+            title="Làm mới danh sách" (click)="refreshList()">
+            Tải lại dữ liệu &nbsp; <fa-icon [icon]="faRotate"></fa-icon>
+          </button>
+          <app-page-size-selector class="ml-4" [pageSize]="pageSize" [options]="pageSizeOptions"
+            (pageSizeChange)="onPageSizeChange($event)">
+          </app-page-size-selector>
+        </div>
+
+        <!-- Right side filters -->
+        <div class="flex items-center space-x-2">
+          <div class="relative w-64">
+            <input type="text" placeholder="Nhập từ khóa tìm kiếm" [(ngModel)]="keyword" (keyup.enter)="handleSearch()"
+              class="border p-2 rounded w-full border-blue-300 text-gray-600 pr-10" />
+
+            <!-- Group bao icon và tooltip -->
+            <div class="absolute right-2 top-1/2 -translate-y-1/2 group">
+              <fa-icon [icon]="faCircleQuestion" class="text-gray-400 cursor-pointer"></fa-icon>
+
+              <!-- Tooltip -->
+              <div
+                class="absolute left-[-230px] mt-2 w-63 p-3 bg-white border border-gray-300 rounded shadow-lg text-sm text-sky-700 z-50 opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity"
+                style="top: 100%; white-space: normal;">
+                <p class="font-semibold text-sky-800 mb-1">Có thể tìm kiếm theo:</p>
+                <ul class="list-disc list-inside text-justify space-y-1">
+                  <li>Mã bác sĩ</li>
+                  <li>Tên bác sĩ</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <button type="button" class="bg-sky-700 text-white py-2 px-4 rounded hover:bg-sky-800" (click)="handleSearch()">
+            <fa-icon [icon]="faMagnifyingGlass"></fa-icon>
+          </button>
+        </div>
+      </div>
+
+      <!-- Data Table -->
+      <div class="overflow-x-auto">
+        <table class="w-full border-collapse border border-gray-200 shadow-lg rounded-md">
+          <thead>
+            <tr class="bg-sky-600 text-white">
+              <th class="border p-3 text-center whitespace-nowrap w-16">STT</th>
+              <th class="border p-3 text-left whitespace-nowrap">Mã bác sĩ</th>
+              <th class="border p-3 text-left whitespace-nowrap">Tên bác sĩ</th>
+              <th class="border p-3 text-left whitespace-nowrap">Dịch vụ</th>
+              <th class="border p-3 text-left whitespace-nowrap">Phí khám bệnh</th>
+              <th class="border p-3 text-left whitespace-nowrap">Kết quả</th>
+              <th class="border p-3 text-center whitespace-nowrap w-24"></th>
+            </tr>
+          </thead>
+          <tbody class="border border-gray-400">
+            <tr *ngIf="loading">
+              <td colspan="7" class="text-center p-4 border-gray-400">
+                <div class="flex justify-center items-center">
+                  <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-sky-600"></div>
+                  <span class="ml-2">Đang tải dữ liệu...</span>
+                </div>
+              </td>
+            </tr>
+            <tr *ngIf="!loading && suggestedDoctors.length === 0">
+              <td colspan="7" class="text-center p-4 border-gray-400">Không có bác sĩ thay thế khả dụng</td>
+            </tr>
+            <tr *ngFor="let doctor of suggestedDoctors; let i = index"
+              class="border hover:bg-gray-100 transition duration-200 ease-in-out align-top">
+              <td class="border border-gray-400 p-3 text-center">
+                {{ (currentPage - 1) * pageSize + i + 1 }}
+              </td>
+
+              <td class="border border-gray-400 p-3 text-left whitespace-nowrap">
+                <div class="">{{ doctor.doctorServiceResponse.doctorResponse.id }}</div>
+              </td>
+              
+              <td class="border border-gray-400 p-3 text-left whitespace-nowrap">
+                <div class="text-sky-800 font-semibold">{{ doctor.doctorServiceResponse.doctorResponse.name }}</div>
+              </td>
+              
+              <td class="border border-gray-400 p-3 text-left">
+                <div class="text-slate-700 font-semibold">{{ doctor.doctorServiceResponse.serviceResponse.serviceName }}</div>
+              </td>
+
+              <td class="border border-gray-400 p-3 text-left">
+                <div class="text-amber-900 font-semibold">{{ doctor.doctorServiceResponse.serviceFee }}</div>
+              </td>
+              
+              <td class="border border-gray-400 p-3 text-left">
+                <div class="space-y-1">
+                  <div *ngFor="let status of doctor.advisoryStatusResponses" 
+                       class="font-medium" 
+                       [ngClass]="getStatusClass(status.code)">
+                    • {{ status.description }}
+                  </div>
+                </div>
+              </td>
+              
+              <td class="border border-gray-400 p-3 text-center align-top whitespace-nowrap">
+                <button
+                  (click)="selectDoctor(doctor)"
+                  class="bg-white text-sky-600 px-3 py-1 rounded border border-sky-600 hover:bg-sky-100 font-semibold">
+                  Thay thế
+                  <fa-icon [icon]="faExchangeAlt" class="ml-1"></fa-icon>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Pagination -->
+      <div class="mt-4" *ngIf="!loading && suggestedDoctors.length > 0">
+        <app-pagination [totalElements]="totalElements" [currentPage]="currentPage" [totalPages]="totalPages"
+          (pageChange)="onPageChange($event)"></app-pagination>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- Modal xác nhận thay thế bác sĩ -->
+<app-admin-modal-confirm 
+  *ngIf="showConfirmModal" 
+  [title]="confirmTitle" 
+  [content]="confirmContent"
+  (confirm)="onConfirmReplace()" 
+  (cancel)="onCancelReplace()">
+</app-admin-modal-confirm>

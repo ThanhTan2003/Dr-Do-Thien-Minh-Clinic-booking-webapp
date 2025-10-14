@@ -65,6 +65,26 @@ export const patientRoutes: Routes = [
             loadComponent: () => import('./detail/history-appointment/patient-history-appointment.component').then(m => m.PatientHistoryAppointmentComponent),
             canActivate: [RoleGuard],
             data: { roles: ADMIN_ROLES }
+          },
+          {
+            path: 'dang-ky-kham-benh',
+            loadComponent: () => import('./detail/booking/booking.component').then(m => m.BookingComponent),
+            canActivate: [RoleGuard],
+            data: { roles: ADMIN_ROLES },
+            children: [
+              {
+                path: 'kham-theo-bac-si',
+                loadComponent: () => import('./detail/booking/by-doctor/booking-by-doctor.component').then(m => m.BookingByDoctorComponent),
+                canActivate: [RoleGuard],
+                data: { roles: ADMIN_ROLES }
+              },
+              {
+                path: 'kham-theo-dich-vu',
+                loadComponent: () => import('./detail/booking/by-service/booking-by-service.component').then(m => m.BookingByServiceComponent),
+                canActivate: [RoleGuard],
+                data: { roles: ADMIN_ROLES }
+              }
+            ]
           }
         ]
       }

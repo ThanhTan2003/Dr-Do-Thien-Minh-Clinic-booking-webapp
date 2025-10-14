@@ -1,4 +1,6 @@
 export const environment = {
   production: false,
-  apiBaseUrl: 'http://localhost:8180' // Địa chỉ IP của server trong môi trường phát triển
+   // Địa chỉ IP của server trong môi trường phát triển
+  apiBaseUrl: 'http://localhost:8180'
+  // apiBaseUrl: 'http://192.168.69.103:8180'
 };

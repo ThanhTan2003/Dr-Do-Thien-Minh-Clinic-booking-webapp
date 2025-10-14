@@ -57,11 +57,32 @@ export class SubHeaderComponent implements OnInit, OnChanges, OnDestroy {
     this.selectedSubMenuId = active?.id || '';
   }
 
-  onMenuSelect(item: MenuItem) {
-    this.selectedSubMenuId = item.id;
-    this.menuSelect.emit(item);
+  getMenuHref(item: MenuItem): string {
     if (item.path && this.parentPath) {
-      this.router.navigate([`/admin/${this.parentPath}/${item.path}`]);
+      return `/admin/${this.parentPath}/${item.path}`;
+    }
+    return '#';
+  }
+
+  onMenuSelect(item: MenuItem, event?: Event) {
+    // Chỉ prevent default và navigate nếu là left click (không có modifier keys)
+    if (event) {
+      const mouseEvent = event as MouseEvent;
+      if (!mouseEvent.ctrlKey && !mouseEvent.metaKey && !mouseEvent.shiftKey) {
+        event.preventDefault();
+        this.selectedSubMenuId = item.id;
+        this.menuSelect.emit(item);
+        if (item.path && this.parentPath) {
+          this.router.navigate([`/admin/${this.parentPath}/${item.path}`]);
+        }
+      }
+    } else {
+      // Fallback cho trường hợp gọi không có event (programmatic)
+      this.selectedSubMenuId = item.id;
+      this.menuSelect.emit(item);
+      if (item.path && this.parentPath) {
+        this.router.navigate([`/admin/${this.parentPath}/${item.path}`]);
+      }
     }
   }
 } 

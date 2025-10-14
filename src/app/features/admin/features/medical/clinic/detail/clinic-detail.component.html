@@ -1,62 +1,145 @@
 <!-- Loading -->
 <div *ngIf="loading" class="flex justify-center items-center h-32">
-  <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-sky-600"></div>
-  <span class="ml-2">Đang tải dữ liệu...</span>
+    <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-sky-600"></div>
+    <span class="ml-2">Đang tải dữ liệu...</span>
 </div>
 
 <!-- Thông tin Phòng khám -->
-<div class="border border-sky-600 rounded-lg shadow-md relative p-4 pt-6 mt-6">
-    <!-- Tiêu đề -->
-    <div class="absolute -top-4 left-4 bg-white px-2 text-sky-900 font-bold text-xl">
-        THÔNG TIN PHÒNG KHÁM
-    </div>
+<div class=" pt-4">
 
     <form *ngIf="!loading && clinic" autocomplete="off" (ngSubmit)="$event.preventDefault()">
+        <!-- Tiêu đề -->
+        <div class=" bg-white text-sky-900 font-bold text-xl">
+            THÔNG TIN PHÒNG KHÁM
+        </div>
+        <hr class="my-2 border-sky-700">
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
-            <!-- Mã phòng khám -->
-            <!-- <div class="mb-0">
-                <label class="block text-sm font-semibold text-sky-800">Mã phòng khám</label>
-                <input type="text" [value]="clinic.id" readonly
-                    class="mt-1 p-1 pl-2 bg-gray-50 border border-gray-200 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-sky-500" />
-            </div> -->
 
             <!-- Tên phòng khám -->
             <div class="mb-0">
-                <label class="block text-sm font-semibold text-sky-800">Tên phòng khám</label>
+                <label class="block font-semibold text-sky-800">Tên phòng khám</label>
                 <input type="text" [(ngModel)]="clinicRequest.clinicName" name="clinicName"
                     class="mt-1 p-1 pl-2 bg-white border border-sky-300 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-sky-500" />
             </div>
 
             <!-- Số điện thoại -->
             <div class="mb-0">
-                <label class="block text-sm font-semibold text-sky-800">Số điện thoại</label>
+                <label class="block font-semibold text-sky-800">Số điện thoại</label>
                 <input type="text" [(ngModel)]="clinicRequest.supportPhone" name="supportPhone"
                     class="mt-1 p-1 pl-2 bg-white border border-sky-300 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-sky-500" />
             </div>
 
-            <!-- Mô tả -->
-            <!-- <div class="mb-0">
-                <label class="block text-sm font-semibold text-sky-800">Mô tả</label>
-                <input type="text" [(ngModel)]="clinicRequest.description" name="description"
-                    class="mt-1 p-1 pl-2 bg-white border border-sky-300 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-sky-500" />
-            </div> -->
+            <!-- <div class="mb-0 md:col-span-2 lg:col-span-2"></div> -->
 
             <!-- Địa chỉ -->
-            <div class="mb-0 md:col-span-2 lg:col-span-2">
-                <label class="block text-sm font-semibold text-sky-800">Địa chỉ</label>
+            <div class="mb-0">
+                <label class="block font-semibold text-sky-800">Địa chỉ</label>
                 <textarea rows="3" [(ngModel)]="clinicRequest.address" name="address"
                     class="mt-1 p-1 pl-2 bg-white border border-sky-300 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-sky-500"></textarea>
             </div>
 
-            <!-- Nút cập nhật -->
-            <div class="mb-0 md:col-span-2 lg:col-span-2 text-right">
-                <label class="block text-sm font-semibold text-sky-800">&nbsp;</label>
-                <button type="button"
-                    class="bg-sky-600 text-white font-semibold px-4 py-2 rounded-md hover:bg-sky-700 transition"
-                    (click)="openConfirmUpdate()">
-                    Cập nhật thông tin &nbsp;<fa-icon [icon]="faPen"></fa-icon>
-                </button>
+            <!-- Địa chỉ -->
+            <div class="mb-0">
+                <label class="block font-semibold text-sky-800">Mô tả</label>
+                <textarea rows="3" [(ngModel)]="clinicRequest.description" name="description"
+                    class="mt-1 p-1 pl-2 bg-white border border-sky-300 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-sky-500"></textarea>
             </div>
+        </div>
+
+        <!-- Thiết lập đặt lịch khám -->
+        <div class="mt-6 bg-white text-sky-900 font-bold text-xl">
+            THIẾT LẬP ĐẶT LỊCH KHÁM
+        </div>
+        <hr class="my-2 border-sky-700">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
+            <!-- Cho phép đặt lịch khám theo bác sĩ -->
+            <div class="mb-0">
+                <label class="flex items-center font-semibold text-sky-800">
+                    <input type="checkbox" [(ngModel)]="clinicRequest.allowBookingByDoctor" name="allowBookingByDoctor"
+                        class="mr-2 h-4 w-4 text-sky-600 focus:ring-sky-500 border-gray-300 rounded">
+                    Cho phép đặt lịch khám theo bác sĩ
+                </label>
+            </div>
+
+            <!-- Cho phép đặt lịch khám theo dịch vụ -->
+            <div class="mb-0">
+                <label class="flex items-center font-semibold text-sky-800">
+                    <input type="checkbox" [(ngModel)]="clinicRequest.allowBookingByService" name="allowBookingByService"
+                        class="mr-2 h-4 w-4 text-sky-600 focus:ring-sky-500 border-gray-300 rounded">
+                    Cho phép đặt lịch khám theo dịch vụ
+                </label>
+            </div>
+        </div>
+
+        <!-- Thiết lập thông báo -->
+        <div class="mt-6 bg-white text-sky-900 font-bold text-xl">
+            THIẾT LẬP THÔNG BÁO
+        </div>
+        <hr class="my-2 border-sky-700">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
+            <!-- Gửi thông báo cho bác sĩ khi đặt lịch -->
+            <div class="mb-0">
+                <label class="flex items-center font-semibold text-sky-800">
+                    <input type="checkbox" [(ngModel)]="clinicRequest.sendNotificationToDoctorOnBooking" name="sendNotificationToDoctorOnBooking"
+                        class="mr-2 h-4 w-4 text-sky-600 focus:ring-sky-500 border-gray-300 rounded">
+                    Gửi thông báo cho bác sĩ khi đặt lịch
+                </label>
+            </div>
+
+            <!-- Gửi thông báo cho quản trị viên Zalo OA khi đặt lịch -->
+            <div class="mb-0">
+                <label class="flex items-center font-semibold text-sky-800">
+                    <input type="checkbox" [(ngModel)]="clinicRequest.sendNotificationToZaloOAAdminOnBooking" name="sendNotificationToZaloOAAdminOnBooking"
+                        class="mr-2 h-4 w-4 text-sky-600 focus:ring-sky-500 border-gray-300 rounded">
+                    Gửi thông báo cho quản trị viên Zalo OA khi đặt lịch
+                </label>
+            </div>
+
+            <!-- Gửi thông báo cho bệnh nhân khi đặt lịch thành công -->
+            <div class="mb-0">
+                <label class="flex items-center font-semibold text-sky-800">
+                    <input type="checkbox" [(ngModel)]="clinicRequest.sendNotificationToPatientOnBooking" name="sendNotificationToPatientOnBooking"
+                        class="mr-2 h-4 w-4 text-sky-600 focus:ring-sky-500 border-gray-300 rounded">
+                    Gửi thông báo cho bệnh nhân khi đặt lịch thành công
+                </label>
+            </div>
+
+            <!-- Gửi thông báo cho bệnh nhân khi lịch hẹn được xác nhận -->
+            <div class="mb-0">
+                <label class="flex items-center font-semibold text-sky-800">
+                    <input type="checkbox" [(ngModel)]="clinicRequest.sendNotificationOnConfirmed" name="sendNotificationOnConfirmed"
+                        class="mr-2 h-4 w-4 text-sky-600 focus:ring-sky-500 border-gray-300 rounded">
+                    Gửi thông báo cho bệnh nhân khi lịch hẹn được xác nhận
+                </label>
+            </div>
+
+            <!-- Gửi nhắc bệnh nhân trước 1 ngày khám -->
+            <div class="mb-0">
+                <label class="flex items-center font-semibold text-sky-800">
+                    <input type="checkbox" [(ngModel)]="clinicRequest.sendReminderBefore1Day" name="sendReminderBefore1Day"
+                        class="mr-2 h-4 w-4 text-sky-600 focus:ring-sky-500 border-gray-300 rounded">
+                    Gửi nhắc bệnh nhân trước 1 ngày khám
+                </label>
+            </div>
+
+            <!-- Gửi cảm ơn sau khi bệnh nhân khám xong -->
+            <div class="mb-0">
+                <label class="flex items-center font-semibold text-sky-800">
+                    <input type="checkbox" [(ngModel)]="clinicRequest.sendThanksAfterVisit" name="sendThanksAfterVisit"
+                        class="mr-2 h-4 w-4 text-sky-600 focus:ring-sky-500 border-gray-300 rounded">
+                    Gửi cảm ơn sau khi bệnh nhân khám xong
+                </label>
+            </div>
+        </div>
+
+        <!-- Nút cập nhật -->
+        <div class="mb-0 md:col-span-2 lg:col-span-2 text-right">
+            <label class="block text-sm font-semibold text-sky-800">&nbsp;</label>
+            <button type="button"
+                class="bg-sky-600 text-white font-semibold px-4 py-2 rounded-md hover:bg-sky-700 transition"
+                (click)="openConfirmUpdate()">
+                Cập nhật thông tin &nbsp;<fa-icon [icon]="faPen"></fa-icon>
+            </button>
         </div>
     </form>
     <div *ngIf="!loading && !clinic" class="text-center text-red-600 font-semibold mt-4">
@@ -65,10 +148,7 @@
 </div>
 
 <!-- Modal xác nhận cập nhật -->
-<app-admin-modal-confirm
-  *ngIf="showConfirmUpdate"
-  title="Xác nhận cập nhật"
-  content="Bạn có chắc chắn muốn cập nhật thông tin phòng khám này?"
-  (confirm)="onConfirmUpdate()"
-  (cancel)="onCancelUpdate()">
+<app-admin-modal-confirm *ngIf="showConfirmUpdate" title="Xác nhận cập nhật"
+    content="Bạn có chắc chắn muốn cập nhật thông tin phòng khám này?" (confirm)="onConfirmUpdate()"
+    (cancel)="onCancelUpdate()">
 </app-admin-modal-confirm>

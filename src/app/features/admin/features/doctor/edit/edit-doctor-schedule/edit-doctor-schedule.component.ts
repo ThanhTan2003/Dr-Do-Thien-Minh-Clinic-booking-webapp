@@ -139,7 +139,7 @@ export class EditDoctorScheduleComponent implements OnInit {
         this.updateQueryParams();
       }
     });
-    this.loadSchedules();
+      this.loadSchedules();
   }
 
   loadSchedules() {
@@ -160,9 +160,9 @@ export class EditDoctorScheduleComponent implements OnInit {
       sessionParam,
       status
     ).subscribe((res: DoctorSchedule[]) => {
-      this.schedules = res;
-      this.initEditableRows();
-    });
+        this.schedules = res;
+        this.initEditableRows();
+      });
   }
 
   onSelectDay(day: string) {

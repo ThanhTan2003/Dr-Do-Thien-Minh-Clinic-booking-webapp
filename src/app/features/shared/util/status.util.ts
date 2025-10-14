@@ -153,12 +153,14 @@ export function getNextPossibleStatuses(currentStatus: string): string[] {
  * Key: code (từ BE)
  */
 export const SUGGESTED_DOCTOR_STATUS_COLOR_MAP: StatusMapping = {
-    "00": "text-gray-700",       // Tất cả
+    "00": "text-gray-700",      // Tất cả
     "01": "text-green-700",     // Chưa có lịch khám
-    "02": "text-orange-700",      // Đã có lịch khám
-    "03": "text-red-700",        // Đã ngừng khám dịch vụ
-    "04": "text-purple-700",     // Nghỉ phép
-    "05": "text-gray-500"        // Ngừng làm việc
+    "02": "text-orange-700",    // Đã có lịch khám
+    "03": "text-sky-700",     // Nhận đăng ký khám
+    "04": "text-orange-600",    // Không nhận đăng ký khám
+    "05": "text-red-700",       // Đã ngừng khám dịch vụ
+    "06": "text-purple-700",    // Nghỉ phép
+    "07": "text-gray-500"       // Ngừng làm việc
 };
 
 /**

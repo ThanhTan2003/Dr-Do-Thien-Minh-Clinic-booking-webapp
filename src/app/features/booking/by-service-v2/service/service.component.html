@@ -51,6 +51,9 @@
 
   <!-- Danh sách dịch vụ -->
   <div *ngIf="!loading" class="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4">
+    <div *ngIf="services.length === 0">
+      <div class="text-center p-4 border-gray-400 text-gray-800">Không có dịch vụ khả dụng!</div>
+    </div>
     <div
       *ngFor="let service of services"
       class="bg-white rounded-lg shadow-md p-4 flex flex-col justify-between relative border border-slate-300"
