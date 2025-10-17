@@ -23,10 +23,10 @@ export const patientRoutes: Routes = [
         const authService = inject(AuthService);
         const router = inject(Router);
         try {
-          const user = await firstValueFrom(authService.getUserInfo());
-          if (user && user.roleId === Role.ADMIN) {
+          const user = await firstValueFrom(authService.getAccountInfo());
+          if (user && user.roleResponse.id === Role.ADMIN) {
             return true;
-          } else if (user && user.roleId === Role.STAFF) {
+          } else if (user && user.roleResponse.id === Role.STAFF) {
             return router.navigate(['/admin/benh-nhan/danh-sach/xem']);
           }
         } catch {

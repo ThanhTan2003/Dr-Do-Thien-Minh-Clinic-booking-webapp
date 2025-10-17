@@ -2,10 +2,10 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable, tap } from 'rxjs';
 import { AuthenticationService } from '../../../shared/services/identity/authentication.service';
-import { UserService } from '../../../shared/services/identity/user.service';
+import { AccountService } from '../../../shared/services/identity/account.service';
 import { AuthenticationRequest } from '../../../models/requests/identity/authentication.request';
 import { AuthenticationResponse } from '../../../models/responses/identity/authentication.response';
-import { UserResponse } from '../../../models/responses/identity/user.response';
+import { AccountResponse } from '../../../models/responses/identity/account/account.response';
 import { LocalStorageService } from '../../../../core/services/local-storage.service';
 
 @Injectable({
@@ -14,14 +14,13 @@ import { LocalStorageService } from '../../../../core/services/local-storage.ser
 export class AuthService {
   constructor(
     private authService: AuthenticationService,
-    private userService: UserService,
+    private accountService: AccountService,
     private router: Router,
     private localStorageService: LocalStorageService,
   ) {}
 
   login(request: AuthenticationRequest): Observable<AuthenticationResponse> {
-    //console.log("Dang nhap");
-    return this.authService.logIn(request).pipe(
+    return this.authService.login(request).pipe(
       tap(response => {
         if (response.authenticated) {
           this.localStorageService.setAccessToken(response.accessToken);
@@ -34,7 +33,7 @@ export class AuthService {
   logout(): void {
     const token = this.localStorageService.getAccessToken();
     if (token) {
-      this.authService.logOut({ token }).subscribe(() => {
+      this.authService.logout({ token }).subscribe(() => {
         this.clearAuthData();
         this.router.navigate(['/admin/login']);
       });
@@ -53,10 +52,9 @@ export class AuthService {
     return !!this.localStorageService.getAccessToken();
   }
 
-  getUserInfo(): Observable<UserResponse> {
-    //console.log("Lay thong tin nguoi dung 1");
-    return this.userService.getInfo().pipe(
-      tap(user => console.log("user: ", user.roleName))
+  getAccountInfo(): Observable<AccountResponse> {
+    return this.accountService.getMyInfo().pipe(
+      tap(account => console.log("account: ", account.roleResponse.name))
     );
   }
 
@@ -66,7 +64,7 @@ export class AuthService {
     if (!refreshToken) {
       throw new Error('No refresh token');
     }
-    return this.authService.refresh({ token: refreshToken }).pipe(
+    return this.authService.refreshToken({ token: refreshToken }).pipe(
       tap(response => {
         if (response.authenticated) {
           this.localStorageService.setAccessToken(response.accessToken);

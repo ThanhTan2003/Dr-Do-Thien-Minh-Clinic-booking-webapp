@@ -35,9 +35,9 @@ export class MainContentComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.authService.getUserInfo().subscribe(user => {
+    this.authService.getAccountInfo().subscribe(user => {
       if (user) {
-        this.menuItems = this.loadMenuByRole(user.roleId);
+        this.menuItems = this.loadMenuByRole(user.roleResponse.id);
         this.updateSelectedMenu();
       }
     });

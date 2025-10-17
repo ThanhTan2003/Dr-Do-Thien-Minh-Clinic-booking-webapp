@@ -1,8 +1,8 @@
-export interface UserCreationRequest {
+export interface AccountCreationRequest {
     userName: string;
     password: string;
     accountName: string;
-    status: string;
     doctorId: string;
+    statusId: string;
     roleId: string;
 }

@@ -59,6 +59,7 @@
         <thead>
           <tr class="bg-sky-600 text-white">
             <th class="border p-2 text-center">STT</th>
+            <th class="border p-2 text-left">Mã dịch vụ</th>
             <th class="border p-2 text-left">Tên dịch vụ</th>
             <th class="border p-2 text-left whitespace-nowrap">Chuyên môn</th>
             <th class="border p-2 text-left">Chi phí</th>
@@ -81,9 +82,10 @@
           </tr>
           <tr *ngFor="let service of services; let i = index" class="border hover:bg-gray-100 transition duration-200 ease-in-out align-top ">
             <td class="border border-gray-400 p-2 text-center">{{ (currentPage - 1) * pageSize + i + 1 }}</td>
+            <td class="border border-gray-400 p-2 text-left whitespace-nowrap">{{ service.id }}</td>
             <td class="border border-gray-400 p-2 text-left font-semibold text-sky-900">{{ service.serviceName }}</td>
             <td class="border border-gray-400 p-2 text-left">{{ service.serviceCategoryResponse?.categoryName }}</td>
-            <td class="border border-gray-400 p-2 text-left text-amber-900 whitespace-nowrap">{{ service.price }}</td>
+            <td class="border border-gray-400 p-2 text-left text-amber-900">{{ service.price }}</td>
             <td class="border border-gray-400 p-2 text-center font-semibold text-emerald-800">
               {{service.numberOfDoctors}}
             </td>

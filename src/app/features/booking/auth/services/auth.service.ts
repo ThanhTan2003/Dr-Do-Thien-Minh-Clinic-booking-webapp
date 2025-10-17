@@ -30,7 +30,7 @@ export class AuthService {
   logout(): void {
     const token = this.localStorageService.getAccessToken();
     if (token) {
-      this.authService.logOut({ token }).subscribe(() => {
+      this.authService.logout({ token }).subscribe(() => {
         this.clearAuthData();
         this.router.navigate(['/booking/login']);
       });

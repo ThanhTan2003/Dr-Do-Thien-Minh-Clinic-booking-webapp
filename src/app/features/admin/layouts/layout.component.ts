@@ -6,7 +6,7 @@ import { SubHeaderComponent } from './components/sub-header/sub-header.component
 import { MainLayoutComponent } from './components/main-layout/main-layout.component';
 import { MainContentComponent } from './components/main-content/main-content.component';
 import { AuthService } from '../auth/services/auth.service';
-import { UserResponse } from '../../models/responses/identity/user.response';
+import { AccountResponse } from '../../models/responses/identity/account/account.response';
 import { AdminMenuItems } from '../menu/menu-admin.config';
 import { StaffMenuItems } from '../menu/menu-staff.config';
 import { MarketingMenuItems } from '../menu/menu-marketing.config';
@@ -27,7 +27,7 @@ import { filter } from 'rxjs/operators';
   templateUrl: './layout.component.html'
 })
 export class LayoutComponent implements OnInit {
-  currentUser: UserResponse | null = null;
+  currentUser: AccountResponse | null = null;
   menuItems: any[] = [];
   selectedMenuId: string = '';
   selectedMenu: any = null;
@@ -41,11 +41,11 @@ export class LayoutComponent implements OnInit {
 
   ngOnInit() {
     //console.log("Lay thong tin nguoi dung 2");
-    this.authService.getUserInfo().subscribe(user => {
+    this.authService.getAccountInfo().subscribe(user => {
       //console.log("Lay thong tin nguoi dung thanh cong");
       if (user) {
         this.currentUser = user;
-        this.loadMenuByRole(user.roleId);
+        this.loadMenuByRole(user.roleResponse.id);
         // Lấy path của menu Trang chủ sau khi load menu
         const homeMenu = this.menuItems.find(item => item.label === 'Trang chủ');
         this.homePath = homeMenu?.path;

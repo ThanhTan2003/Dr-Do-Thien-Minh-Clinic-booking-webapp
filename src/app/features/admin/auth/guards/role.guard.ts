@@ -22,8 +22,8 @@ export class RoleGuard implements CanActivate {
     }
     try {
       //console.log("Kiem tra vai tro nguoi dung ở RoleGuard");
-      const user = await firstValueFrom(this.authService.getUserInfo());
-      if (!user || !allowedRoles.includes(user.roleId)) {
+      const user = await firstValueFrom(this.authService.getAccountInfo());
+      if (!user || !allowedRoles.includes(user.roleResponse.id)) {
         this.router.navigate(['/admin/home']);
         return false;
       }

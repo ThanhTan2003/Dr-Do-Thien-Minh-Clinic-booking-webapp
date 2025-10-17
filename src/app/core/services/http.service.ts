@@ -18,7 +18,6 @@ export class HttpService {
    }
 
   private getHeaders(url: string): HttpHeaders {
-    // Không thêm Authorization ở đây nữa!
     return new HttpHeaders({
       'ngrok-skip-browser-warning': 'true'
     });

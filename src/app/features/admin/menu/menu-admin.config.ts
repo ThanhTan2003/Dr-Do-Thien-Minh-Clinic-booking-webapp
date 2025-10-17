@@ -56,10 +56,8 @@ export const AdminMenuItems = [
       path: 'y-te',
       children: [
         { id: 'PhongKham', label: 'Phòng khám', path: 'phong-kham', icon: faHospital },
-        { id: 'DichVu', label: 'Dịch vụ', path: 'dich-vu', icon: faFileMedical },
-        { id: 'NhomDichVu', label: 'Nhóm chuyên môn', path: 'nhom-dich-vu', icon: faLayerGroup }
-        
-        
+        { id: 'NhomDichVu', label: 'Nhóm chuyên môn', path: 'nhom-dich-vu', icon: faLayerGroup },
+        { id: 'DichVu', label: 'Dịch vụ', path: 'dich-vu', icon: faFileMedical }
       ]
     },
   
@@ -91,8 +89,8 @@ export const AdminMenuItems = [
       path: 'zalo-oa',
       children: [
         { id: 'ThongTin', label: 'Thông tin', path: 'thong-tin', icon: faInfoCircle },
-        { id: 'NguoiDung', label: 'Người dùng', path: 'nguoi-dung', icon: faUsers },
         { id: 'NhomNguoiDung', label: 'Nhóm người dùng', path: 'nhom-nguoi-dung', icon: faLayerGroup },
+        { id: 'NguoiDung', label: 'Người dùng', path: 'nguoi-dung', icon: faUsers },
         { id: 'GuiThongBao', label: 'Gửi thông báo', path: 'thong-bao', icon: faBell }
       ]
     }
